@@ -1,0 +1,4276 @@
+{
+	"info": {
+		"_postman_id": "914d2a49-01f8-4479-a3ae-9b0e7438c92a",
+		"name": "VisionV4 Copy 2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12000611"
+	},
+	"item": [
+		{
+			"name": "Actuator",
+			"item": [
+				{
+					"name": "Actuator Health",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/actuator/health",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx Check IOC Repository Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkIocRepository",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkIocRepository"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx Check TC Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkTc",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkTc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx Check Ingester Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkIngester",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkIngester"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx Check Elastic Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkEs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkEs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx Check UAA Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkUaa",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkUaa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx Check Vision Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkVision",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkVision"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "nginx version endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/version",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"version"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Amano",
+			"item": [
+				{
+					"name": "Configure Vision, External Database",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dbHostname\": \"\",\n    \"dbUsername\": \"\",\n    \"dbPassword\": \"\",\n    \"dbName\": \"cofense_vision\",\n    \"licenseToken\": \"\",\n    \"adminUsername\": \"useradmin\",\n\t\"adminPassword\": \"{{authAdminSecret}}\",\n    \"authadminPassword\": \"{{authAdminSecret}}\"\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/configProperties",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"configProperties"
+							]
+						},
+						"description": "Request to configure Vision (Amano) using an external database without UI interaction."
+					},
+					"response": []
+				},
+				{
+					"name": "Configure Vision, Internal Database",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dbHostname\": \"internal\",\n    \"licenseToken\": \"\",\n    \"adminUsername\": \"useradmin\",\n\t\"adminPassword\": \"{{authAdminSecret}}\",\n    \"authadminPassword\": \"{{authAdminSecret}}\"\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/configProperties",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"configProperties"
+							]
+						},
+						"description": "Request to configure Vision (Amano) using an internal database without UI interaction."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Attachment",
+			"item": [
+				{
+					"name": "Get Attachment Content SHA256",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment?sha256=[some_sha]",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							],
+							"query": [
+								{
+									"key": "sha256",
+									"value": "[some_sha]"
+								}
+							]
+						},
+						"description": "Replace [some_sha] in the url."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attachment Content by MD5",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment?md5=[some_md5]",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							],
+							"query": [
+								{
+									"key": "md5",
+									"value": "[some_md5]"
+								}
+							]
+						},
+						"description": "Replace [some_md5] in the url."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attachment Content by MD5 and SHA256 when digests collide",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment?md5=[some_md5]&sha256=[some_sha256]",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							],
+							"query": [
+								{
+									"key": "md5",
+									"value": "[some_md5]"
+								},
+								{
+									"key": "sha256",
+									"value": "[some_sha256]"
+								}
+							]
+						},
+						"description": "Replace [some_md5] and [some_sha] in the url."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attachment Content SHA256 Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"sha256\":\"858ca3e18503b5b3af79954fd9448cca7143cb09c9cb06140014b82abc0bacdb\",\n\t\"password\":\"123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							]
+						},
+						"description": "Replace [some_sha] in the url."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attachment Content MD5 Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"md5\":\"c09b7015e148de127c84746e861eb309\",\n\t\"password\":\"123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							]
+						},
+						"description": "Replace [some_sha] in the url."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attachment Content MD5 and SHA256 Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"sha256\":\"858ca3e18503b5b3af79954fd9448cca7143cb09c9cb06140014b82abc0bacdb\",\n\t\"md5\":\"c09b7015e148de127c84746e861eb309\",\n\t\"password\":\"123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							]
+						},
+						"description": "Replace [some_sha] in the url."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attachment Content by Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/attachment?token=2d405a67-8d0e-4b4f-9611-369aa4ebd266",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"attachment"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "2d405a67-8d0e-4b4f-9611-369aa4ebd266"
+								}
+							]
+						},
+						"description": "Replace [some_sha] in the url."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit",
+			"item": [
+				{
+					"name": "Get Audit",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/audits",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"audits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit - recent",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/audits?page=0;size=1000&sort=eventDate,desc",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"audits"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0;size=1000"
+								},
+								{
+									"key": "sort",
+									"value": "eventDate,desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/audits/csv",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"audits",
+								"csv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit fromDate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/audits?fromDate=2018-11-28",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"audits"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2018-11-28"
+								}
+							]
+						},
+						"description": "Valid date format yyyy-MM-dd. Example: 2019-05-22."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit fromDate, toDate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/audits?fromDate=2018-11-28&toDate=2019-11-29",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"audits"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2018-11-28"
+								},
+								{
+									"key": "toDate",
+									"value": "2019-11-29"
+								}
+							]
+						},
+						"description": "Valid date format yyyy-MM-dd. Example: 2019-05-22."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit with different sort",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/audits?fromDate=2018-11-28",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"audits"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2018-11-28"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Config",
+			"item": [
+				{
+					"name": "All Configs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Get List of Searchable Headers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config/searchableHeaders",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config",
+								"searchableHeaders"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Service Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config/requiredConfigStatus",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config",
+								"requiredConfigStatus"
+							]
+						},
+						"description": "Get status of services to see if they are properly configured\n* EWS Ingestion\n* SMTP Ingestion\n* Quarantine\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Set AuditEvents",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"configGroupName\": \"auditEvents\",\n        \"configurations\": [\n            {\n                \"name\": \"maxAgeDays\",\n                \"value\": 20\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Set Logging MaxAgeDays",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"configGroupName\": \"logging\",\n        \"configurations\": [\n            {\n                \"name\": \"maxAgeDays\",\n                \"value\": 20\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Set Message Store properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n        \"configGroupName\": \"messageStore\",\n        \"configurations\": [\n            {\n                \"name\": \"emailBlacklist\",\n                \"value\": \"[bob@bob.com, mary@mary.com]\"\n            },\n            {\n                \"name\": \"maxAgeDays\",\n                \"value\": 604800\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Set AutoQuarantine Properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"configGroupName\": \"autoQuarantine\",\n        \"configurations\": [\n            {\n                \"name\": \"tokenFromCofenseIntelligence\",\n                \"value\": \"\"\n            },\n            {\n                \"name\": \"automatic\",\n                \"value\": true\n            },\n            {\n                \"name\": \"enabled\",\n                \"value\": true\n            },\n            {\n                \"name\": \"cofenseIntelligenceFeedEnabled\",\n                \"value\": true\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "Set Exchange Properties Incorrect Url",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n       \"configGroupName\": \"ewsIngestion\",\n       \"configurations\": [\n           {\n               \"name\": \"url\",\n               \"value\": \"outlook.office365.com/EWS/Exchange.asmx\"\n           },\n           {\n               \"name\": \"username\",\n               \"value\": \"!!!someValidAdmin@email.address.com!!!\"\n           },\n           {\n               \"name\": \"password\",\n               \"value\": \"!!!userPassword!!!\"\n           },\n           {\n               \"name\": \"enabled\",\n               \"value\": true\n           }\n       ]\n   }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "This is a sample of an exchange server with a bad url.  For negative testing."
+					},
+					"response": []
+				},
+				{
+					"name": "Set Exchange Properties - needs valid User, PW, and folder Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[ {\n       \"configGroupName\": \"ewsIngestion\",\n       \"configurations\": [\n           {\n               \"name\": \"url\",\n               \"value\": \"https://outlook.office365.com/EWS/Exchange.asmx\"\n           },\n           {\n               \"name\": \"username\",\n               \"value\": \"someValidAdmin@email.address.com\"\n           },\n           {\n               \"name\": \"password\",\n               \"value\": \"{{some valid password}}\"\n           },\n           {\n               \"name\": \"enabled\",\n               \"value\": true\n           }\n  ]\n   }\n   ]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "This will set the values that are used to create the EWS Ingester"
+					},
+					"response": []
+				},
+				{
+					"name": "Save mail alert properties - needs valid email account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n {\n        \"configGroupName\": \"emailAlerts\",\n        \"configurations\": [\n            {\n                \"name\": \"subjectPrefix\",\n                \"value\": \"Alert\"\n            },\n            {\n                \"name\": \"intervalMinutes\",\n                \"value\": 1\n            },\n            {\n                \"name\": \"recipientAddress\",\n                \"value\": [\n                    \"fname.lname@phishme.com\",\n                    \"fname.lname@cofense.com\"\n                ]\n            },\n            {\n                \"name\": \"messagePriority\",\n                \"value\": 3\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Quarantine Properties - needs valid email account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"configGroupName\": \"quarantine\",\n        \"configurations\": [\n            {\n               \"name\": \"username\",\n               \"value\": \"someValidAdmin@email.address.com\"\n            },\n            {\n               \"name\": \"password\",\n               \"value\": \"{{some valid password}}\"\n            },\n            {\n                \"name\": \"maxAgeDays\",\n                \"value\": 15\n            },\n            {\n                \"name\": \"url\",\n                \"value\": \"https://outlook.office365.com/EWS/Exchange.asmx\"\n            }]\n    }]\n\n\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "This config is for the account that will be used for the Quarantine operations:  quarantine, restore.\nThe account will need Impersonation rights."
+					},
+					"response": []
+				},
+				{
+					"name": "Set EWS Ingestion Properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"configGroupName\": \"ewsIngestion\",\n        \"configurations\": [\n            {\n               \"name\": \"username\",\n               \"value\": \"paste-here-ingester-1@phishmereporter02.onmicrosoft.com\"\n            },\n            {\n               \"name\": \"password\",\n               \"value\": \"paste-here\"\n            },\n            {\n                \"name\": \"enabled\",\n                \"value\": true\n            },\n            {\n                \"name\": \"url\",\n                \"value\": \"https://outlook.office365.com/EWS/Exchange.asmx\"\n            }\n        ]\n    }\n]\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "This config is for the account that will be used for the Quarantine operations:  quarantine, restore.\nThe account will need Impersonation rights."
+					},
+					"response": []
+				},
+				{
+					"name": "Set Syslog Properties - Splunk - needs valid host name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 422\", function () {",
+									"    pm.response.to.have.status(422);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n\t{\n        \"configGroupName\": \"syslog\",\n        \"configurations\": [\n\t\t\t{\n\t\t\t\"name\": \"host\",\n\t\t\t\"value\": \"{{syslog_hostname}}\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"name\": \"udpPort\",\n\t\t\t\"value\": 9999\n\t\t\t},\n\t\t\t{\n\t\t\t\"name\": \"facility\",\n\t\t\t\"value\": \"AUTH\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"name\": \"tcpPort\",\n\t\t\t\"value\": 8000\n\t\t\t},\n\t\t\t{\n\t\t\t\"name\": \"enabled\",\n\t\t\t\"value\": true\n\t\t\t}\n\t\t]\n    }\n]\n\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "This config is for the account that will be used for the Quarantine operations:  quarantine, restore.\nThe account will need Impersonation rights."
+					},
+					"response": []
+				},
+				{
+					"name": "Set smtp properties",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "  [{\n        \"configGroupName\": \"smtp\",\n        \"configurations\": [\n             {\n                \"name\": \"host\",\n                \"value\": \"smtp.office365.com\"\n            },\n            {\n                \"name\": \"port\",\n                \"value\": 587\n            },\n            {\n               \"name\": \"username\",\n               \"value\": \"someValidAdmin@email.address.com\"\n            },\n            {\n               \"name\": \"password\",\n               \"value\": \"{{some valid password}}\"\n            },\n            {\n                \"name\": \"tls\",\n                \"value\": true\n            }\n        ]\n    }]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						},
+						"description": "Show all the configuration parameters"
+					},
+					"response": []
+				},
+				{
+					"name": "SMTPIngestion config",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n   {\n        \"configGroupName\": \"smtpIngestion\",\n        \"configurations\": [\n            {\n                \"name\": \"enabled\",\n                \"value\": true\n            },\n            {\n                \"name\": \"journalFallbackAddress\",\n                \"value\": \"tse_test_box_10184@phishmereporter02.onmicrosoft.com\"\n            },\n            {\n                \"name\": \"journalRecipientAddress\",\n                \"value\": \"ingestion@mx.mh.cofense-nextgen.com\"\n            },\n            {\n            \t\"name\": \"incomingIpAddressRanges\",\n            \t\"value\": [\"40.92.0.0/15\", \"40.107.0.0/16\", \"52.100.0.0/14\", \"104.47.0.0/17\"]\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IocRepository",
+			"item": [
+				{
+					"name": "Check IOC Repository Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/checkIocRepository",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"checkIocRepository"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Config GET",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "X-Cofense-IOC-Source",
+								"value": "Triage-1",
+								"description": "unique ID",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Config PUT",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"enabled\": true,\n  \"cofenseIntelligenceFeedEnabled\": false,\n  \"tokenFromCofenseIntelligence\": \"0:0\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/config",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "X-Cofense-IOC-Source",
+								"value": "Triage-1",
+								"description": "unique ID",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/info",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS (default params)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "X-Cofense-IOC-Source",
+								"value": "Triage-1",
+								"description": "unique ID",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Intelligence Feed IOCs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1",
+								"disabled": true
+							},
+							{
+								"key": "X-Cofense-IOC-Source",
+								"value": "Intelligence",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?page=0&size=200",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "200"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS (pagination)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true&page=0&size=2&sort=updatedAt",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "2"
+								},
+								{
+									"key": "sort",
+									"value": "updatedAt"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS includeExpired and since zoned date",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true&since=2000-10-31T01:30:00.000-00:00",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								},
+								{
+									"key": "since",
+									"value": "2000-10-31T01:30:00.000-00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS includeExpired and since date no zone",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true&since=2000-10-31T01:30:00.000",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								},
+								{
+									"key": "since",
+									"value": "2000-10-31T01:30:00.000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS includeExpired and since date no fractional seconds",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true&since=2000-10-31T01:30:00",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								},
+								{
+									"key": "since",
+									"value": "2000-10-31T01:30:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS includeExpired and since date no seconds",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true&since=1970-01-01T00:00",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								},
+								{
+									"key": "since",
+									"value": "1970-01-01T00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS includeExpired and since date epoch-millis",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true&since=0",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								},
+								{
+									"key": "since",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS includeExpired",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs?includeExpired=true",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							],
+							"query": [
+								{
+									"key": "includeExpired",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOCS last",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs/last",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs",
+								"last"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOC  by source and id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs/07fa1e91f99050521a87edc784e83fd5",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs",
+								"07fa1e91f99050521a87edc784e83fd5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get IOC  by MD5ID (no source)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs/07fa1e91f99050521a87edc784e83fd5",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs",
+								"07fa1e91f99050521a87edc784e83fd5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put IOCS",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n  {\n    \"id\": \"\",\n    \"type\": \"ioc\",\n    \"attributes\": {\n      \"threat_type\": \"URL\",\n      \"threat_value\": \"http://test.com/test\"\n    },\n    \"metadata\": { \n      \"source\": {\n        \"threat_level\": \"Malicious\",\n        \"id\": \"arbitrary source identifier\",\n        \"requested_expiration\": \"2030-10-30T00:00\",\n        \"created_at\": \"2020-01-30T00:00\",\n        \"updated_at\": \"2020-03-30T00:00\"\n      }\n    }\n  },\n  {\n    \"id\": \"\",\n    \"type\": \"ioc\",\n    \"attributes\": {\n      \"threat_type\": \"URL\",\n      \"threat_value\": \"http://test.test/test1\"\n    },\n    \"metadata\": { \n      \"source\": {\n        \"threat_level\": \"Malicious\",\n        \"id\": \"arbitrary source identifier2\",\n        \"requested_expiration\": \"2030-10-30T00:00\",\n        \"created_at\": \"2020-02-02T00:00\",\n        \"updated_at\": \"2020-03-29T00:00\"\n      }\n    }\n  },\n  {\n    \"id\": \"\",\n    \"type\": \"ioc\",\n    \"attributes\": {\n      \"threat_type\": \"URL\",\n      \"threat_value\": \"http://test.test/test2\"\n    },\n    \"metadata\": { \n      \"source\": {\n        \"threat_level\": \"Malicious\",\n        \"id\": \"arbitrary source identifier2\",\n        \"requested_expiration\": \"2030-10-30T00:00\",\n        \"created_at\": \"2020-02-03T00:00\",\n        \"updated_at\": \"2020-03-28T00:00\"\n      }\n    }\n  }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put wildcard IOC, starts with",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n  {\n    \"id\": \"\",\n    \"type\": \"ioc\",\n    \"attributes\": {\n      \"threat_type\": \"URL\",\n      \"threat_value\": \"http://test.com/wildcard/123456&id=*\"\n    },\n    \"metadata\": { \n      \"source\": {\n        \"threat_level\": \"Malicious\",\n        \"id\": \"arbitrary source identifier\",\n        \"requested_expiration\": \"2021-10-30T00:00\",\n        \"created_at\": \"2020-01-30T00:00\",\n        \"updated_at\": \"2020-03-30T00:00\"\n      },\n      \"quarantine\": {\n        \"wildcard\": true\n      }\n    }\n  }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete single IOC",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/iocs/07fa1e91f99050521a87edc784e83fd5",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"iocs",
+								"07fa1e91f99050521a87edc784e83fd5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Allow List, Get All IOCs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/allowedIocs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"allowedIocs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Allow List, Get All IOCs (pagination)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/allowedIocs?page=0&size=200&sort=createdAt",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"allowedIocs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "200"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Allow List, Post IOC",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": {\n    \"type\": \"ioc\",\n    \"attributes\": {\n      \"threat_type\": \"URL\",\n      \"threat_value\": \"http://test.com/test\"\n    }\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/allowedIocs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"allowedIocs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Allow List, Get Single IOCs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/allowedIocs/07fa1e91f99050521a87edc784e83fd5",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"allowedIocs",
+								"07fa1e91f99050521a87edc784e83fd5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Allow List, Delete single IOC",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"description": "unique ID",
+								"key": "X-Cofense-IOC-Source",
+								"type": "text",
+								"value": "Triage-1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": [\n  {\n    \"id\": \"a4538b1c7e6188dfd96ce3e722faeff0\",\n    \"type\": \"iocs\",\n    \"attributes\": {\n      \"threat_type\": \"URL\",\n      \"threat_value\": \"http://blah.com/blah\"\n    },\n    \"metadata\": { \n      \"source\": {\n        \"threat_level\": \"Malicious\",\n        \"id\": \"arbitrary triage identifier\",\n        \"requested_expiration\": \"2020-10-30T00:00\",\n        \"created_at\": \"2020-01-30T00:00\",\n        \"updated_at\": \"2020-03-30T00:00\"\n      }\n    }\n  }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/iocrepository/v1/allowedIocs/41ecc26bd356dd706cc1a0cd839cad2c",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"iocrepository",
+								"v1",
+								"allowedIocs",
+								"41ecc26bd356dd706cc1a0cd839cad2c"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Logs",
+			"item": [
+				{
+					"name": "Download logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/download/logs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"download",
+								"logs"
+							]
+						},
+						"description": "Download logs as a zip file."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all active loggers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/logs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update log level",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"com.cofense.vision.service.MetricsCollectorService\",\n        \"level\": \"DEBUG\"\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/logs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"logs"
+							]
+						},
+						"description": "Updates the log level (log4j style)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Quarantine",
+			"item": [
+				{
+					"name": "Get all Quarantine Jobs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Quarantine Jobs with filter",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filterOptions\": {\n    \"autoQuarantine\": true,\n    \"iocs\": [\n      \"0102030405060708090a0b0c0d0e0f\"\n    ],\n    \"sources\": [\n      \"triage-1\",\n      \"intelligence\"\n    ],\n    \"includeStatus\": [\n      \"NEW\",\n      \"FAILED\",\n      \"COMPLETED\"\n    ],\n    \"excludeStatus\": [\n      \"PENDING_APPROVAL\"\n    ],\n    \"modifiedDateAfter\": \"2020-01-01T12:01:00\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/filter",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"filter"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Quarantine Jobs CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/csv",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"csv"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Quarantine Job",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/[some_id]",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"[some_id]"
+							]
+						},
+						"description": "Gets the quarantine job identified by the id in the url.  Replace [some_id] with an actual job id."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Quarantine Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quarantineEmails\": [\n    {\n      \"recipientAddress\": \"user1@test.com\",\n      \"internetMessageId\": \"<BYAPR11MB2824EF099FE06D3740572200DC8D0@test.com>\"\n    },\n    {\n      \"recipientAddress\": \"user2@test.com\",\n      \"internetMessageId\": \"<BYAPR11MB2824A5994CF5BA9417724EEEDC8D0@test.com>\"\n    }\n  ]\n} "
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs"
+							]
+						},
+						"description": "Async call that will create a job to quarantine all emails listed in \"quarantineEmails\".<br>"
+					},
+					"response": []
+				},
+				{
+					"name": "Initiate Restore",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/[some_id]/restore",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"[some_id]",
+								"restore"
+							]
+						},
+						"description": "Restores all emails that were quarantined by quarantine job id in the url.  Replace [some_id] with an actual job id in the URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Approve a quarantine job which is pending approval",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/[some_id]/approve",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"[some_id]",
+								"approve"
+							]
+						},
+						"description": "Restores all emails that were quarantined by quarantine job id in the url.  Replace [some_id] with an actual job id in the URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Stops a quarantine job",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/[some_id]/stop",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"[some_id]",
+								"stop"
+							]
+						},
+						"description": "Stops the quarantine job identified by the id in the url.  Replace [some_id] with an actual job id in the URL"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Quarantine job",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/quarantineJobs/[some_id]",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"quarantineJobs",
+								"[some_id]"
+							]
+						},
+						"description": "Deletes the quarantine job identified by the id in the url.  Replace [some_id] with an actual job id in the URL"
+					},
+					"response": []
+				}
+			],
+			"description": "Async call that will create a job to quarantine all emails listed in \"quarantineEmails\".\nThe job can be cancelled while in flight.\nAll emails in the job can also be restored via the restore endpoint."
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "All Searches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						},
+						"description": "Show all the searches"
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches/{{search_id}}",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches",
+								"{{search_id}}"
+							]
+						},
+						"description": "This assumes the search was previous added via the POST command.  Replace [some_id] in the URL with an actual search id."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve the results of a search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches/{{search_id}}/results",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches",
+								"{{search_id}}",
+								"results"
+							]
+						},
+						"description": "This assumes the search was previous added via the POST command.  Replace [some_id] in the URL with an actual search id."
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve the results of a search CSV",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches/[some_id]/results/csv",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches",
+								"[some_id]",
+								"results",
+								"csv"
+							]
+						},
+						"description": "This assumes the search was previous added via the POST command.  Replace [some_id] in the URL with an actual search id."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Senders List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": null,\n\t\"senders\": [\n\t\t\t\"testuser@test.com\"\n\t\t],\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\":null,\n    \"attachmentExcludeMimeTypes\":[\"image\"],\n    \"domainCriteria\": null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Mime types",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": [],\n\t\"senders\": [],\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\": [\n    \t\t\"image/png\", \"text\"\n    \t],\n    \"attachmentExcludeMimeTypes\":[],\n    \"domainCriteria\": null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						},
+						"description": "Without the \"/\", mimetypes become a \"like\" search instead of an \"=\""
+					},
+					"response": []
+				},
+				{
+					"name": "Search Subject",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": [\"This is a test subject\"],\n\t\"senders\": [],\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\": [],\n    \"attachmentExcludeMimeTypes\":[],\n    \"domainCriteria\": null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Partial Ingested",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partialIngested\": true,\n    \"subjects\": null,\n\t\"senders\": [],\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\": [],\n    \"attachmentExcludeMimeTypes\":[],\n    \"domainCriteria\": null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Headers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"headers\": [      \n      {\"key\":\"content-type\", \"values\":[\"application/javascript\", \" application/json\"]},\n      {\"key\":\"x-originating-ip\", \"values\":[\"127.0.0.1\"]}\n    ],\n    \"subjects\": null,\n\t\"senders\": null,\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\": null,\n    \"attachmentExcludeMimeTypes\":null,\n    \"domainCriteria\": null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search MD5 Attachment Hash",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": null,\n\t\"senders\": null,\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": {\n        \"type\": \"ALL\",\n        \"attachmentHashes\": [\n      {\n        \"hashType\": \"MD5\",\n        \"hashString\": \"23735ce9d3e3eb9f2618cab969bd9640\"\n      },\n      {\n        \"hashType\": \"MD5\",\n        \"hashString\": \"dd57368d883721d9007e20723ddebf19\"\n      }\n      ]\n    },\n    \"attachmentMimeTypes\": null,\n    \"attachmentExcludeMimeTypes\":null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search MD5 Attachment Hash with Excluded mimetypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": null,\n\t\"senders\": null,\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": {\n        \"type\": \"ALL\",\n        \"attachmentHashes\": [\n      {\n        \"hashType\": \"MD5\",\n        \"hashString\": \"23735ce9d3e3eb9f2618cab969bd9640\"\n      },\n      {\n        \"hashType\": \"MD5\",\n        \"hashString\": \"dd57368d883721d9007e20723ddebf19\"\n      }\n      ]\n    },\n    \"attachmentMimeTypes\": null,\n    \"attachmentExcludeMimeTypes\":[\"text\", \"application/pdf\"],\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}\n"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Date Range",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": null,\n\t\"senders\": null,\n    \"attachmentNames\": null,\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\": null,\n    \"attachmentExcludeMimeTypes\":null,\n    \"receivedAfterDate\": \"2016-05-01T00:00:00.000\",\n    \"receivedBeforeDate\": \"2019-06-01T00:00:00.000\"\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Mime types & Attachment Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subjects\": null,\n\t\"senders\": null,\n    \"attachmentNames\": [\n    \t\"Screen Shot 2018-07-27 at 2.38.05 PM.png\"\n    \t],\n    \"attachmentHashCriteria\": null,\n    \"attachmentMimeTypes\": [\n    \t\t\"image/png\"\n    \t],\n    \"attachmentExcludeMimeTypes\":null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search MD5 attachment Hash & Date range",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"subject\": null,\n\t\"senders\": null,\n    \"attachmentNames\":null,\n    \"attachmentHashes\": [\n    \t{\n    \t\t\"hashType\": \"MD5\",\n    \t\t\"hashString\": \"63dc5fe9c0d43febff73728adb57d520\"\n    \t}\n    \t],\n    \"attachmentMimeTypes\":null,\n    \"receivedAfterDate\": \"2017-01-01T15:25:35.997\",\n    \"receivedBeforeDate\": null\n    \n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search MD5 attachment Hash and Attachment Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"subject\": null,\n\t\"senders\": null,\n    \"attachmentNames\":[\n    \t\"xls.mpeg\"\n    ],\n    \"attachmentHashes\": [\n    \t{\n    \t\t\"hashType\": \"MD5\",\n    \t\t\"hashString\": \"63dc5fe9c0d43febff73728adb57d520\"\n    \t}\n    ],\n    \"attachmentMimeTypes\":null,\n    \"receivedAfterDate\": null,\n    \"receivedBeforeDate\": null\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Internet Message Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"search_id\", jsonData.id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"internetMessageId\":\"<1C626FCE-6749-4DE9-884C-C025173F80BB@test.com>\"\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/searches",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"searches"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SSL",
+			"item": [
+				{
+					"name": "Upload SSL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/config/ssl",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"config",
+								"ssl"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Authenticate through Vision service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{visionappuser}}\",\n    \"password\": \"{{visionappuser_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users/login",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout through Vision service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users/logout",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\":\"visionusermany\",\n  \"password\":\"{{visionUserSecret}}\",\n  \"roles\":[ \"CONFIG_ADMIN\", \"AUDIT_ADMIN\", \"QUARANTINE_ADMIN\", \n            \"QUARANTINE_USER\", \"SEARCH_ADMIN\", \"SEARCH_USER\", \n            \"QUARANTINE_APPROVER\", \"MAIL_VIEWER\"],\n  \"emailAddress\" : \"fname.lname@company.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users/",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roles\":[\"SYSTEM_ADMIN\"],\n  \"emailAddress\" : \"fname.last@company.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users/visionuser",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users",
+								"visionuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users/visionuser",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users",
+								"visionuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/users/visionuser",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"users",
+								"visionuser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clients",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/clients",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Client",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\":\"visionclient\",\n  \"password\":\"{{visionClientSecret}}\",\n  \"roles\":[\"SYSTEM_ADMIN\"],\n  \"description\": \"Vision Client\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/clients",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Client",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roles\":[\"SYSTEM_ADMIN\"],\n  \"description\": \"Harry Jones\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/clients/visionclient",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"clients",
+								"visionclient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/clients/visionclient",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"clients",
+								"visionclient"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Client",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/clients/visionclient",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"clients",
+								"visionclient"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "Retrieve Message Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"internetMessageId\":\"<D177B906-0E8F-474C-ABEA-D9B9C75B10AA@test.com>\",\n\t\"recipientAddress\":\"testuser@test.com\",\n\t\"password\":\"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/messages",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Message by Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/messages?token=fc1b9fe1-1022-4334-acd9-0b977896c3e7",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"messages"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "fc1b9fe1-1022-4334-acd9-0b977896c3e7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Message by internetMessageId",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/messages/metadata?internetMessageId=<BYAPR11MB2824EF099FE06D3740572200DC8D0@BYAPR11MB2824.test.com>&recipientAddress=someRecipient@someRecipient.company.com",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"messages",
+								"metadata"
+							],
+							"query": [
+								{
+									"key": "internetMessageId",
+									"value": "<BYAPR11MB2824EF099FE06D3740572200DC8D0@BYAPR11MB2824.test.com>"
+								},
+								{
+									"key": "recipientAddress",
+									"value": "someRecipient@someRecipient.company.com"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "License",
+			"item": [
+				{
+					"name": "License Refresh",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{VISION_BASE_URL}}/api/v4/license/refresh",
+							"host": [
+								"{{VISION_BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v4",
+								"license",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UAA Login authadmin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{authadmin}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{authAdminSecret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{UAA_BASE_URL}}/uaa/oauth/token",
+					"host": [
+						"{{UAA_BASE_URL}}"
+					],
+					"path": [
+						"uaa",
+						"oauth",
+						"token"
+					]
+				},
+				"description": "Postman doesn't store the credentials in the Authorization tab if you're using Basic (which this one does).  It encrypts it and then adds an Authorization header.<br>"
+			},
+			"response": []
+		},
+		{
+			"name": "UAA Login someUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{someUser}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{someUserSecret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{UAA_BASE_URL}}/uaa/oauth/token",
+					"host": [
+						"{{UAA_BASE_URL}}"
+					],
+					"path": [
+						"uaa",
+						"oauth",
+						"token"
+					]
+				},
+				"description": "Postman doesn't store the credentials in the Authorization tab if you're using Basic (which this one does).  It encrypts it and then adds an Authorization header.<br>"
+			},
+			"response": []
+		},
+		{
+			"name": "UAA Login visionAdmin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"ACCESS_TOKEN\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{visionappuser}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{visionAdminSecret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{UAA_BASE_URL}}/uaa/oauth/token",
+					"host": [
+						"{{UAA_BASE_URL}}"
+					],
+					"path": [
+						"uaa",
+						"oauth",
+						"token"
+					]
+				},
+				"description": "Postman doesn't store the credentials in the Authorization tab if you're using Basic (which this one does).  It encrypts it and then adds an Authorization header.<br>"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "UAA_BASE_URL",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "VISION_BASE_URL",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "authAdminSecret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "someUserSecret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "visionAdminSecret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "visionappuser",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "visionappuser_password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "someUser",
+			"value": ""
+		},
+		{
+			"key": "authadmin",
+			"value": ""
+		}
+	]
+}
