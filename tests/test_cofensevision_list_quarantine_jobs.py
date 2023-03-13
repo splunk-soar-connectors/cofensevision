@@ -28,7 +28,7 @@ import requests
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestListQuarantineJobsAction(unittest.TestCase):
@@ -37,7 +37,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "list quarantine jobs", "identifier": "list_quarantine_jobs"})
 
         return super().setUp()
@@ -49,7 +49,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the post() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "auto_quarantine": True,
@@ -65,7 +65,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         }]
 
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"quarantineJobs": [{"dummy": "data"}, {"dummy": "data2"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -79,8 +79,8 @@ class TestListQuarantineJobsAction(unittest.TestCase):
             "filterOptions": {
                 "autoQuarantine": True,
                 "iocs": [
-                    "b93cba4829a00dabef96036bb6765d20",
-                    "07fa1e91f99050521a87edc784e83fd5"
+                    "b93cba4829a00dabef96036bb6765d20",  # pragma: allowlist secret
+                    "07fa1e91f99050521a87edc784e83fd5"  # pragma: allowlist secret
                 ],
                 "sources": ["Vision-UI", "Intelligence", "Triage-1"],
                 "includeStatus": ["COMPLETED", "FAILED"],
@@ -97,7 +97,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
             data=json.dumps(expected_data),
@@ -110,7 +110,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         Token is available in the state file but it is expired.
         Patch the post() to return the valid responses.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "auto_quarantine": True,
@@ -120,17 +120,17 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         post_response_1 = requests.Response()
         post_response_1._content = b'{"error": "invalid_token", "error_description": "<dummy_token>"}'
         post_response_1.status_code = 401
-        post_response_1.headers = config.DEFAULT_HEADERS
+        post_response_1.headers = cofensevision_config.DEFAULT_HEADERS
 
         post_response_2 = requests.Response()
         post_response_2._content = b'{"access_token": "<dummy_token>"}'
         post_response_2.status_code = 200
-        post_response_2.headers = config.DEFAULT_HEADERS
+        post_response_2.headers = cofensevision_config.DEFAULT_HEADERS
 
         post_response_3 = requests.Response()
         post_response_3._content = b'{"quarantineJobs": [{"dummy": "data"}]}'
         post_response_3.status_code = 200
-        post_response_3.headers = config.DEFAULT_HEADERS
+        post_response_3.headers = cofensevision_config.DEFAULT_HEADERS
 
         mock_post.side_effect = [post_response_1, post_response_2, post_response_3]
 
@@ -154,14 +154,17 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         expected_calls = [
             call(
                 f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=config.ACTION_HEADER, params=expected_params, data=json.dumps(expected_data),
+                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=cofensevision_config.ACTION_HEADER,
+                params=expected_params, data=json.dumps(expected_data),
             ),
             call(
                 f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=config.TOKEN_DATA, headers=config.TOKEN_HEADER),
+                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA,
+                headers=cofensevision_config.TOKEN_HEADER),
             call(
                 f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=config.ACTION_HEADER, params=expected_params, data=json.dumps(expected_data),
+                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=cofensevision_config.ACTION_HEADER,
+                params=expected_params, data=json.dumps(expected_data),
             )
         ]
         mock_post.assert_has_calls(expected_calls)
@@ -173,7 +176,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         Token is not available in the state file.
         Patch the post() to return the valid responses.
         """
-        config.set_state_file(client_id=True)
+        cofensevision_config.set_state_file(client_id=True)
 
         self.test_json['parameters'] = [{
             "auto_quarantine": True,
@@ -183,12 +186,12 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         post_response_1 = requests.Response()
         post_response_1._content = b'{"access_token": "<dummy_token>"}'
         post_response_1.status_code = 200
-        post_response_1.headers = config.DEFAULT_HEADERS
+        post_response_1.headers = cofensevision_config.DEFAULT_HEADERS
 
         post_response_2 = requests.Response()
         post_response_2._content = b'{"quarantineJobs": [{"dummy": "data"}]}'
         post_response_2.status_code = 200
-        post_response_2.headers = config.DEFAULT_HEADERS
+        post_response_2.headers = cofensevision_config.DEFAULT_HEADERS
 
         mock_post.side_effect = [post_response_1, post_response_2]
 
@@ -212,10 +215,12 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         expected_calls = [
             call(
                 f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=config.TOKEN_DATA, headers=config.TOKEN_HEADER),
+                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA,
+                headers=cofensevision_config.TOKEN_HEADER),
             call(
                 f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=config.ACTION_HEADER, params=expected_params, data=json.dumps(expected_data),
+                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=cofensevision_config.ACTION_HEADER,
+                params=expected_params, data=json.dumps(expected_data),
             )
         ]
         mock_post.assert_has_calls(expected_calls)
@@ -226,7 +231,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         Test the invalid state file format. Code should reset the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(raw="Invalid state file")
+        cofensevision_config.set_state_file(raw="Invalid state file")
 
         self.test_json['parameters'] = [{
             "page": "non_numeric",
@@ -245,7 +250,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         Test the different client id in the state file. Code should pop the token from the state file.
         """
         # Save the state file with the different client id, token should be removed in the code.
-        config.set_state_file(raw='{"client_id": "<other_id>", "token": "This should be popped!"}')
+        cofensevision_config.set_state_file(raw='{"client_id": "<other_id>", "token": "This should be popped!"}')
 
         self.test_json['parameters'] = [{
             "size": "non_numeric",
@@ -328,12 +333,12 @@ class TestListQuarantineJobsAction(unittest.TestCase):
 
         Patch the post() to return the error response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{}]
 
         mock_post.return_value.status_code = 500
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"error": "Internal server error"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -356,7 +361,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
             data=json.dumps(expected_data),
@@ -368,7 +373,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
 
         Patch the post() to return the empty response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{}]
 
@@ -398,7 +403,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=expected_params,
             data=json.dumps(expected_data)
         )

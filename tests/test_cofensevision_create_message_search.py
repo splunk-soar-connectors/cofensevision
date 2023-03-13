@@ -28,7 +28,7 @@ from parameterized import parameterized
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 HTML_CONTENT_TYPE = "text/html"
 PNG_CONTENT_TYPE = "images/png"
@@ -46,7 +46,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "create message search", "identifier": "create_message_search"})
 
         return super().setUp()
@@ -54,7 +54,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     @patch("cofensevision_utils.requests.post")
     def test_create_message_search_pass(self, mock_post):
         """Test the valid case for the create message search action."""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "attachment_exclude_mime_types": HTML_CONTENT_TYPE,
@@ -92,11 +92,11 @@ class TestCreateMessageSearchAction(unittest.TestCase):
                 "attachmentHashes": [
                     {
                         "hashType": "MD5",
-                        "hashString": "938c2cc0dcc05f2b68c4287040cfcf71"
+                        "hashString": "938c2cc0dcc05f2b68c4287040cfcf71"  # pragma: allowlist secret
                     },
                     {
                         "hashType": "SHA256",
-                        "hashString": "8ad4b470b20a7d3876c403695a2f9be0d45b91301c9ea2b23cea6859e854796a"
+                        "hashString": "8ad4b470b20a7d3876c403695a2f9be0d45b91301c9ea2b23cea6859e854796a"  # pragma: allowlist secret
                     }
                 ]
             },
@@ -132,7 +132,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
         }
 
         mock_post.return_value.status_code = 201
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = mocked_resp_data
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -143,7 +143,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=expected_req_data,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False)
@@ -151,7 +151,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     @patch("cofensevision_utils.requests.post")
     def test_create_message_search_fail(self, mock_post):
         """Test the invalid case for the create message search action."""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "attachment_exclude_mime_types": HTML_CONTENT_TYPE,
@@ -189,11 +189,11 @@ class TestCreateMessageSearchAction(unittest.TestCase):
                 "attachmentHashes": [
                     {
                         "hashType": "MD5",
-                        "hashString": "938c2cc0dcc05f2b68c4287040cfcf71"
+                        "hashString": "938c2cc0dcc05f2b68c4287040cfcf71"  # pragma: allowlist secret
                     },
                     {
                         "hashType": "SHA256",
-                        "hashString": "8ad4b470b20a7d3876c403695a2f9be0d45b91301c9ea2b23cea6859e854796a"
+                        "hashString": "8ad4b470b20a7d3876c403695a2f9be0d45b91301c9ea2b23cea6859e854796a"  # pragma: allowlist secret
                     }
                 ]
             },
@@ -225,7 +225,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
             ]}
 
         mock_post.return_value.status_code = 400
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -236,7 +236,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=expected_req_data,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False)
@@ -253,7 +253,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     ])
     def test_paramvalues_greater_than_max_allowed_fail(self, param_name):
         """Tests the action failure when parameters have more than 3 elements"""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         invalid_param_dict = {
             consts.VISION_PARAM_SENDERS: "mail*.com, def*.com, cof*.com, gty.com",
             consts.VISION_PARAM_SUBJECTS: "sub1, sub2, sub3, sub4",
@@ -273,7 +273,9 @@ class TestCreateMessageSearchAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_EXTRA_VALUES.format(param_name, consts.VISION_MAX_ALLOWED_VALUES))
+        self.assertEqual(
+            ret_val["result_data"][0]["message"],
+            consts.VISION_ERROR_EXTRA_VALUES.format(param_name, consts.VISION_MAX_ALLOWED_VALUES))
         self.fail_assertions(ret_val)
 
     @parameterized.expand([
@@ -284,10 +286,11 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     ])
     def test_invalid_hash_fail(self, test_name):
         """Tests the action failure when invalid hashType or hashValue is provided"""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         invalid_param_dict = {
             consts.VISION_HASH_TYPE_MD5: ["md5:b719518f3a8d55ceebe7c95f8d1c", consts.VISION_ERROR_INVALID_MD5_VALUE],
-            consts.VISION_HASH_TYPE_SHA256: ["sha256:8ad4b470b20a7d3876c403695a2f9be0d45b91301c9ea2b23cea6859796a", consts.VISION_ERROR_INVALID_SHA256_VALUE],
+            consts.VISION_HASH_TYPE_SHA256: ["sha256:8ad4b470b20a7d3876c403695a2f9be0d45b91301c9ea2b23cea6859796a",
+                                             consts.VISION_ERROR_INVALID_SHA256_VALUE],
             "invalid_hash_type": ["xyz:b719518f3a8d55ceebe7c95f8d1c6754", consts.VISION_ERROR_INVALID_HASH_TYPE_VALUE],
             "invalid_attachment_hashes": ["md5: ", consts.VISION_ERROR_INVALID_HASH_VALUE]
         }
@@ -307,10 +310,11 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     ])
     def test_invalid_hash_or_domain_criteria_fail(self, param_name):
         """Tests the action failure when invalid hash criteria or domain criteria is provided"""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         invalid_param_dict = {
-            consts.VISION_PARAM_ATTACHMENT_HASH_MATCH_CRITERIA: {"attachment_hash_match_criteria": "NONE", "attachment_hashes": "md5:938c2cc0dcc05f2b68c4287040cfcf71"},
+            consts.VISION_PARAM_ATTACHMENT_HASH_MATCH_CRITERIA: {"attachment_hash_match_criteria": "NONE",
+                                                                 "attachment_hashes": "md5:938c2cc0dcc05f2b68c4287040cfcf71"},
             consts.VISION_PARAM_DOMAIN_MATCH_CRITERIA: {"domain_match_criteria": "NONE", "domains": DOMAIN}
         }
 
@@ -320,7 +324,9 @@ class TestCreateMessageSearchAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_VALUE_LIST.format(param_name, ", ".join(consts.VISION_SUPPORTED_CRITERIA)))
+        self.assertEqual(
+            ret_val["result_data"][0]["message"],
+            consts.VISION_ERROR_VALUE_LIST.format(param_name, ", ".join(consts.VISION_SUPPORTED_CRITERIA)))
         self.fail_assertions(ret_val)
 
     @parameterized.expand([
@@ -329,7 +335,7 @@ class TestCreateMessageSearchAction(unittest.TestCase):
     ])
     def test_invalid_received_before_after_date_fail(self, param_name):
         """Test the action failure when invalid value is provided for received before and received after date parameters"""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             param_name: "31 Sep 2021 04:45:33"

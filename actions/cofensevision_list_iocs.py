@@ -67,7 +67,8 @@ class ListIocsAction(BaseAction):
             params["sort"] = sort
 
         # Make rest call to fetch the IOCs
-        status, response = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_IOC, self._action_result, params=params, headers=headers)
+        status, response = self._connector.util.make_rest_call_helper(
+            consts.VISION_ENDPOINT_IOC, self._action_result, params=params, headers=headers)
 
         if phantom.is_fail(status):
             return self._action_result.get_status()

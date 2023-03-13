@@ -31,7 +31,8 @@ class GetQuarantineJobAction(BaseAction):
 
     def execute(self):
         """Execute the get quarantine job action."""
-        ret_val, job_id = self._connector.util.validate_integer(self._action_result, self._param[consts.VISION_PARAM_JOB_ID], consts.VISION_PARAM_JOB_ID)
+        ret_val, job_id = self._connector.util.validate_integer(
+            self._action_result, self._param[consts.VISION_PARAM_JOB_ID], consts.VISION_PARAM_JOB_ID)
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 

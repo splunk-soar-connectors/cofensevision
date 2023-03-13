@@ -31,7 +31,7 @@ import requests_mock
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestDownloadLogsAction(unittest.TestCase):
@@ -42,7 +42,7 @@ class TestDownloadLogsAction(unittest.TestCase):
         self.connector = CofenseVisionConnector()
         # Reset the global object to avoid failures
         base_conn.connector_obj = None
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({
             "action": "download logs",
             "identifier": "download_logs"
@@ -64,12 +64,12 @@ class TestDownloadLogsAction(unittest.TestCase):
 
         Mock the API response to test the stream data handling.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{}]
 
-        self.test_json.update({"user_session_token": config.get_session_id(self.connector)})
-        self.test_json.update({"container_id": config.create_container(self.connector)})
+        self.test_json.update({"user_session_token": cofensevision_config.get_session_id(self.connector)})
+        self.test_json.update({"container_id": cofensevision_config.create_container(self.connector)})
 
         with open(self.file_to_zip, "w") as f:
             f.write("Test log data")
@@ -101,12 +101,12 @@ class TestDownloadLogsAction(unittest.TestCase):
 
         Mock the API response for server side error
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 500
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"error": "Internal server error"}
         mock_get.return_value.text = '{"error": "Internal server error"}'
 
@@ -122,7 +122,7 @@ class TestDownloadLogsAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.STREAM_ACTION_HEADER,
+            headers=cofensevision_config.STREAM_ACTION_HEADER,
             stream=True)
 
     @patch("cofensevision_utils.requests.get")
@@ -132,7 +132,7 @@ class TestDownloadLogsAction(unittest.TestCase):
 
         Mock the API response for server side error
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{}]
 
@@ -152,5 +152,5 @@ class TestDownloadLogsAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.STREAM_ACTION_HEADER,
+            headers=cofensevision_config.STREAM_ACTION_HEADER,
             stream=True)

@@ -29,7 +29,7 @@ from freezegun import freeze_time
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 PARAM_LIST = [{
     "source": "Vision-UI",
@@ -60,7 +60,7 @@ EXPECTED_DATA = {
     ]
 }
 
-EXPECTED_HEADER = dict(config.ACTION_HEADER)
+EXPECTED_HEADER = dict(cofensevision_config.ACTION_HEADER)
 EXPECTED_HEADER.update({"X-Cofense-IOC-Source": "Vision-UI"})
 
 PLACEHOLDER = "dummy_value"
@@ -73,7 +73,7 @@ class TestUpdateIocsAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "update iocs", "identifier": "update_iocs"})
 
         return super().setUp()
@@ -85,7 +85,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the put() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         iocs_json = [
             {
@@ -113,7 +113,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         }]
 
         mock_put.return_value.status_code = 200
-        mock_put.return_value.headers = config.DEFAULT_HEADERS
+        mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_put.return_value.json.return_value = {"data": [{"dummy": "data1"}, {"dummy": "data2"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -168,12 +168,12 @@ class TestUpdateIocsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the put() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = PARAM_LIST
 
         mock_put.return_value.status_code = 200
-        mock_put.return_value.headers = config.DEFAULT_HEADERS
+        mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_put.return_value.json.return_value = {"data": [{"dummy": "data"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -199,25 +199,25 @@ class TestUpdateIocsAction(unittest.TestCase):
         Patch the put() to return the invalid token first and then valid response.
         Patch the post() to return the valid responses.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = PARAM_LIST
 
         post_response = requests.Response()
         post_response._content = b'{"access_token": "<dummy_token>"}'
         post_response.status_code = 200
-        post_response.headers = config.DEFAULT_HEADERS
+        post_response.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value = post_response
 
         put_response_1 = requests.Response()
         put_response_1._content = b'{"error": "invalid_token", "error_description": "<dummy_token>"}'
         put_response_1.status_code = 401
-        put_response_1.headers = config.DEFAULT_HEADERS
+        put_response_1.headers = cofensevision_config.DEFAULT_HEADERS
 
         put_response_2 = requests.Response()
         put_response_2._content = b'{"data": [{"dummy": "data"}]}'
         put_response_2.status_code = 200
-        put_response_2.headers = config.DEFAULT_HEADERS
+        put_response_2.headers = cofensevision_config.DEFAULT_HEADERS
 
         mock_put.side_effect = [put_response_1, put_response_2]
 
@@ -242,7 +242,7 @@ class TestUpdateIocsAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=config.TOKEN_DATA, headers=config.TOKEN_HEADER
+            timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA, headers=cofensevision_config.TOKEN_HEADER
         )
 
     @patch("cofensevision_utils.requests.put")
@@ -254,20 +254,20 @@ class TestUpdateIocsAction(unittest.TestCase):
         Patch the post() to return the valid response.
         Patch the put() to return the valid response.
         """
-        config.set_state_file(client_id=True)
+        cofensevision_config.set_state_file(client_id=True)
 
         self.test_json['parameters'] = PARAM_LIST
 
         post_response = requests.Response()
         post_response._content = b'{"access_token": "<dummy_token>"}'
         post_response.status_code = 200
-        post_response.headers = config.DEFAULT_HEADERS
+        post_response.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value = post_response
 
         put_response = requests.Response()
         put_response._content = b'{"data": [{"dummy": "data"}]}'
         put_response.status_code = 200
-        put_response.headers = config.DEFAULT_HEADERS
+        put_response.headers = cofensevision_config.DEFAULT_HEADERS
         mock_put.return_value = put_response
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -286,7 +286,7 @@ class TestUpdateIocsAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=config.TOKEN_DATA, headers=config.TOKEN_HEADER
+            timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA, headers=cofensevision_config.TOKEN_HEADER
         )
 
     @freeze_time("2012-01-01")
@@ -297,7 +297,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         Patch the put() to return the valid response.
         """
         # Set the token in the state file.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         iocs_json = [
             {
@@ -315,7 +315,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         }]
 
         mock_put.return_value.status_code = 200
-        mock_put.return_value.headers = config.DEFAULT_HEADERS
+        mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_put.return_value.json.return_value = {"data": [{"dummy": "data1"}, {"dummy": "data2"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -444,12 +444,12 @@ class TestUpdateIocsAction(unittest.TestCase):
 
         Patch the put() to return the error response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = PARAM_LIST
 
         mock_put.return_value.status_code = 500
-        mock_put.return_value.headers = config.DEFAULT_HEADERS
+        mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_put.return_value.json.return_value = {"error": "Internal server error"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -472,7 +472,7 @@ class TestUpdateIocsAction(unittest.TestCase):
 
         Patch the put() to return the empty response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = PARAM_LIST
 

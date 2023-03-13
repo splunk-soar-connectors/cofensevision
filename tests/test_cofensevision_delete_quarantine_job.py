@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestDeleteQuarantineJobAction(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "delete quarantine job", "identifier": "delete_quarantine_job"})
 
         return super().setUp()
@@ -47,7 +47,7 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the delete() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = "1387"
 
         self.test_json['parameters'] = [{
@@ -68,7 +68,7 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOB.format(job_id=job_id)}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER)
+            headers=cofensevision_config.ACTION_HEADER)
 
     @patch("cofensevision_utils.requests.delete")
     def test_delete_quarantine_job_nonexisting_id_action_fail(self, mock_delete):
@@ -77,7 +77,7 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the delete() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = "1388"
 
         self.test_json['parameters'] = [{
@@ -85,8 +85,9 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
         }]
 
         mock_delete.return_value.status_code = 404
-        mock_delete.return_value.headers = config.DEFAULT_HEADERS
-        mock_delete.return_value.text = '{"status": "NOT_FOUND", "message": "Object not found", "details": ["Unable to find the requested object"]}'
+        mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
+        mock_delete.return_value.text = '{"status": "NOT_FOUND", "message": "Object not found", ' \
+                                        '"details": ["Unable to find the requested object"]}'
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -99,7 +100,7 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOB.format(job_id=job_id)}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER)
+            headers=cofensevision_config.ACTION_HEADER)
 
     def test_delete_quarantine_job_invalid_id_action_fail(self):
         """Test the delete quarantine job action with invalid id.
@@ -107,7 +108,7 @@ class TestDeleteQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the delete() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = "invalid_id"
 
         self.test_json['parameters'] = [{

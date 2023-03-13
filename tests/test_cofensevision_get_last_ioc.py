@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestGetLastIOCAction(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestGetLastIOCAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "get last ioc", "identifier": "get_last_ioc"})
 
         return super().setUp()
@@ -47,20 +47,20 @@ class TestGetLastIOCAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         source = "Triage-1"
 
-        expected_header = dict(config.ACTION_HEADER)
+        expected_header = dict(cofensevision_config.ACTION_HEADER)
         expected_header.update({"X-Cofense-IOC-Source": source})
 
-        expected_data = {"data": {"id": "d1c54c37fd53d37094ef1dc7530ca949"}}
+        expected_data = {"data": {"id": "d1c54c37fd53d37094ef1dc7530ca949"}}  # pragma: allowlist secret
 
         self.test_json['parameters'] = [{
             "source": source
         }]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = expected_data
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -82,10 +82,10 @@ class TestGetLastIOCAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         source = "Triage*=1"
 
-        expected_header = dict(config.ACTION_HEADER)
+        expected_header = dict(cofensevision_config.ACTION_HEADER)
         expected_header.update({"X-Cofense-IOC-Source": source})
 
         expected_data = {
@@ -101,7 +101,7 @@ class TestGetLastIOCAction(unittest.TestCase):
         }]
 
         mock_get.return_value.status_code = 422
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = expected_data
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -123,10 +123,10 @@ class TestGetLastIOCAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         source = "VISION_UI"
 
-        EXPECTED_HEADER = dict(config.ACTION_HEADER)
+        EXPECTED_HEADER = dict(cofensevision_config.ACTION_HEADER)
         EXPECTED_HEADER.update({"X-Cofense-IOC-Source": source})
 
         self.test_json['parameters'] = [{
@@ -134,7 +134,7 @@ class TestGetLastIOCAction(unittest.TestCase):
         }]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"data": None}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)

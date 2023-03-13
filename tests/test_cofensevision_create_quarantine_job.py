@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 MESSAGE_ID = "<CAFRPxWtoTSDQirOh+ov-aidDbP9zJuhLLjn16fOq_K1E@test.com>"
 MESSAGE_ID2 = "<CAFRPxWtoTSDQirOh+ov-fqwfkmfdknqkfnfiowe_K1E@test.com>"
@@ -57,7 +57,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "create quarantine job", "identifier": "create_quarantine_job"})
 
         return super().setUp()
@@ -68,7 +68,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
 
         Token is available in the state file.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         quarantine_emails = f"{EMAIL_ADDRESS}:{MESSAGE_ID}"
 
         expected_data = {"quarantineEmails": [{
@@ -81,7 +81,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
         }]
 
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"id": ""}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -94,7 +94,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOBS}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=expected_data)
 
     @patch("cofensevision_utils.requests.post")
@@ -103,7 +103,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
 
         Token is available in the state file.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         quarantine_emails = f"{EMAIL_ADDRESS}:{MESSAGE_ID}:{MESSAGE_ID2}:{MESSAGE_ID},{EMAIL_ADDRESS2}:{MESSAGE_ID2}:{MESSAGE_ID2}"
 
         self.test_json['parameters'] = [{
@@ -111,7 +111,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
         }]
 
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"id": ""}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -124,7 +124,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOBS}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=EXPECTED_DATA)
 
     @patch("cofensevision_utils.requests.post")
@@ -133,7 +133,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
 
         Token is available in the state file.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         quarantine_emails = f"{EMAIL_ADDRESS}:{MESSAGE_ID}"
 
         expected_data = {"quarantineEmails": [{
@@ -146,7 +146,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
         }]
 
         mock_post.return_value.status_code = 401
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"error": "UNAUTHORIZED", "error_description": "reason"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -160,7 +160,7 @@ class TestCreateQuarantineJobAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOBS}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=expected_data)
 
     def test_create_quarantine_job_invalid_parameter_fail(self):

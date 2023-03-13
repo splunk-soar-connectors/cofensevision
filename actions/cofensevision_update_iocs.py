@@ -105,7 +105,8 @@ class UpdateIocsAction(BaseAction):
 
         ret_val, requested_expiration = self._connector.util.parse_date_string(params.get("requested_expiration", ""))
         if phantom.is_fail(ret_val):
-            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('requested expiration')), None
+            return self._action_result.set_status(
+                phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('requested expiration')), None
 
         threat_type = params.get("threat_type", "")
         if threat_type.lower() not in consts.VISION_THREAT_TYPES:

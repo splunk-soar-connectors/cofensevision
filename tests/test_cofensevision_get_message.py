@@ -31,7 +31,7 @@ import requests_mock
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 EMAIL_ADDRESS = "testuser@test.com"
 MESSAGE_ID = "<CAFRPxWtuVLQ8OspO8OK6bhcA66ahvjA@mail.test.com>"
@@ -45,7 +45,7 @@ class TestGetMessageAction(unittest.TestCase):
         self.connector = CofenseVisionConnector()
         # Reset the global object to avoid failures
         base_conn.connector_obj = None
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({
             "action": "get message",
             "identifier": "get_message"
@@ -67,7 +67,7 @@ class TestGetMessageAction(unittest.TestCase):
 
         Mock the API response to test the stream data handling.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         password = os.environ.get("PASSWORD")
         self.test_json["parameters"] = [{
@@ -76,13 +76,13 @@ class TestGetMessageAction(unittest.TestCase):
             "password": password
         }]
 
-        self.test_json.update({"user_session_token": config.get_session_id(self.connector)})
-        self.test_json.update({"container_id": config.create_container(self.connector)})
+        self.test_json.update({"user_session_token": cofensevision_config.get_session_id(self.connector)})
+        self.test_json.update({"container_id": cofensevision_config.create_container(self.connector)})
 
         mock_post.post(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE}',
             status_code=200,
-            headers=config.DEFAULT_HEADERS,
+            headers=cofensevision_config.DEFAULT_HEADERS,
             text="dummy_message_token"
         )
 
@@ -117,7 +117,7 @@ class TestGetMessageAction(unittest.TestCase):
 
         Mock the API response for the invalid message id
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
             "internet_message_id": MESSAGE_ID,
@@ -125,11 +125,11 @@ class TestGetMessageAction(unittest.TestCase):
         }]
 
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.text = "dummy_token"
 
         mock_get.return_value.status_code = 404
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.text = '{"status": "NOT_FOUND", "message": "Object not found", "details": ["Unable to find the requested object"]}'
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -147,14 +147,14 @@ class TestGetMessageAction(unittest.TestCase):
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=expected_body,
             verify=False)
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            headers=config.STREAM_ACTION_HEADER,
+            headers=cofensevision_config.STREAM_ACTION_HEADER,
             params={'token': 'dummy_token'},
             verify=False,
             stream=True)
@@ -166,7 +166,7 @@ class TestGetMessageAction(unittest.TestCase):
 
         Mock the APi response for server side error
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
             "internet_message_id": MESSAGE_ID,
@@ -174,7 +174,7 @@ class TestGetMessageAction(unittest.TestCase):
         }]
 
         mock_post.return_value.status_code = 500
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"error": "Internal server error"}
         mock_post.return_value.text = '{"error": "Internal server error"}'
 
@@ -195,5 +195,5 @@ class TestGetMessageAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             json=expected_params)

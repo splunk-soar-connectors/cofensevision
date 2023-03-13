@@ -39,7 +39,8 @@ class CreateMessageSearchAction(BaseAction):
         if consts.VISION_PARAM_SUBJECTS in self._param:
             subjects = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_SUBJECTS])
             if len(subjects) > consts.VISION_MAX_ALLOWED_VALUES:
-                return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_SUBJECTS, consts.VISION_MAX_ALLOWED_VALUES))
+                return self._action_result.set_status(
+                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_SUBJECTS, consts.VISION_MAX_ALLOWED_VALUES))
 
             body["subjects"] = subjects
         return phantom.APP_SUCCESS
@@ -53,7 +54,8 @@ class CreateMessageSearchAction(BaseAction):
         if consts.VISION_PARAM_SENDERS in self._param:
             senders = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_SENDERS])
             if len(senders) > consts.VISION_MAX_ALLOWED_VALUES:
-                return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_SENDERS, consts.VISION_MAX_ALLOWED_VALUES))
+                return self._action_result.set_status(
+                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_SENDERS, consts.VISION_MAX_ALLOWED_VALUES))
 
             body["senders"] = senders
         return phantom.APP_SUCCESS
@@ -68,7 +70,8 @@ class CreateMessageSearchAction(BaseAction):
             attachment_names = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_ATTACHMENT_NAMES])
             if len(attachment_names) > consts.VISION_MAX_ALLOWED_VALUES:
                 return self._action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_NAMES, consts.VISION_MAX_ALLOWED_VALUES))
+                    phantom.APP_ERROR,
+                    consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_NAMES, consts.VISION_MAX_ALLOWED_VALUES))
 
             body["attachmentNames"] = attachment_names
         return phantom.APP_SUCCESS
@@ -104,15 +107,15 @@ class CreateMessageSearchAction(BaseAction):
         if consts.VISION_PARAM_ATTACHMENT_HASHES in self._param:
             match_criteria = self._param.get(consts.VISION_PARAM_ATTACHMENT_HASH_MATCH_CRITERIA, "ANY")
             if match_criteria not in consts.VISION_SUPPORTED_CRITERIA:
-                return self._action_result.set_status(
-                    phantom.APP_ERROR,
-                    consts.VISION_ERROR_VALUE_LIST.format(consts.VISION_PARAM_ATTACHMENT_HASH_MATCH_CRITERIA, ", ".join(consts.VISION_SUPPORTED_CRITERIA))
-                )
+                error_message = consts.VISION_ERROR_VALUE_LIST.format(
+                    consts.VISION_PARAM_ATTACHMENT_HASH_MATCH_CRITERIA, ", ".join(consts.VISION_SUPPORTED_CRITERIA))
+                return self._action_result.set_status(phantom.APP_ERROR, error_message)
 
             attachment_hashes = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_ATTACHMENT_HASHES])
             if len(attachment_hashes) > consts.VISION_MAX_ALLOWED_VALUES:
                 return self._action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_HASHES, consts.VISION_MAX_ALLOWED_VALUES))
+                    phantom.APP_ERROR,
+                    consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_HASHES, consts.VISION_MAX_ALLOWED_VALUES))
 
             list_hashes = list()
             for hash in attachment_hashes:
@@ -142,7 +145,8 @@ class CreateMessageSearchAction(BaseAction):
             attachment_mime_types = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_ATTACHMENT_MIME_TYPES])
             if len(attachment_mime_types) > consts.VISION_MAX_ALLOWED_VALUES:
                 return self._action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_MIME_TYPES, consts.VISION_MAX_ALLOWED_VALUES))
+                    phantom.APP_ERROR,
+                    consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_MIME_TYPES, consts.VISION_MAX_ALLOWED_VALUES))
 
             body["attachmentMimeTypes"] = attachment_mime_types
         return phantom.APP_SUCCESS
@@ -154,10 +158,13 @@ class CreateMessageSearchAction(BaseAction):
         :return: phantom.APP_SUCCESS/phantom.APP_ERROR
         """
         if consts.VISION_PARAM_ATTACHMENT_EXCLUDE_MIME_TYPES in self._param:
-            attachment_exclude_mime_types = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_ATTACHMENT_EXCLUDE_MIME_TYPES])
+            attachment_exclude_mime_types = self._connector.util.split_value_list(
+                self._param[consts.VISION_PARAM_ATTACHMENT_EXCLUDE_MIME_TYPES])
             if len(attachment_exclude_mime_types) > consts.VISION_MAX_ALLOWED_VALUES:
                 return self._action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_EXCLUDE_MIME_TYPES, consts.VISION_MAX_ALLOWED_VALUES))
+                    phantom.APP_ERROR,
+                    consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_ATTACHMENT_EXCLUDE_MIME_TYPES, consts.VISION_MAX_ALLOWED_VALUES)
+                )
 
             body["attachmentExcludeMimeTypes"] = attachment_exclude_mime_types
         return phantom.APP_SUCCESS
@@ -183,7 +190,9 @@ class CreateMessageSearchAction(BaseAction):
             if consts.VISION_PARAM_DOMAINS in self._param:
                 domains = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_DOMAINS])
                 if len(domains) > consts.VISION_MAX_ALLOWED_VALUES:
-                    return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_DOMAINS, consts.VISION_MAX_ALLOWED_VALUES))
+                    return self._action_result.set_status(
+                        phantom.APP_ERROR,
+                        consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_DOMAINS, consts.VISION_MAX_ALLOWED_VALUES))
 
                 body["domainCriteria"]["domains"] = domains
 
@@ -230,7 +239,8 @@ class CreateMessageSearchAction(BaseAction):
         if consts.VISION_PARAM_RECEIVED_AFTER_DATE in self._param:
             status, formatted_date = self._connector.util.parse_date_string(self._param.get(consts.VISION_PARAM_RECEIVED_AFTER_DATE))
             if phantom.is_fail(status):
-                return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_DATE_FORMAT.format(consts.VISION_PARAM_RECEIVED_AFTER_DATE))
+                return self._action_result.set_status(
+                    phantom.APP_ERROR, consts.VISION_ERROR_INVALID_DATE_FORMAT.format(consts.VISION_PARAM_RECEIVED_AFTER_DATE))
             body["receivedAfterDate"] = formatted_date
         return phantom.APP_SUCCESS
 
@@ -243,7 +253,8 @@ class CreateMessageSearchAction(BaseAction):
         if consts.VISION_PARAM_RECEIVED_BEFORE_DATE in self._param:
             status, formatted_date = self._connector.util.parse_date_string(self._param.get(consts.VISION_PARAM_RECEIVED_BEFORE_DATE))
             if phantom.is_fail(status):
-                return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_DATE_FORMAT.format(consts.VISION_PARAM_RECEIVED_BEFORE_DATE))
+                return self._action_result.set_status(
+                    phantom.APP_ERROR, consts.VISION_ERROR_INVALID_DATE_FORMAT.format(consts.VISION_PARAM_RECEIVED_BEFORE_DATE))
             body["receivedBeforeDate"] = formatted_date
         return phantom.APP_SUCCESS
 
@@ -257,7 +268,8 @@ class CreateMessageSearchAction(BaseAction):
             headers = list()
             header_list = self._connector.util.split_value_list(self._param[consts.VISION_PARAM_HEADERS])
             if len(header_list) > consts.VISION_MAX_ALLOWED_VALUES:
-                return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_HEADERS, consts.VISION_MAX_ALLOWED_VALUES))
+                return self._action_result.set_status(
+                    phantom.APP_ERROR, consts.VISION_ERROR_EXTRA_VALUES.format(consts.VISION_PARAM_HEADERS, consts.VISION_MAX_ALLOWED_VALUES))
 
             for header in header_list:
                 header_key_values = list(filter(None, [header_key_value.strip() for header_key_value in header.split(":")]))

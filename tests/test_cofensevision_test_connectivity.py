@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestConnectivityAction(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestConnectivityAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "test connectivity", "identifier": "test_connectivity"})
 
         return super().setUp()
@@ -49,11 +49,11 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the get() to return UP status and post() to return valid token.
         """
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"access_token": "dummy_token"}
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"status": "UP"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -70,8 +70,8 @@ class TestConnectivityAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            headers=config.TOKEN_HEADER,
-            data=config.TOKEN_DATA,
+            headers=cofensevision_config.TOKEN_HEADER,
+            data=cofensevision_config.TOKEN_DATA,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
         )
@@ -84,7 +84,7 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the get() to return DOWN status and post() to return valid token.
         """
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"status": "DOWN"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -109,11 +109,11 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the post() to return authentication error.
         """
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"status": "UP"}
 
         mock_post.return_value.status_code = 401
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"error": "unauthorized", "error_description": "Bad credentials"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -130,8 +130,8 @@ class TestConnectivityAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            headers=config.TOKEN_HEADER,
-            data=config.TOKEN_DATA,
+            headers=cofensevision_config.TOKEN_HEADER,
+            data=cofensevision_config.TOKEN_DATA,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
         )
@@ -144,7 +144,7 @@ class TestConnectivityAction(unittest.TestCase):
         Patches the get() to return server error.
         """
         mock_get.return_value.status_code = 500
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"error": "Internal server error"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -191,11 +191,11 @@ class TestConnectivityAction(unittest.TestCase):
         Patch the post() to return response without the access_token key.
         """
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"status": "UP"}
 
         mock_post.return_value.status_code = 200
-        mock_post.return_value.headers = config.DEFAULT_HEADERS
+        mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_post.return_value.json.return_value = {"message": "token generated"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -212,8 +212,8 @@ class TestConnectivityAction(unittest.TestCase):
 
         mock_post.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            headers=config.TOKEN_HEADER,
-            data=config.TOKEN_DATA,
+            headers=cofensevision_config.TOKEN_HEADER,
+            data=cofensevision_config.TOKEN_DATA,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
         )

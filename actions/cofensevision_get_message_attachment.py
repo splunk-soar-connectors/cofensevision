@@ -56,7 +56,8 @@ class GetMessageAttachmentAction(BaseAction):
             params.update({"sha256": sha256})
 
         # Make rest call to fetch the file
-        status, vault_info = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_ATTACHMENT, self._action_result, params=params, stream=True)
+        status, vault_info = self._connector.util.make_rest_call_helper(
+            consts.VISION_ENDPOINT_ATTACHMENT, self._action_result, params=params, stream=True)
 
         if phantom.is_fail(status):
             return self._action_result.get_status()

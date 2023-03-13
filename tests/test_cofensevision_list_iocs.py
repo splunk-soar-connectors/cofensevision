@@ -26,9 +26,9 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
-EXPECTED_HEADER = dict(config.ACTION_HEADER)
+EXPECTED_HEADER = dict(cofensevision_config.ACTION_HEADER)
 EXPECTED_HEADER.update({"X-Cofense-IOC-Source": "Triage-1"})
 
 VALID_PARAMETERS = {
@@ -55,7 +55,7 @@ class TestListIocAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "list iocs", "identifier": "list_iocs"})
 
         return super().setUp()
@@ -67,7 +67,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [VALID_PARAMETERS]
 
@@ -96,7 +96,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         EXPECTED_DATA = {
             "status": "UNPROCESSABLE_ENTITY",
@@ -131,11 +131,11 @@ class TestListIocAction(unittest.TestCase):
 
         Patch the get() to return the error response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         self.test_json['parameters'] = [{"source": "Triage-1"}]
 
         mock_get.return_value.status_code = 500
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"error": "Internal server error"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -164,7 +164,7 @@ class TestListIocAction(unittest.TestCase):
 
         Patch the get() to return the error response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         self.test_json['parameters'] = [{"source": "Triage-1"}]
 
         mock_get.return_value.status_code = 200
@@ -197,7 +197,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "page": "non_numeric",
@@ -217,7 +217,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "size": "non_numeric",
@@ -237,7 +237,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "sort": "UpdatedAt,asc",
@@ -257,7 +257,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "sort": "createdDate:asc",
@@ -277,7 +277,7 @@ class TestListIocAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "since": "2021-13-01",

@@ -47,7 +47,8 @@ class GetMessageAction(BaseAction):
         self._connector.util._get_token = True
 
         # Make rest call to get the token
-        status, token_info = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_MESSAGE, self._action_result, method="post", json=body)
+        status, token_info = self._connector.util.make_rest_call_helper(
+            consts.VISION_ENDPOINT_MESSAGE, self._action_result, method="post", json=body)
 
         if phantom.is_fail(status):
             return self._action_result.get_status()
@@ -55,7 +56,8 @@ class GetMessageAction(BaseAction):
         self._connector.util._get_token = False
         self._connector.util.filename = f"message_{datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S.%f')}.zip"
         # Make rest call to fetch the file
-        status, vault_info = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_MESSAGE, self._action_result, params=token_info, stream=True)
+        status, vault_info = self._connector.util.make_rest_call_helper(
+            consts.VISION_ENDPOINT_MESSAGE, self._action_result, params=token_info, stream=True)
 
         if phantom.is_fail(status):
             return self._action_result.get_status()

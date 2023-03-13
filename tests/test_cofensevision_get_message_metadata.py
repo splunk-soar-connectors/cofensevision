@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 OBJECT_NOT_FOUND = {
     "status": "NOT_FOUND",
@@ -56,7 +56,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({
             "action": "get message metadata",
             "identifier": "get_message_metadata"
@@ -70,12 +70,12 @@ class TestGetMessageMetadataAction(unittest.TestCase):
 
         Mock the API response of the server
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [VALID_PARAMS]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"id": 2616086}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -90,7 +90,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_METADATA}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=EXPECTED_PARAMS)
 
     @patch("cofensevision_utils.requests.get")
@@ -100,7 +100,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
 
         Mock the API response of the server
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
             "internet_message_id": "<bhcA66ahvjA@mail.test.com>",
@@ -108,7 +108,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
         }]
 
         mock_get.return_value.status_code = 404
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = OBJECT_NOT_FOUND
         mock_get.return_value.text = json.dumps(OBJECT_NOT_FOUND)
 
@@ -129,7 +129,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_METADATA}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=expected_params)
 
     @patch("cofensevision_utils.requests.get")
@@ -139,7 +139,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
 
         Mock the API response of the server
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
             "internet_message_id": MESSAGE_ID,
@@ -147,7 +147,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
         }]
 
         mock_get.return_value.status_code = 404
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = OBJECT_NOT_FOUND
         mock_get.return_value.text = json.dumps(OBJECT_NOT_FOUND)
 
@@ -168,7 +168,7 @@ class TestGetMessageMetadataAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_METADATA}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=expected_params)
 
     @patch("cofensevision_utils.requests.get")
@@ -178,12 +178,12 @@ class TestGetMessageMetadataAction(unittest.TestCase):
 
         Mock the API response of the server
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [VALID_PARAMS]
 
         mock_get.return_value.status_code = 500
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"error": "Internal server error"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -198,5 +198,5 @@ class TestGetMessageMetadataAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_METADATA}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=EXPECTED_PARAMS)

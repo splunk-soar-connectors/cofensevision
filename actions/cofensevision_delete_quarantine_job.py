@@ -31,12 +31,14 @@ class DeleteQuarantineJobAction(BaseAction):
 
     def execute(self):
         """Execute the delete quarantine job action."""
-        ret_val, job_id = self._connector.util.validate_integer(self._action_result, self._param[consts.VISION_PARAM_JOB_ID], consts.VISION_PARAM_JOB_ID)
+        ret_val, job_id = self._connector.util.validate_integer(
+            self._action_result, self._param[consts.VISION_PARAM_JOB_ID], consts.VISION_PARAM_JOB_ID)
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
         # Delete quarantine job
-        ret_val, _ = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_QUARANTINE_JOB.format(job_id=job_id), self._action_result, method="delete")
+        ret_val, _ = self._connector.util.make_rest_call_helper(
+            consts.VISION_ENDPOINT_QUARANTINE_JOB.format(job_id=job_id), self._action_result, method="delete")
 
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()

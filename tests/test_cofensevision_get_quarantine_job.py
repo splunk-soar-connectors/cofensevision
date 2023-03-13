@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestGetQuarantineJobAction(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestGetQuarantineJobAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "get quarantine job", "identifier": "get_quarantine_job"})
 
         return super().setUp()
@@ -47,7 +47,7 @@ class TestGetQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = 1234
 
         self.test_json['parameters'] = [{
@@ -55,7 +55,7 @@ class TestGetQuarantineJobAction(unittest.TestCase):
         }]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"id": job_id}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -67,7 +67,7 @@ class TestGetQuarantineJobAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOB.format(job_id=job_id)}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False)
 
@@ -91,7 +91,7 @@ class TestGetQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the 'non found' response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = 1234
 
         self.test_json['parameters'] = [{
@@ -105,7 +105,7 @@ class TestGetQuarantineJobAction(unittest.TestCase):
         }
 
         mock_get.return_value.status_code = 404
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = response_json
         mock_get.return_value.text = json.dumps(response_json)
 
@@ -119,6 +119,6 @@ class TestGetQuarantineJobAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_QUARANTINE_JOB.format(job_id=job_id)}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False)

@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestApproveQuarantineJobAction(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestApproveQuarantineJobAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "approve quarantine job", "identifier": "approve_quarantine_job"})
 
         return super().setUp()
@@ -47,7 +47,7 @@ class TestApproveQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the put() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = 1234
 
         self.test_json['parameters'] = [{
@@ -68,7 +68,7 @@ class TestApproveQuarantineJobAction(unittest.TestCase):
 
         mock_put.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_APPROVE_QUARANTINE_JOBS.format(job_id=job_id)}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params={"messageCount": 3},
             verify=False)
@@ -107,7 +107,7 @@ class TestApproveQuarantineJobAction(unittest.TestCase):
         Token is available in the state file.
         Patch the put() to return the 'non processable entity' response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = 1234
 
         self.test_json['parameters'] = [{
@@ -123,7 +123,7 @@ class TestApproveQuarantineJobAction(unittest.TestCase):
         }
 
         mock_put.return_value.status_code = 422
-        mock_put.return_value.headers = config.DEFAULT_HEADERS
+        mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_put.return_value.json.return_value = response_json
         mock_put.return_value.text = json.dumps(response_json)
 
@@ -137,7 +137,7 @@ class TestApproveQuarantineJobAction(unittest.TestCase):
 
         mock_put.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_APPROVE_QUARANTINE_JOBS.format(job_id=job_id)}',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params={},
             verify=False)

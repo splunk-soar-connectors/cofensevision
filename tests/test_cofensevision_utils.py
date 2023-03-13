@@ -29,7 +29,7 @@ from parameterized import parameterized
 from phantom.action_result import ActionResult
 
 from cofensevision_utils import CofenseVisionUtils, RetVal
-from tests import config
+from tests import cofensevision_config
 
 
 class TestRetValClass(unittest.TestCase):
@@ -96,8 +96,8 @@ class TestEncryptionMethod(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["token1", {'token': {'access_token': config.TOKEN_DUMMY_TEXT_1}}, config.TOKEN_DUMMY_CIPHER_1],
-        ["token2", {'token': {'access_token': config.TOKEN_DUMMY_TEXT_2}}, config.TOKEN_DUMMY_CIPHER_2],
+        ["token1", {'token': {'access_token': cofensevision_config.TOKEN_DUMMY_TEXT_1}}, cofensevision_config.TOKEN_DUMMY_CIPHER_1],
+        ["token2", {'token': {'access_token': cofensevision_config.TOKEN_DUMMY_TEXT_2}}, cofensevision_config.TOKEN_DUMMY_CIPHER_2],
         ["no_token", {'app_version': '1.0.0'}, ''],
     ])
     def test_encrypt_state_pass(self, _, input_value, expected_value):
@@ -106,8 +106,8 @@ class TestEncryptionMethod(unittest.TestCase):
         self.assertEqual(output.get('token', {}).get('access_token', ''), expected_value)
 
     @parameterized.expand([
-        ["token1", {'token': {'access_token': config.TOKEN_DUMMY_CIPHER_1}}, config.TOKEN_DUMMY_TEXT_1],
-        ["token2", {'token': {'access_token': config.TOKEN_DUMMY_CIPHER_2}}, config.TOKEN_DUMMY_TEXT_2],
+        ["token1", {'token': {'access_token': cofensevision_config.TOKEN_DUMMY_CIPHER_1}}, cofensevision_config.TOKEN_DUMMY_TEXT_1],
+        ["token2", {'token': {'access_token': cofensevision_config.TOKEN_DUMMY_CIPHER_2}}, cofensevision_config.TOKEN_DUMMY_TEXT_2],
         ["no_token", {'app_version': '1.0.0'}, ''],
     ])
     def test_decrypt_state_pass(self, _, input_value, expected_value):
@@ -120,7 +120,7 @@ class TestEncryptionMethod(unittest.TestCase):
         """Test the fail cases for the encrypt state method."""
         mock_encrypt.side_effect = Exception("Couldn't encrypt")
 
-        output = self.util.encrypt_state({'token': {'access_token': config.TOKEN_DUMMY_CIPHER_1}})
+        output = self.util.encrypt_state({'token': {'access_token': cofensevision_config.TOKEN_DUMMY_CIPHER_1}})
         self.assertEqual(output, {"app_version": "1.0.0"})
 
     @patch('cofensevision_utils.encryption_helper.decrypt')
@@ -128,7 +128,7 @@ class TestEncryptionMethod(unittest.TestCase):
         """Test the fail cases for the decrypt state method."""
         mock_decrypt.side_effect = Exception("Couldn't decrypt")
 
-        output = self.util._decrypt_state({'token': {'access_token': config.TOKEN_DUMMY_CIPHER_1}})
+        output = self.util._decrypt_state({'token': {'access_token': cofensevision_config.TOKEN_DUMMY_CIPHER_1}})
         self.assertEqual(output, {"app_version": "1.0.0"})
 
 
@@ -275,7 +275,8 @@ class TestGetErrorMessageFromException(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([
-        ["exception_without_args", Exception(), "Error message: Error message unavailable. Please check the asset configuration and|or action parameters"],
+        ["exception_without_args", Exception(),
+         "Error message: Error message unavailable. Please check the asset configuration and|or action parameters"],
         ["exception_with_single_arg", Exception("test message"), "Error message: test message"],
         ["exception_with_multiple_args", Exception("test code", "test message"), "Error code: test code. Error message: test message"]
     ])

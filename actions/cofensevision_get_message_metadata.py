@@ -38,7 +38,8 @@ class GetMessageMetadataAction(BaseAction):
             "recipientAddress": self._param["recipient_address"]
         }
 
-        status, response = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_MESSAGE_METADATA, self._action_result, params=params)
+        status, response = self._connector.util.make_rest_call_helper(
+            consts.VISION_ENDPOINT_MESSAGE_METADATA, self._action_result, params=params)
 
         if phantom.is_fail(status):
             return self._action_result.get_status()

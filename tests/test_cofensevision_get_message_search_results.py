@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 VALID_PARAMETERS = {
     "id": "4852",
@@ -48,7 +48,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "get messagesearch results", "identifier": "get_message_search_results"})
         return super().setUp()
 
@@ -59,12 +59,12 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Token is available in the state file.
         Patch the get() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 200
-        mock_get.return_value.headers = config.ACTION_HEADER
+        mock_get.return_value.headers = cofensevision_config.ACTION_HEADER
         mock_get.return_value.json.return_value = {"messages": [{"dummy": "data"}]}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -76,7 +76,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS["id"]}/results',
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             params=EXPECTED_PARAMETERS)
@@ -87,11 +87,11 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
 
         Patch the get() to return the error response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         self.test_json['parameters'] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 500
-        mock_get.return_value.headers = config.DEFAULT_HEADERS
+        mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_get.return_value.json.return_value = {"error": "Internal server error"}
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -106,7 +106,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS["id"]}/results',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=EXPECTED_PARAMETERS)
 
     @patch("cofensevision_utils.requests.get")
@@ -115,7 +115,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
 
         Patch the get() to return the error response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         self.test_json['parameters'] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 200
@@ -134,7 +134,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS["id"]}/results',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=config.ACTION_HEADER,
+            headers=cofensevision_config.ACTION_HEADER,
             params=EXPECTED_PARAMETERS)
 
     def test_get_message_search_results_invalid_id_fail(self):
@@ -143,7 +143,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "id": "non_numeric"
@@ -162,7 +162,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "page": "non_numeric",
@@ -182,7 +182,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "size": "non_numeric",
@@ -202,7 +202,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "sort": "createdOn,asc",
@@ -222,7 +222,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "sort": "createdDate:asc",

@@ -30,7 +30,7 @@ import requests_mock
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestGetMessageAttachmentAction(unittest.TestCase):
@@ -41,7 +41,7 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         self.connector = CofenseVisionConnector()
         # Reset the global object to avoid failures
         base_conn.connector_obj = None
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({
             "action": "get message attachment",
             "identifier": "get_message_attachment"
@@ -57,18 +57,20 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
 
     def test_get_message_attachment_filename_without_ext_fail(self):
         """Test invalid case for filename parameter."""
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
             "filename": "just_name"
         }]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
 
-        self.assertEqual(ret_val['result_data'][0]['message'], "Please provide a valid file name including the extension in the 'filename' parameter")
+        self.assertEqual(
+            ret_val['result_data'][0]['message'],
+            "Please provide a valid file name including the extension in the 'filename' parameter")
         self.assertEqual(ret_val['result_summary']['total_objects'], 1)
         self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
         self.assertEqual(ret_val['status'], 'failed')
@@ -80,16 +82,16 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
 
         Mock the API response to test the stream data handling.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
             "filename": self.tempfile
         }]
 
-        self.test_json.update({"user_session_token": config.get_session_id(self.connector)})
-        self.test_json.update({"container_id": config.create_container(self.connector)})
+        self.test_json.update({"user_session_token": cofensevision_config.get_session_id(self.connector)})
+        self.test_json.update({"container_id": cofensevision_config.create_container(self.connector)})
 
         with open(self.tempfile, "w") as f:
             f.write("Test data")
@@ -117,11 +119,11 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
 
         Mock the API response for the invalid hash
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
             "filename": self.tempfile
         }]
 
@@ -138,15 +140,15 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         self.assertEqual(ret_val['status'], 'failed')
 
         expected_params = {
-            "md5": "098f6bcd4621d373cade4e832627b4f6",
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
         }
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_ATTACHMENT}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
-            headers=config.STREAM_ACTION_HEADER,
+            headers=cofensevision_config.STREAM_ACTION_HEADER,
             verify=False,
             stream=True)
 
@@ -157,11 +159,11 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
 
         Mock the APi response for server side error
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
             "filename": self.tempfile
         }]
 
@@ -178,15 +180,15 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         expected_params = {
-            "md5": "098f6bcd4621d373cade4e832627b4f6",
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
         }
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_ATTACHMENT}',
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
-            headers=config.STREAM_ACTION_HEADER,
+            headers=cofensevision_config.STREAM_ACTION_HEADER,
             verify=False,
             stream=True)
 
@@ -196,7 +198,7 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         Token is available in the state file.
         """
         # Save the state file with the invalid JSON string.
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
 
         self.test_json['parameters'] = [{
             "filename": self.tempfile

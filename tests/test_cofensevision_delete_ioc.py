@@ -26,7 +26,7 @@ from unittest.mock import patch
 
 import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
-from tests import config
+from tests import cofensevision_config
 
 
 class TestDeleteIOCAction(unittest.TestCase):
@@ -35,7 +35,7 @@ class TestDeleteIOCAction(unittest.TestCase):
     def setUp(self):
         """Set up method for the tests."""
         self.connector = CofenseVisionConnector()
-        self.test_json = dict(config.TEST_JSON)
+        self.test_json = dict(cofensevision_config.TEST_JSON)
         self.test_json.update({"action": "delete ioc", "identifier": "delete_ioc"})
 
         return super().setUp()
@@ -47,11 +47,11 @@ class TestDeleteIOCAction(unittest.TestCase):
         Token is available in the state file.
         Patch the delete() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         ioc_id = "41ecc26bd356dd706cc1a0cd839cad2c"
         source = "Triage-1"
 
-        expected_header = dict(config.ACTION_HEADER)
+        expected_header = dict(cofensevision_config.ACTION_HEADER)
         expected_header.update({"X-Cofense-IOC-Source": source})
 
         expected_data = {"data": {"id": ioc_id}}
@@ -62,7 +62,7 @@ class TestDeleteIOCAction(unittest.TestCase):
         }]
 
         mock_delete.return_value.status_code = 200
-        mock_delete.return_value.headers = config.DEFAULT_HEADERS
+        mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_delete.return_value.json.return_value = expected_data
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -84,11 +84,11 @@ class TestDeleteIOCAction(unittest.TestCase):
         Token is available in the state file.
         Patch the delete() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         ioc_id = "41ecc26bd356dd706cc1a0cd839cad2c"
         source = "Triage*=1"
 
-        expected_header = dict(config.ACTION_HEADER)
+        expected_header = dict(cofensevision_config.ACTION_HEADER)
         expected_header.update({"X-Cofense-IOC-Source": source})
 
         expected_data = {
@@ -105,7 +105,7 @@ class TestDeleteIOCAction(unittest.TestCase):
         }]
 
         mock_delete.return_value.status_code = 422
-        mock_delete.return_value.headers = config.DEFAULT_HEADERS
+        mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_delete.return_value.json.return_value = expected_data
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -127,11 +127,11 @@ class TestDeleteIOCAction(unittest.TestCase):
         Token is available in the state file.
         Patch the delete() to return the valid response.
         """
-        config.set_state_file(client_id=True, access_token=True)
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
         ioc_id = "41ecc26bd356dd706121a0cd839cad2c"
         source = "Triage-1"
 
-        expected_header = dict(config.ACTION_HEADER)
+        expected_header = dict(cofensevision_config.ACTION_HEADER)
         expected_header.update({"X-Cofense-IOC-Source": source})
 
         self.test_json['parameters'] = [{
@@ -140,7 +140,7 @@ class TestDeleteIOCAction(unittest.TestCase):
         }]
 
         mock_delete.return_value.status_code = 404
-        mock_delete.return_value.headers = config.DEFAULT_HEADERS
+        mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
         mock_delete.return_value.text = ''
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
