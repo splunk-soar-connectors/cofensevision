@@ -1,6 +1,6 @@
 # File: config.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -29,6 +29,7 @@ import encryption_helper
 import requests
 from dotenv import load_dotenv
 
+
 # Load '.env' file to the environment variables.
 load_dotenv()
 
@@ -54,11 +55,11 @@ TEST_JSON = {
         "base_url": "https://base_url",
         "client_id": CLIENT_ID,
         "client_secret": cipher_text,
-        "main_module": "cofensevision_connector.py"
+        "main_module": "cofensevision_connector.py",
     },
     "debug_level": 0,
     "dec_key": DEFAULT_ASSET_ID,
-    "parameters": [{}]
+    "parameters": [{}],
 }
 
 TOKEN_DUMMY_TEXT_1 = "dummy value 1"
@@ -83,9 +84,7 @@ def set_state_file(client_id=False, access_token=False, raw=None):
         if client_id:
             state_file["client_id"] = CLIENT_ID
         if access_token:
-            state_file["token"] = {
-                "access_token": encryption_helper.encrypt("<dummy_token>", DEFAULT_ASSET_ID)
-            }
+            state_file["token"] = {"access_token": encryption_helper.encrypt("<dummy_token>", DEFAULT_ASSET_ID)}
         state_file = json.dumps(state_file)
 
     with open(STATE_FILE_PATH, "w+") as fp:
@@ -105,16 +104,9 @@ def get_session_id(connector, verify=False):
     r = requests.get(login_url, verify=verify)
     csrftoken = r.cookies["csrftoken"]
 
-    data = {
-        "username": os.environ.get("USERNAME"),
-        "password": os.environ.get("PASSWORD"),
-        "csrfmiddlewaretoken": csrftoken
-    }
+    data = {"username": os.environ.get("USERNAME"), "password": os.environ.get("PASSWORD"), "csrfmiddlewaretoken": csrftoken}
 
-    headers = {
-        "Cookie": f"csrftoken={csrftoken}",
-        "Referer": login_url
-    }
+    headers = {"Cookie": f"csrftoken={csrftoken}", "Referer": login_url}
 
     # Logging into the Platform to get the session id
     r2 = requests.post(login_url, verify=verify, data=data, headers=headers)
@@ -130,17 +122,13 @@ def create_container(connector, verify=False):
     :return: Container id
     """
     sdi = uuid.uuid4()
-    container = {
-        "name": f"Added by unittest {sdi}",
-        "label": "events",
-        "source_data_identifier": f"{sdi}"
-    }
+    container = {"name": f"Added by unittest {sdi}", "label": "events", "source_data_identifier": f"{sdi}"}
 
     response = requests.post(
         f"{connector._get_phantom_base_url()}rest/container",
         verify=verify,
         auth=(os.environ.get("USERNAME"), os.environ.get("PASSWORD")),
-        json=container
+        json=container,
     )
 
     return response.json()["id"]

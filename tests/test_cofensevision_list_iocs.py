@@ -1,6 +1,6 @@
 # File: test_cofensevision_list_iocs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -28,25 +28,13 @@ import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
 from tests import cofensevision_config
 
+
 EXPECTED_HEADER = dict(cofensevision_config.ACTION_HEADER)
 EXPECTED_HEADER.update({"X-Cofense-IOC-Source": "Triage-1"})
 
-VALID_PARAMETERS = {
-    "page": 0,
-    "size": 50,
-    "includeExpired": True,
-    "since": "2021-12-31",
-    "source": "Triage-1",
-    "sort": "updatedAt:asc"
-}
+VALID_PARAMETERS = {"page": 0, "size": 50, "includeExpired": True, "since": "2021-12-31", "source": "Triage-1", "sort": "updatedAt:asc"}
 
-EXPECTED_PARAMETERS = {
-    'page': 0,
-    'size': 50,
-    'includeExpired': False,
-    'since': '2021-12-31T00:00:00.000000Z',
-    'sort': ['updatedAt,asc']
-}
+EXPECTED_PARAMETERS = {"page": 0, "size": 50, "includeExpired": False, "since": "2021-12-31T00:00:00.000000Z", "sort": ["updatedAt,asc"]}
 
 
 class TestListIocAction(unittest.TestCase):
@@ -69,7 +57,7 @@ class TestListIocAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = EXPECTED_HEADER
@@ -83,11 +71,12 @@ class TestListIocAction(unittest.TestCase):
         self.assertGreater(ret_val["result_data"][0]["summary"]["total_iocs"], 0)
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            params=EXPECTED_PARAMETERS)
+            params=EXPECTED_PARAMETERS,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_list_iocs_invalid_source_fail(self, mock_get):
@@ -101,12 +90,10 @@ class TestListIocAction(unittest.TestCase):
         EXPECTED_DATA = {
             "status": "UNPROCESSABLE_ENTITY",
             "message": "Validation failed for request data",
-            "details": [
-                "X-Cofense-IOC-Source must only have alphanumeric characters and - . _ ~"
-            ]
+            "details": ["X-Cofense-IOC-Source must only have alphanumeric characters and - . _ ~"],
         }
 
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 422
         mock_get.return_value.headers = EXPECTED_HEADER
@@ -119,11 +106,12 @@ class TestListIocAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=EXPECTED_HEADER,
-            params=EXPECTED_PARAMETERS)
+            params=EXPECTED_PARAMETERS,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_list_iocs_server_fail(self, mock_get):
@@ -132,7 +120,7 @@ class TestListIocAction(unittest.TestCase):
         Patch the get() to return the error response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [{"source": "Triage-1"}]
+        self.test_json["parameters"] = [{"source": "Triage-1"}]
 
         mock_get.return_value.status_code = 500
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -146,17 +134,14 @@ class TestListIocAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
         self.assertIn("Error from server. Status code: 500", ret_val["result_data"][0]["message"])
 
-        expected_params = {
-            "page": 0,
-            "size": 50,
-            'includeExpired': False
-        }
+        expected_params = {"page": 0, "size": 50, "includeExpired": False}
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=EXPECTED_HEADER,
-            params=expected_params)
+            params=expected_params,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_list_iocs_empty_response_fail(self, mock_get):
@@ -165,11 +150,11 @@ class TestListIocAction(unittest.TestCase):
         Patch the get() to return the error response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [{"source": "Triage-1"}]
+        self.test_json["parameters"] = [{"source": "Triage-1"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = {}
-        mock_get.return_value.text = ''
+        mock_get.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -179,17 +164,14 @@ class TestListIocAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(ret_val["result_data"][0]["message"], "The server returned an unexpected empty response")
 
-        expected_params = {
-            "page": 0,
-            "size": 50,
-            'includeExpired': False
-        }
+        expected_params = {"page": 0, "size": 50, "includeExpired": False}
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=EXPECTED_HEADER,
-            params=expected_params)
+            params=expected_params,
+        )
 
     def test_list_iocs_invalid_page_fail(self):
         """Test the list iocs action with invalid 'page' parameter.
@@ -199,10 +181,7 @@ class TestListIocAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "page": "non_numeric",
-            "source": "Triage-1"
-        }]
+        self.test_json["parameters"] = [{"page": "non_numeric", "source": "Triage-1"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -219,10 +198,7 @@ class TestListIocAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "size": "non_numeric",
-            "source": "Triage-1"
-        }]
+        self.test_json["parameters"] = [{"size": "non_numeric", "source": "Triage-1"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -239,10 +215,7 @@ class TestListIocAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "sort": "UpdatedAt,asc",
-            "source": "Triage-1"
-        }]
+        self.test_json["parameters"] = [{"sort": "UpdatedAt,asc", "source": "Triage-1"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -259,10 +232,7 @@ class TestListIocAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "sort": "createdDate:asc",
-            "source": "Triage-1"
-        }]
+        self.test_json["parameters"] = [{"sort": "createdDate:asc", "source": "Triage-1"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -279,10 +249,7 @@ class TestListIocAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "since": "2021-13-01",
-            "source": "Triage-1"
-        }]
+        self.test_json["parameters"] = [{"since": "2021-13-01", "source": "Triage-1"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

@@ -1,6 +1,6 @@
 # File: test_cofensevision_download_logs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -43,10 +43,7 @@ class TestDownloadLogsAction(unittest.TestCase):
         # Reset the global object to avoid failures
         base_conn.connector_obj = None
         self.test_json = dict(cofensevision_config.TEST_JSON)
-        self.test_json.update({
-            "action": "download logs",
-            "identifier": "download_logs"
-        })
+        self.test_json.update({"action": "download logs", "identifier": "download_logs"})
         self.tempfile = "testlogs.zip"
         self.file_to_zip = "testlogfile.txt"
         return super().setUp()
@@ -74,25 +71,24 @@ class TestDownloadLogsAction(unittest.TestCase):
         with open(self.file_to_zip, "w") as f:
             f.write("Test log data")
 
-        with ZipFile(self.tempfile, 'w') as zip:
+        with ZipFile(self.tempfile, "w") as zip:
             zip.write(self.file_to_zip)
 
         with open(self.tempfile, "rb") as binary_zip:
-
             mock_get.get(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}',
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}",
                 status_code=200,
                 headers={"Content-Type": "application/octet-stream"},
-                content=binary_zip.read()
+                content=binary_zip.read(),
             )
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
             print(ret_val)
-            self.assertEqual(ret_val['result_data'][0]['data'][0]['container_id'], self.test_json["container_id"])
-            self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-            self.assertEqual(ret_val['result_summary']['total_objects_successful'], 1)
-            self.assertEqual(ret_val['status'], 'success')
+            self.assertEqual(ret_val["result_data"][0]["data"][0]["container_id"], self.test_json["container_id"])
+            self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+            self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
+            self.assertEqual(ret_val["status"], "success")
 
     @patch("cofensevision_utils.requests.get")
     def test_download_logs_server_fail(self, mock_get):
@@ -119,11 +115,12 @@ class TestDownloadLogsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.STREAM_ACTION_HEADER,
-            stream=True)
+            stream=True,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_download_logs_not_found_fail(self, mock_get):
@@ -138,7 +135,7 @@ class TestDownloadLogsAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 404
         mock_get.return_value.headers = {}
-        mock_get.return_value.text = ''
+        mock_get.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -149,8 +146,9 @@ class TestDownloadLogsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_DOWNLOAD_LOGS}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.STREAM_ACTION_HEADER,
-            stream=True)
+            stream=True,
+        )

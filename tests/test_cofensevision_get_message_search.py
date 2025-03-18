@@ -1,6 +1,6 @@
 # File: test_cofensevision_get_message_search.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -50,9 +50,7 @@ class TestGetMessageSearchAction(unittest.TestCase):
         cofensevision_config.set_state_file(client_id=True, access_token=True)
         search_id = 1234
 
-        self.test_json['parameters'] = [{
-            "id": search_id
-        }]
+        self.test_json["parameters"] = [{"id": search_id}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -66,16 +64,15 @@ class TestGetMessageSearchAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "Fetched message search successfully")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{search_id}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{search_id}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     def test_get_message_search_invalid_id_fail(self):
         """Test the get message search action with invalid id parameter."""
-        self.test_json['parameters'] = [{
-            "id": "non_numeric"
-        }]
+        self.test_json["parameters"] = [{"id": "non_numeric"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -94,15 +91,9 @@ class TestGetMessageSearchAction(unittest.TestCase):
         cofensevision_config.set_state_file(client_id=True, access_token=True)
         search_id = 1234
 
-        self.test_json['parameters'] = [{
-            "id": search_id
-        }]
+        self.test_json["parameters"] = [{"id": search_id}]
 
-        response_json = {
-            "status": "NOT_FOUND",
-            "message": "Object not found",
-            "details": ["Unable to find the requested object"]
-        }
+        response_json = {"status": "NOT_FOUND", "message": "Object not found", "details": ["Unable to find the requested object"]}
 
         mock_get.return_value.status_code = 404
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -118,7 +109,8 @@ class TestGetMessageSearchAction(unittest.TestCase):
         self.assertIn("NOT_FOUND", ret_val["result_data"][0]["message"])
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{search_id}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{search_id}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )

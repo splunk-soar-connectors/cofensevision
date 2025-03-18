@@ -1,6 +1,6 @@
 # File: test_cofensevision_update_ioc.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -28,21 +28,13 @@ import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
 from tests import cofensevision_config
 
+
 VALID_PARAMETERS = {
     "id": "7a785c76033e6e2f1464ba3f41ffb23a",  # pragma: allowlist secret
-    "expires_at": "2080-05-15"
+    "expires_at": "2080-05-15",
 }
 
-EXPECTED_BODY = {
-    "data": {
-        "type": "ioc",
-        "metadata": {
-            "quarantine": {
-                "expires_at": "2080-05-15T00:00:00.000000Z"
-            }
-        }
-    }
-}
+EXPECTED_BODY = {"data": {"type": "ioc", "metadata": {"quarantine": {"expires_at": "2080-05-15T00:00:00.000000Z"}}}}
 
 
 class TestUpdateIocAction(unittest.TestCase):
@@ -65,7 +57,7 @@ class TestUpdateIocAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_put.return_value.status_code = 200
         mock_put.return_value.headers = cofensevision_config.ACTION_HEADER
@@ -79,11 +71,12 @@ class TestUpdateIocAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_UPDATE_IOC_SUCCESS)
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}/{VALID_PARAMETERS["id"]}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{VALID_PARAMETERS['id']}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            json=EXPECTED_BODY)
+            json=EXPECTED_BODY,
+        )
 
     @patch("cofensevision_utils.requests.put")
     def test_update_ioc_invalid_id_fail(self, mock_put):
@@ -97,16 +90,11 @@ class TestUpdateIocAction(unittest.TestCase):
         EXPECTED_DATA = {
             "status": "UNPROCESSABLE_ENTITY",
             "message": "Validation failed for request data",
-            "details": [
-                "id for IOCs should be a 32-character MD5"
-            ]
+            "details": ["id for IOCs should be a 32-character MD5"],
         }
 
-        PARAMS = {
-            "id": "7a78",
-            "expires_at": "2080-05-15"
-        }
-        self.test_json['parameters'] = [PARAMS]
+        PARAMS = {"id": "7a78", "expires_at": "2080-05-15"}
+        self.test_json["parameters"] = [PARAMS]
 
         mock_put.return_value.status_code = 422
         mock_put.return_value.headers = cofensevision_config.ACTION_HEADER
@@ -119,11 +107,12 @@ class TestUpdateIocAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}/{PARAMS["id"]}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{PARAMS['id']}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.ACTION_HEADER,
-            json=EXPECTED_BODY)
+            json=EXPECTED_BODY,
+        )
 
     @patch("cofensevision_utils.requests.put")
     def test_update_ioc_server_fail(self, mock_put):
@@ -132,7 +121,7 @@ class TestUpdateIocAction(unittest.TestCase):
         Patch the get() to return the error response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_put.return_value.status_code = 500
         mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -147,11 +136,12 @@ class TestUpdateIocAction(unittest.TestCase):
         self.assertIn("Error from server. Status code: 500", ret_val["result_data"][0]["message"])
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}/{VALID_PARAMETERS["id"]}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{VALID_PARAMETERS['id']}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.ACTION_HEADER,
-            json=EXPECTED_BODY)
+            json=EXPECTED_BODY,
+        )
 
     def test_update_ioc_invalid_expires_at_fail(self):
         """Test the update ioc action with invalid 'expires_at' parameter.
@@ -161,10 +151,12 @@ class TestUpdateIocAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "id": "7a785c76033e6e2f1464ba3f41ffb23a",  # pragma: allowlist secret
-            "expires_at": "2080-16-45"
-        }]
+        self.test_json["parameters"] = [
+            {
+                "id": "7a785c76033e6e2f1464ba3f41ffb23a",  # pragma: allowlist secret
+                "expires_at": "2080-16-45",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

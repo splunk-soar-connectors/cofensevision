@@ -1,6 +1,6 @@
 # File: cofensevision_utils.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -45,7 +45,7 @@ class RetVal(tuple):
         return tuple.__new__(RetVal, (val1, val2))
 
 
-class CofenseVisionUtils(object):
+class CofenseVisionUtils:
     """This class holds all the util methods."""
 
     def __init__(self, connector=None):
@@ -82,7 +82,7 @@ class CofenseVisionUtils(object):
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
         except Exception as e:
-            self._connector.error_print(f"Error occurred while fetching exception information. Details: {str(e)}")
+            self._connector.error_print(f"Error occurred while fetching exception information. Details: {e!s}")
 
         if not error_code:
             error_text = f"Error message: {error_msg}"
@@ -130,11 +130,7 @@ class CofenseVisionUtils(object):
         if response.status_code in [200, 204]:
             return RetVal(phantom.APP_SUCCESS, {})
 
-        return RetVal(
-            action_result.set_status(
-                phantom.APP_ERROR, consts.VISION_ERROR_EMPTY_RESPONSE.format(response.status_code)
-            )
-        )
+        return RetVal(action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_EMPTY_RESPONSE.format(response.status_code)))
 
     def _process_html_response(self, response, action_result):
         """Process the html response returned from the server.
@@ -183,21 +179,14 @@ class CofenseVisionUtils(object):
                 resp_json = response.json()
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_JSON_RESPONSE.format(error_message)
-                )
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_JSON_RESPONSE.format(error_message)))
 
         # Please specify the status codes here
         if 200 <= response.status_code < 399:
             return RetVal(phantom.APP_SUCCESS, resp_json)
 
         # You should process the error returned in the json
-        message = consts.VISION_ERROR_GENERAL_MESSAGE.format(
-            response.status_code,
-            response.text.replace("{", "{{").replace("}", "}}")
-        )
+        message = consts.VISION_ERROR_GENERAL_MESSAGE.format(response.status_code, response.text.replace("{", "{{").replace("}", "}}"))
         message = f"Error from server. {message}"
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
@@ -217,8 +206,8 @@ class CofenseVisionUtils(object):
         # Add file to the vault
         self._connector.debug_print("Adding file to the Vault")
         success, message, vault_id = phantom_rules.vault_add(
-            container=container_id,
-            file_location=f"{local_dir}/{self.filename}", file_name=file_name)
+            container=container_id, file_location=f"{local_dir}/{self.filename}", file_name=file_name
+        )
 
         if not success:
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Could not add file to the Vault: {message}"))
@@ -259,29 +248,29 @@ class CofenseVisionUtils(object):
         """
         long_filename = None
         if not (200 <= response.status_code < 399):
-            message = consts.VISION_ERROR_GENERAL_MESSAGE.format(
-                response.status_code,
-                response.text.replace("{", "{{").replace("}", "}}")
-            )
+            message = consts.VISION_ERROR_GENERAL_MESSAGE.format(response.status_code, response.text.replace("{", "{{").replace("}", "}}"))
             message = f"Error from server. {message}"
 
             return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
         guid = uuid.uuid4()
 
-        if hasattr(Vault, 'get_vault_tmp_dir'):
-            vault_tmp_dir = Vault.get_vault_tmp_dir().rstrip('/')
-            local_dir = f'{vault_tmp_dir}/{guid}'
+        if hasattr(Vault, "get_vault_tmp_dir"):
+            vault_tmp_dir = Vault.get_vault_tmp_dir().rstrip("/")
+            local_dir = f"{vault_tmp_dir}/{guid}"
         else:
-            local_dir = f'/opt/phantom/vault/tmp/{guid}'
+            local_dir = f"/opt/phantom/vault/tmp/{guid}"
 
         self._connector.debug_print("Creating temporary vault directory")
 
         try:
             os.makedirs(local_dir)
         except Exception as e:
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR, f"Unable to create temporary Vault folder {self._get_error_message_from_exception(e)}"))
+            return RetVal(
+                action_result.set_status(
+                    phantom.APP_ERROR, f"Unable to create temporary Vault folder {self._get_error_message_from_exception(e)}"
+                )
+            )
 
         if len(self.filename) >= 255:
             long_filename, ext = os.path.splitext(self.filename)
@@ -291,14 +280,16 @@ class CofenseVisionUtils(object):
 
         # Save the stream response to the file
         try:
-            with open(file_path, 'wb') as f:
+            with open(file_path, "wb") as f:
                 self._connector.debug_print("Writing data to the file")
                 for chunk in response.iter_content(chunk_size=1024 * 1024):
                     if chunk:
                         f.write(chunk)
         except Exception as e:
-            return RetVal(action_result.set_status(
-                phantom.APP_ERROR, f"Unable to write file to disk. Error: {self._get_error_message_from_exception(e)}"), None)
+            return RetVal(
+                action_result.set_status(phantom.APP_ERROR, f"Unable to write file to disk. Error: {self._get_error_message_from_exception(e)}"),
+                None,
+            )
 
         return self._add_file_to_vault(action_result, local_dir, long_filename)
 
@@ -337,10 +328,7 @@ class CofenseVisionUtils(object):
             return self._process_empty_response(response, action_result)
 
         # everything else is actually an error at this point
-        message = consts.VISION_ERROR_GENERAL_MESSAGE.format(
-            response.status_code,
-            response.text.replace("{", "{{").replace("}", "}}")
-        )
+        message = consts.VISION_ERROR_GENERAL_MESSAGE.format(response.status_code, response.text.replace("{", "{{").replace("}", "}}"))
         message = f"Can't process response from server. {message}"
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
@@ -363,23 +351,17 @@ class CofenseVisionUtils(object):
 
         try:
             response = request_func(
-                url,
-                timeout=consts.VISION_REQUEST_TIMEOUT,
-                verify=self._connector.config.get("verify_server_cert", False),
-                **kwargs
+                url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", False), **kwargs
             )
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_REST_CALL.format(error_message)
-                )
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_REST_CALL.format(error_message)))
 
         return self._process_response(response, action_result)
 
     def _set_is_generate_token(func):
         """Set the flags for the generate token method."""
+
         def inner_func(self, action_result):
             self._is_generate_token = True
             self._connector.is_state_updated = True
@@ -396,18 +378,15 @@ class CofenseVisionUtils(object):
         :param action_result: Action result or BaseConnector object
         :returns: phantom.APP_SUCCESS/phantom.APP_ERROR
         """
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
         data = {
             "client_id": self._connector.config["client_id"],
             "client_secret": self._connector.config["client_secret"],
-            "grant_type": "client_credentials"
+            "grant_type": "client_credentials",
         }
 
-        ret_val, resp_json = self.make_rest_call(
-            consts.VISION_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers)
+        ret_val, resp_json = self.make_rest_call(consts.VISION_ENDPOINT_TOKEN, action_result, data=data, method="post", headers=headers)
         if phantom.is_fail(ret_val):
             self._connector.state.pop(consts.VISION_STATE_TOKEN, None)
             return action_result.get_status()
@@ -473,7 +452,8 @@ class CofenseVisionUtils(object):
         try:
             if state.get(consts.VISION_STATE_TOKEN, {}).get(consts.VISION_STATE_ACCESS_TOKEN):
                 state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_ACCESS_TOKEN] = encryption_helper.encrypt(
-                    state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_ACCESS_TOKEN], self._connector.get_asset_id())
+                    state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_ACCESS_TOKEN], self._connector.get_asset_id()
+                )
         except Exception as e:
             self._connector.debug_print("Error occurred while encrypting the state file.", e)
             state = {"app_version": self._connector.get_app_json().get("app_version")}
@@ -488,7 +468,8 @@ class CofenseVisionUtils(object):
         try:
             if state.get(consts.VISION_STATE_TOKEN, {}).get(consts.VISION_STATE_ACCESS_TOKEN):
                 state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_ACCESS_TOKEN] = encryption_helper.decrypt(
-                    state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_ACCESS_TOKEN], self._connector.get_asset_id())
+                    state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_ACCESS_TOKEN], self._connector.get_asset_id()
+                )
         except Exception as e:
             self._connector.debug_print("Error occurred while decrypting the state file.", e)
             state = {"app_version": self._connector.get_app_json().get("app_version")}

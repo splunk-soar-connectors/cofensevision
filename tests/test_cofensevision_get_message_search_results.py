@@ -1,6 +1,6 @@
 # File: test_cofensevision_get_message_search_results.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -28,18 +28,10 @@ import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
 from tests import cofensevision_config
 
-VALID_PARAMETERS = {
-    "id": "4852",
-    "page": 0,
-    "size": 50,
-    "sort": "processedOn:asc"
-}
 
-EXPECTED_PARAMETERS = {
-    'page': 0,
-    'size': 50,
-    'sort': ['processedOn,asc']
-}
+VALID_PARAMETERS = {"id": "4852", "page": 0, "size": 50, "sort": "processedOn:asc"}
+
+EXPECTED_PARAMETERS = {"page": 0, "size": 50, "sort": ["processedOn,asc"]}
 
 
 class TestGetMessageSearchResultsAction(unittest.TestCase):
@@ -61,7 +53,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = cofensevision_config.ACTION_HEADER
@@ -75,11 +67,12 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         self.assertGreater(ret_val["result_data"][0]["summary"]["total_results"], 0)
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS["id"]}/results',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS['id']}/results",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            params=EXPECTED_PARAMETERS)
+            params=EXPECTED_PARAMETERS,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_get_message_search_results_server_fail(self, mock_get):
@@ -88,7 +81,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Patch the get() to return the error response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 500
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -103,11 +96,12 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         self.assertIn("Error from server. Status code: 500", ret_val["result_data"][0]["message"])
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS["id"]}/results',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS['id']}/results",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.ACTION_HEADER,
-            params=EXPECTED_PARAMETERS)
+            params=EXPECTED_PARAMETERS,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_get_message_search_results_empty_response_fail(self, mock_get):
@@ -116,11 +110,11 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         Patch the get() to return the error response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [VALID_PARAMETERS]
+        self.test_json["parameters"] = [VALID_PARAMETERS]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = {}
-        mock_get.return_value.text = ''
+        mock_get.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -131,11 +125,12 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "The server returned an unexpected empty response")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS["id"]}/results',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_MESSAGE_SEARCH}/{VALID_PARAMETERS['id']}/results",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.ACTION_HEADER,
-            params=EXPECTED_PARAMETERS)
+            params=EXPECTED_PARAMETERS,
+        )
 
     def test_get_message_search_results_invalid_id_fail(self):
         """Test the get message search results action with invalid 'id' parameter.
@@ -145,9 +140,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "id": "non_numeric"
-        }]
+        self.test_json["parameters"] = [{"id": "non_numeric"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -164,10 +157,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "page": "non_numeric",
-            "id": "4852"
-        }]
+        self.test_json["parameters"] = [{"page": "non_numeric", "id": "4852"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -184,10 +174,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "size": "non_numeric",
-            "id": "4852"
-        }]
+        self.test_json["parameters"] = [{"size": "non_numeric", "id": "4852"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -204,10 +191,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "sort": "createdOn,asc",
-            "id": "4852"
-        }]
+        self.test_json["parameters"] = [{"sort": "createdOn,asc", "id": "4852"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -224,10 +208,7 @@ class TestGetMessageSearchResultsAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "sort": "createdDate:asc",
-            "id": "4852"
-        }]
+        self.test_json["parameters"] = [{"sort": "createdDate:asc", "id": "4852"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

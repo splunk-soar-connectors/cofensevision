@@ -1,6 +1,6 @@
 # File: cofensevision_get_message_search_results.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -47,10 +47,7 @@ class GetMessageSearchResultsAction(BaseAction):
             return self._action_result.get_status()
 
         # Prepare query parameters
-        params = {
-            "page": page,
-            "size": size
-        }
+        params = {"page": page, "size": size}
 
         ret_val, sort = self._connector.util.validate_sort_param(self._param.get("sort"))
         if phantom.is_fail(ret_val):
@@ -73,6 +70,6 @@ class GetMessageSearchResultsAction(BaseAction):
             self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({'total_results': self._action_result.get_data_size()})
+        self._action_result.update_summary({"total_results": self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

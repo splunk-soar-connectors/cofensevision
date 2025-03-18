@@ -1,6 +1,6 @@
 # File: cofensevision_create_quarantine_job.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -42,12 +42,10 @@ class CreateQuarantineJobAction(BaseAction):
             if len(values) < 2:
                 return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("quarantine_emails"))
             for message_id in values[1:]:
-                emails.append({
-                    "internetMessageId": message_id,
-                    "recipientAddress": values[0]
-                })
+                emails.append({"internetMessageId": message_id, "recipientAddress": values[0]})
         ret_val, response = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_QUARANTINE_JOBS, self._action_result, method="post", json={"quarantineEmails": emails})
+            consts.VISION_ENDPOINT_QUARANTINE_JOBS, self._action_result, method="post", json={"quarantineEmails": emails}
+        )
 
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()

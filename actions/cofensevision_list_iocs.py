@@ -1,6 +1,6 @@
 # File: cofensevision_list_iocs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -47,11 +47,7 @@ class ListIocsAction(BaseAction):
             return self._action_result.get_status()
 
         # Prepare query parameters
-        params = {
-            "page": page,
-            "size": size,
-            "includeExpired": include_expired
-        }
+        params = {"page": page, "size": size, "includeExpired": include_expired}
 
         since = self._param.get("since")
         status, since = self._connector.util.parse_date_string(since)
@@ -68,7 +64,8 @@ class ListIocsAction(BaseAction):
 
         # Make rest call to fetch the IOCs
         status, response = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_IOC, self._action_result, params=params, headers=headers)
+            consts.VISION_ENDPOINT_IOC, self._action_result, params=params, headers=headers
+        )
 
         if phantom.is_fail(status):
             return self._action_result.get_status()
@@ -81,6 +78,6 @@ class ListIocsAction(BaseAction):
             self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({'total_iocs': self._action_result.get_data_size()})
+        self._action_result.update_summary({"total_iocs": self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

@@ -1,6 +1,6 @@
 # File: cofensevision_restore_quarantine_job.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -32,7 +32,8 @@ class RestoreQuarantineJobAction(BaseAction):
     def execute(self):
         """Execute the restore quarantine job action."""
         ret_val, job_id = self._connector.util.validate_integer(
-            self._action_result, self._param[consts.VISION_PARAM_JOB_ID], consts.VISION_PARAM_JOB_ID)
+            self._action_result, self._param[consts.VISION_PARAM_JOB_ID], consts.VISION_PARAM_JOB_ID
+        )
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 

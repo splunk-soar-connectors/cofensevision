@@ -1,6 +1,6 @@
 # File: cofensevision_update_ioc.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -39,16 +39,7 @@ class UpdateIocAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("expires_at"))
 
         # Construct the body
-        data = {
-            "data": {
-                "type": "ioc",
-                "metadata": {
-                    "quarantine": {
-                        "expires_at": expires_at
-                    }
-                }
-            }
-        }
+        data = {"data": {"type": "ioc", "metadata": {"quarantine": {"expires_at": expires_at}}}}
 
         endpoint = f"{consts.VISION_ENDPOINT_IOC}/{self._param['id']}"
         status, response = self._connector.util.make_rest_call_helper(endpoint, self._action_result, method="put", json=data)

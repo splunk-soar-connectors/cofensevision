@@ -15,7 +15,7 @@
             "name": "Mike Saurbaugh"
         }
     ],
-    "license": "Copyright (c) 2023 Cofense",
+    "license": "Copyright (c) 2023-2025 Cofense",
     "app_version": "1.0.1",
     "utctime_updated": "2022-12-14T12:01:06.985053Z",
     "package_name": "phantom_cofensevision",

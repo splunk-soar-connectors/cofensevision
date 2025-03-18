@@ -1,6 +1,6 @@
 # File: cofensevision_get_message.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -35,10 +35,7 @@ class GetMessageAction(BaseAction):
     def execute(self):
         """Execute the get message action."""
         # Construct the body for token endpoint
-        body = {
-            "internetMessageId": self._param["internet_message_id"],
-            "recipientAddress": self._param["recipient_address"]
-        }
+        body = {"internetMessageId": self._param["internet_message_id"], "recipientAddress": self._param["recipient_address"]}
 
         if self._param.get("password"):
             body.update({"password": self._param.get("password")})
@@ -48,7 +45,8 @@ class GetMessageAction(BaseAction):
 
         # Make rest call to get the token
         status, token_info = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_MESSAGE, self._action_result, method="post", json=body)
+            consts.VISION_ENDPOINT_MESSAGE, self._action_result, method="post", json=body
+        )
 
         if phantom.is_fail(status):
             return self._action_result.get_status()
@@ -57,7 +55,8 @@ class GetMessageAction(BaseAction):
         self._connector.util.filename = f"message_{datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S.%f')}.zip"
         # Make rest call to fetch the file
         status, vault_info = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_MESSAGE, self._action_result, params=token_info, stream=True)
+            consts.VISION_ENDPOINT_MESSAGE, self._action_result, params=token_info, stream=True
+        )
 
         if phantom.is_fail(status):
             return self._action_result.get_status()
