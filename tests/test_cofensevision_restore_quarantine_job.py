@@ -1,6 +1,6 @@
 # File: test_cofensevision_restore_quarantine_job.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -50,13 +50,15 @@ class TestRestoreQuarantineJobAction(unittest.TestCase):
         cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = 1234
 
-        self.test_json['parameters'] = [{
-            consts.VISION_PARAM_JOB_ID: job_id,
-        }]
+        self.test_json["parameters"] = [
+            {
+                consts.VISION_PARAM_JOB_ID: job_id,
+            }
+        ]
 
         mock_put.return_value.status_code = 200
         mock_put.return_value.headers = {}
-        mock_put.return_value.text = ''
+        mock_put.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -66,16 +68,15 @@ class TestRestoreQuarantineJobAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_SUCCESS_RESTORE_JOB_ACTION)
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_RESTORE_QUARANTINE_JOBS.format(job_id=job_id)}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_RESTORE_QUARANTINE_JOBS.format(job_id=job_id)}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     def test_restore_quarantine_job_invalid_id_fail(self):
         """Test the restore quarantine job action with invalid 'job id' parameter."""
-        self.test_json['parameters'] = [{
-            consts.VISION_PARAM_JOB_ID: "non_numeric"
-        }]
+        self.test_json["parameters"] = [{consts.VISION_PARAM_JOB_ID: "non_numeric"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -93,9 +94,7 @@ class TestRestoreQuarantineJobAction(unittest.TestCase):
         cofensevision_config.set_state_file(client_id=True, access_token=True)
         job_id = "1234"
 
-        self.test_json['parameters'] = [{
-            consts.VISION_PARAM_JOB_ID: job_id
-        }]
+        self.test_json["parameters"] = [{consts.VISION_PARAM_JOB_ID: job_id}]
 
         mock_put.return_value.status_code = 401
         mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -109,7 +108,8 @@ class TestRestoreQuarantineJobAction(unittest.TestCase):
         self.assertIn("Status code: 401", ret_val["result_data"][0]["message"])
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_RESTORE_QUARANTINE_JOBS.format(job_id=job_id)}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_RESTORE_QUARANTINE_JOBS.format(job_id=job_id)}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
-            headers=cofensevision_config.ACTION_HEADER)
+            headers=cofensevision_config.ACTION_HEADER,
+        )

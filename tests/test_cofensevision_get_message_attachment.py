@@ -1,6 +1,6 @@
 # File: test_cofensevision_get_message_attachment.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -42,10 +42,7 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         # Reset the global object to avoid failures
         base_conn.connector_obj = None
         self.test_json = dict(cofensevision_config.TEST_JSON)
-        self.test_json.update({
-            "action": "get message attachment",
-            "identifier": "get_message_attachment"
-        })
+        self.test_json.update({"action": "get message attachment", "identifier": "get_message_attachment"})
         self.tempfile = "test_file.txt"
         return super().setUp()
 
@@ -59,21 +56,23 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         """Test invalid case for filename parameter."""
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
-            "filename": "just_name"
-        }]
+        self.test_json["parameters"] = [
+            {
+                "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
+                "filename": "just_name",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
 
         self.assertEqual(
-            ret_val['result_data'][0]['message'],
-            "Please provide a valid file name including the extension in the 'filename' parameter")
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+            ret_val["result_data"][0]["message"], "Please provide a valid file name including the extension in the 'filename' parameter"
+        )
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     @requests_mock.Mocker(real_http=True)
     def test_get_message_attachment_pass(self, mock_get):
@@ -84,11 +83,13 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
-            "filename": self.tempfile
-        }]
+        self.test_json["parameters"] = [
+            {
+                "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
+                "filename": self.tempfile,
+            }
+        ]
 
         self.test_json.update({"user_session_token": cofensevision_config.get_session_id(self.connector)})
         self.test_json.update({"container_id": cofensevision_config.create_container(self.connector)})
@@ -97,20 +98,19 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
             f.write("Test data")
 
         with open(self.tempfile, "rb") as fp:
-
             mock_get.get(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_ATTACHMENT}',
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_ATTACHMENT}",
                 status_code=200,
                 headers={"Content-Type": "application/octet-stream"},
-                content=fp.read()
+                content=fp.read(),
             )
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
-            self.assertEqual(ret_val['result_data'][0]['data'][0]['container_id'], self.test_json["container_id"])
-            self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-            self.assertEqual(ret_val['result_summary']['total_objects_successful'], 1)
-            self.assertEqual(ret_val['status'], 'success')
+            self.assertEqual(ret_val["result_data"][0]["data"][0]["container_id"], self.test_json["container_id"])
+            self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+            self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
+            self.assertEqual(ret_val["status"], "success")
 
     @patch("cofensevision_utils.requests.get")
     def test_get_message_attachment_invalid_hash_fail(self, mock_get):
@@ -121,11 +121,13 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
-            "filename": self.tempfile
-        }]
+        self.test_json["parameters"] = [
+            {
+                "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
+                "filename": self.tempfile,
+            }
+        ]
 
         mock_get.return_value.status_code = 404
         mock_get.return_value.headers = {"Content-Type": "application/json"}
@@ -134,10 +136,10 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
 
-        self.assertIn("Error from server. Status code: 404", ret_val['result_data'][0]['message'])
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertIn("Error from server. Status code: 404", ret_val["result_data"][0]["message"])
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         expected_params = {
             "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
@@ -145,12 +147,13 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         }
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_ATTACHMENT}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_ATTACHMENT}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
             headers=cofensevision_config.STREAM_ACTION_HEADER,
             verify=False,
-            stream=True)
+            stream=True,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_get_message_attachment_server_fail(self, mock_get):
@@ -161,11 +164,13 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json["parameters"] = [{
-            "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
-            "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
-            "filename": self.tempfile
-        }]
+        self.test_json["parameters"] = [
+            {
+                "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+                "sha256": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",  # pragma: allowlist secret
+                "filename": self.tempfile,
+            }
+        ]
 
         mock_get.return_value.status_code = 500
         mock_get.return_value.headers = {"Content-Type": "application/json"}
@@ -185,12 +190,13 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         }
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_ATTACHMENT}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_ATTACHMENT}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
             headers=cofensevision_config.STREAM_ACTION_HEADER,
             verify=False,
-            stream=True)
+            stream=True,
+        )
 
     def test_get_message_attachment_no_hash_fail(self):
         """Test the list iocs action with no hash parameter.
@@ -200,9 +206,7 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "filename": self.tempfile
-        }]
+        self.test_json["parameters"] = [{"filename": self.tempfile}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

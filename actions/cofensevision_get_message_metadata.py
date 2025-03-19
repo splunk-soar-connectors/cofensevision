@@ -1,6 +1,6 @@
 # File: cofensevision_get_message_metadata.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -33,13 +33,11 @@ class GetMessageMetadataAction(BaseAction):
     def execute(self):
         """Execute the get message metadata action."""
         # Construct the parameters dict
-        params = {
-            "internetMessageId": self._param["internet_message_id"],
-            "recipientAddress": self._param["recipient_address"]
-        }
+        params = {"internetMessageId": self._param["internet_message_id"], "recipientAddress": self._param["recipient_address"]}
 
         status, response = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_MESSAGE_METADATA, self._action_result, params=params)
+            consts.VISION_ENDPOINT_MESSAGE_METADATA, self._action_result, params=params
+        )
 
         if phantom.is_fail(status):
             return self._action_result.get_status()

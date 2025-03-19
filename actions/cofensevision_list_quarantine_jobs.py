@@ -1,6 +1,6 @@
 # File: cofensevision_list_quarantine_jobs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -54,7 +54,7 @@ class ListQuarantineJobsAction(BaseAction):
         }
         ret_val, sort = self._connector.util.validate_sort_param(self._param.get("sort"))
         if phantom.is_fail(ret_val):
-            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('sort')), None
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("sort")), None
         if sort:
             params["sort"] = sort
 
@@ -70,7 +70,8 @@ class ListQuarantineJobsAction(BaseAction):
         for status in status_list:
             if status not in consts.VISION_JOB_STATUS:
                 return self._action_result.set_status(
-                    phantom.APP_ERROR, consts.VISION_ERROR_VALUE_LIST.format(key, ", ".join(consts.VISION_JOB_STATUS)))
+                    phantom.APP_ERROR, consts.VISION_ERROR_VALUE_LIST.format(key, ", ".join(consts.VISION_JOB_STATUS))
+                )
         return phantom.APP_SUCCESS
 
     def _prepare_request_body(self):
@@ -80,7 +81,7 @@ class ListQuarantineJobsAction(BaseAction):
         """
         # Prepare request body
         filter_options = {
-            "autoQuarantine": self._param.get('auto_quarantine', False),
+            "autoQuarantine": self._param.get("auto_quarantine", False),
         }
         body = {"filterOptions": filter_options}
 
@@ -113,7 +114,8 @@ class ListQuarantineJobsAction(BaseAction):
         ret_val, date_str = self._connector.util.parse_date_string(self._param.get("modified_date_after", ""))
         if phantom.is_fail(ret_val):
             return self._action_result.set_status(
-                phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('modified date after')), None
+                phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("modified date after")
+            ), None
         if date_str:
             filter_options["modifiedDateAfter"] = date_str
 
@@ -130,7 +132,8 @@ class ListQuarantineJobsAction(BaseAction):
             return self._action_result.get_status()
 
         ret_val, response = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_FILTER_JOBS, self._action_result, method="post", params=params, data=json.dumps(body))
+            consts.VISION_ENDPOINT_FILTER_JOBS, self._action_result, method="post", params=params, data=json.dumps(body)
+        )
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
@@ -142,6 +145,6 @@ class ListQuarantineJobsAction(BaseAction):
             self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({'total_quarantine_jobs': self._action_result.get_data_size()})
+        self._action_result.update_summary({"total_quarantine_jobs": self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

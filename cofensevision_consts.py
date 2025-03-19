@@ -1,6 +1,6 @@
 # File: cofensevision_consts.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -28,10 +28,10 @@ VISION_ENDPOINT_TEST_CONNECTIVITY = "/actuator/health"
 VISION_ENDPOINT_MESSAGE_SEARCH = f"{BASE_ENDPOINT}/searches"
 VISION_ENDPOINT_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs"
 VISION_ENDPOINT_FILTER_JOBS = f"{BASE_ENDPOINT}/quarantineJobs/filter"
-VISION_ENDPOINT_QUARANTINE_JOB = f"{BASE_ENDPOINT}/quarantineJobs" "/{job_id}"
-VISION_ENDPOINT_APPROVE_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs" "/{job_id}/approve"
-VISION_ENDPOINT_RESTORE_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs" "/{job_id}/restore"
-VISION_ENDPOINT_STOP_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs" "/{job_id}/stop"
+VISION_ENDPOINT_QUARANTINE_JOB = f"{BASE_ENDPOINT}/quarantineJobs/{{job_id}}"
+VISION_ENDPOINT_APPROVE_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs/{{job_id}}/approve"
+VISION_ENDPOINT_RESTORE_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs/{{job_id}}/restore"
+VISION_ENDPOINT_STOP_QUARANTINE_JOBS = f"{BASE_ENDPOINT}/quarantineJobs/{{job_id}}/stop"
 VISION_ENDPOINT_MESSAGE = f"{BASE_ENDPOINT}/messages"
 VISION_ENDPOINT_ATTACHMENT = f"{BASE_ENDPOINT}/attachment"
 VISION_ENDPOINT_IOC = "/iocrepository/v1/iocs"
@@ -58,8 +58,7 @@ VISION_ERROR_HTML_RESPONSE = "Error parsing html response"
 VISION_ERROR_JSON_RESPONSE = "Unable to parse JSON response. Error: {0}"
 VISION_ERROR_GENERAL_MESSAGE = "Status code: {0}, Data from server: {1}"
 VISION_ERROR_REST_CALL = "Error connecting to server. Details: {0}"
-VISION_ERROR_STATE_FILE_CORRUPT = "Error occurred while loading the state file. " \
-                                  "Resetting the state file with the default format."
+VISION_ERROR_STATE_FILE_CORRUPT = "Error occurred while loading the state file. Resetting the state file with the default format."
 VISION_SUCCESS_TEST_CONNECTIVITY = "Test Connectivity Passed"
 VISION_ERROR_TEST_CONNECTIVITY = "Test Connectivity Failed"
 VISION_ERROR_SYSTEM_HEALTH = "Failed to get the system health status"
@@ -101,20 +100,17 @@ VISION_DEFAULT_HEADERS = {"Accept": "application/json", "Content-Type": "applica
 VISION_HASH_TYPE_MD5 = "MD5"
 VISION_HASH_TYPE_SHA256 = "SHA256"
 VISION_MAX_ALLOWED_VALUES = 3
-VISION_VALID_SORT_PROPERTY = [
-    "id", "createdBy", "createdDate", "modifiedBy",
-    "modifiedDate", "receivedAfterDate", "receivedBeforeDate"
-]
+VISION_VALID_SORT_PROPERTY = ["id", "createdBy", "createdDate", "modifiedBy", "modifiedDate", "receivedAfterDate", "receivedBeforeDate"]
 VISION_VALID_SORT_ORDER = ["asc", "desc"]
-VISION_THREAT_TYPES = ['domain', 'md5', 'sender', 'sha256', 'subject', 'url']
+VISION_THREAT_TYPES = ["domain", "md5", "sender", "sha256", "subject", "url"]
 VISION_SUPPORTED_SORT_FIELDS = {
-    'list_quarantine_jobs': ['id', 'createdBy', 'createdDate', 'modifiedBy', 'modifiedDate', 'stopRequested'],
-    'list_message_searches': ['id', 'createdBy', 'createdDate', 'modifiedBy', 'modifiedDate', 'receivedAfterDate', 'receivedBeforeDate'],
-    'get_message_search_results': ['id', 'subject', 'createdOn', 'sentOn', 'processedOn', 'htmlBody', 'md5', 'sha1', 'sha256'],
+    "list_quarantine_jobs": ["id", "createdBy", "createdDate", "modifiedBy", "modifiedDate", "stopRequested"],
+    "list_message_searches": ["id", "createdBy", "createdDate", "modifiedBy", "modifiedDate", "receivedAfterDate", "receivedBeforeDate"],
+    "get_message_search_results": ["id", "subject", "createdOn", "sentOn", "processedOn", "htmlBody", "md5", "sha1", "sha256"],
     "list_iocs": ["updatedAt"],
 }
-VISION_JOB_STATUS = ['NEW', 'PENDING_APPROVAL', 'QUEUED', 'RUNNING', 'COMPLETED', 'FAILED']
-VISION_SUPPORTED_CRITERIA = ['ANY', 'ALL']
+VISION_JOB_STATUS = ["NEW", "PENDING_APPROVAL", "QUEUED", "RUNNING", "COMPLETED", "FAILED"]
+VISION_SUPPORTED_CRITERIA = ["ANY", "ALL"]
 
 # Action Parameters
 VISION_UPDATE_IOCS_REQUIRED_PARAMS = ["threat_type", "threat_value", "threat_level", "created_at", "source_id"]

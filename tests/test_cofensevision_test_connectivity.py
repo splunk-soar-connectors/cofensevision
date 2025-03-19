@@ -1,6 +1,6 @@
 # File: test_cofensevision_test_connectivity.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -58,18 +58,19 @@ class TestConnectivityAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 1)
-        self.assertEqual(ret_val['status'], 'success')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
+        self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}",
             headers={},
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
             headers=cofensevision_config.TOKEN_HEADER,
             data=cofensevision_config.TOKEN_DATA,
             timeout=consts.VISION_REQUEST_TIMEOUT,
@@ -89,15 +90,16 @@ class TestConnectivityAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}",
             headers={},
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.post")
     @patch("cofensevision_utils.requests.get")
@@ -118,18 +120,19 @@ class TestConnectivityAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}",
             headers={},
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
             headers=cofensevision_config.TOKEN_HEADER,
             data=cofensevision_config.TOKEN_DATA,
             timeout=consts.VISION_REQUEST_TIMEOUT,
@@ -149,15 +152,16 @@ class TestConnectivityAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}",
             headers={},
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_connectivity_no_content_fail(self, mock_get):
@@ -167,19 +171,20 @@ class TestConnectivityAction(unittest.TestCase):
         Patches the get() to return no content.
         """
         mock_get.return_value.status_code = 204
-        mock_get.return_value.text = ''
+        mock_get.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}",
             headers={},
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.post")
     @patch("cofensevision_utils.requests.get")
@@ -200,18 +205,19 @@ class TestConnectivityAction(unittest.TestCase):
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TEST_CONNECTIVITY}",
             headers={},
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
             headers=cofensevision_config.TOKEN_HEADER,
             data=cofensevision_config.TOKEN_DATA,
             timeout=consts.VISION_REQUEST_TIMEOUT,

@@ -1,6 +1,6 @@
 # File: cofensevision_test_connectivity.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -34,8 +34,7 @@ class TestConnectivityAction(BaseAction):
         """Execute the test connectivity action."""
         # Connect to the health check endpoint to check the server status
         self._connector.save_progress("Connecting to the endpoint")
-        ret_val, response = self._connector.util.make_rest_call(
-            consts.VISION_ENDPOINT_TEST_CONNECTIVITY, self._action_result, headers={})
+        ret_val, response = self._connector.util.make_rest_call(consts.VISION_ENDPOINT_TEST_CONNECTIVITY, self._action_result, headers={})
         if phantom.is_fail(ret_val):
             self._connector.save_progress(consts.VISION_ERROR_SYSTEM_HEALTH)
             self._connector.save_progress(consts.VISION_ERROR_TEST_CONNECTIVITY)

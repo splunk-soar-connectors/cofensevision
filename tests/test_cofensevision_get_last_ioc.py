@@ -1,6 +1,6 @@
 # File: test_cofensevision_get_last_ioc.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -55,9 +55,7 @@ class TestGetLastIOCAction(unittest.TestCase):
 
         expected_data = {"data": {"id": "d1c54c37fd53d37094ef1dc7530ca949"}}  # pragma: allowlist secret
 
-        self.test_json['parameters'] = [{
-            "source": source
-        }]
+        self.test_json["parameters"] = [{"source": source}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -70,10 +68,11 @@ class TestGetLastIOCAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC_LAST}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC_LAST}",
             headers=expected_header,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_get_last_ioc_invalid_source_fail(self, mock_get):
@@ -91,14 +90,10 @@ class TestGetLastIOCAction(unittest.TestCase):
         expected_data = {
             "status": "UNPROCESSABLE_ENTITY",
             "message": "Validation failed for request data",
-            "details": [
-                "X-Cofense-IOC-Source must only have alphanumeric characters and - . _ ~"
-            ]
+            "details": ["X-Cofense-IOC-Source must only have alphanumeric characters and - . _ ~"],
         }
 
-        self.test_json['parameters'] = [{
-            "source": source
-        }]
+        self.test_json["parameters"] = [{"source": source}]
 
         mock_get.return_value.status_code = 422
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -111,10 +106,11 @@ class TestGetLastIOCAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC_LAST}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC_LAST}",
             headers=expected_header,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_get_last_ioc_source_case_sensitive_fail(self, mock_get):
@@ -129,9 +125,7 @@ class TestGetLastIOCAction(unittest.TestCase):
         EXPECTED_HEADER = dict(cofensevision_config.ACTION_HEADER)
         EXPECTED_HEADER.update({"X-Cofense-IOC-Source": source})
 
-        self.test_json['parameters'] = [{
-            "source": source
-        }]
+        self.test_json["parameters"] = [{"source": source}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -144,7 +138,8 @@ class TestGetLastIOCAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC_LAST}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC_LAST}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )

@@ -1,6 +1,6 @@
 # File: test_cofensevision_update_iocs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -31,16 +31,19 @@ import cofensevision_consts as consts
 from cofensevision_connector import CofenseVisionConnector
 from tests import cofensevision_config
 
-PARAM_LIST = [{
-    "source": "Vision-UI",
-    "threat_type": "URL",
-    "threat_value": "https://testdomain.com",
-    "source_id": "test_source_1",
-    "created_at": "01 Mar 2022",
-    "updated_at": "01 Feb 2022 04:45:33",
-    "threat_level": "Malicious",
-    "requested_expiration": "2023-04-17T14:05:44Z",
-}]
+
+PARAM_LIST = [
+    {
+        "source": "Vision-UI",
+        "threat_type": "URL",
+        "threat_value": "https://testdomain.com",
+        "source_id": "test_source_1",
+        "created_at": "01 Mar 2022",
+        "updated_at": "01 Feb 2022 04:45:33",
+        "threat_level": "Malicious",
+        "requested_expiration": "2023-04-17T14:05:44Z",
+    }
+]
 
 EXPECTED_DATA = {
     "data": [
@@ -55,7 +58,7 @@ EXPECTED_DATA = {
                     "updated_at": "2022-02-01T04:45:33.000000Z",
                     "requested_expiration": "2023-04-17T14:05:44.000000Z",
                 }
-            }
+            },
         }
     ]
 }
@@ -105,12 +108,14 @@ class TestUpdateIocsAction(unittest.TestCase):
                 "source_id": "test_source_2",
                 "updated_at": "01 Feb 2021 04:45:33",
                 "requested_expiration": "2022-04-17T14:05:44Z",
+            },
+        ]
+        self.test_json["parameters"] = [
+            {
+                "source": "Vision-UI",
+                "iocs_json": json.dumps(iocs_json),
             }
         ]
-        self.test_json['parameters'] = [{
-            "source": "Vision-UI",
-            "iocs_json": json.dumps(iocs_json),
-        }]
 
         mock_put.return_value.status_code = 200
         mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -136,7 +141,7 @@ class TestUpdateIocsAction(unittest.TestCase):
                             "updated_at": "2021-02-01T04:45:33.000000Z",
                             "requested_expiration": "2022-04-17T14:05:44.000000Z",
                         }
-                    }
+                    },
                 },
                 {
                     "type": "ioc",
@@ -147,19 +152,20 @@ class TestUpdateIocsAction(unittest.TestCase):
                             "threat_level": "Malicious",
                             "created_at": "2021-03-01T00:00:00.000000Z",
                             "updated_at": "2021-02-01T04:45:33.000000Z",
-                            "requested_expiration": "2022-04-17T14:05:44.000000Z"
+                            "requested_expiration": "2022-04-17T14:05:44.000000Z",
                         }
-                    }
-                }
+                    },
+                },
             ]
         }
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             data=json.dumps(expected_data),
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.put")
     def test_update_iocs_other_params_pass(self, mock_put):
@@ -170,7 +176,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = PARAM_LIST
+        self.test_json["parameters"] = PARAM_LIST
 
         mock_put.return_value.status_code = 200
         mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -184,11 +190,12 @@ class TestUpdateIocsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], SUCCESS_MSG)
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             data=json.dumps(EXPECTED_DATA),
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.put")
     @patch("cofensevision_utils.requests.post")
@@ -201,7 +208,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = PARAM_LIST
+        self.test_json["parameters"] = PARAM_LIST
 
         post_response = requests.Response()
         post_response._content = b'{"access_token": "<dummy_token>"}'
@@ -230,19 +237,28 @@ class TestUpdateIocsAction(unittest.TestCase):
 
         expected_put_calls = [
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=EXPECTED_HEADER, data=json.dumps(EXPECTED_DATA),
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                headers=EXPECTED_HEADER,
+                data=json.dumps(EXPECTED_DATA),
             ),
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=EXPECTED_HEADER, data=json.dumps(EXPECTED_DATA),
-            )
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                headers=EXPECTED_HEADER,
+                data=json.dumps(EXPECTED_DATA),
+            ),
         ]
         mock_put.assert_has_calls(expected_put_calls)
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA, headers=cofensevision_config.TOKEN_HEADER
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
+            timeout=consts.VISION_REQUEST_TIMEOUT,
+            verify=False,
+            data=cofensevision_config.TOKEN_DATA,
+            headers=cofensevision_config.TOKEN_HEADER,
         )
 
     @patch("cofensevision_utils.requests.put")
@@ -256,7 +272,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True)
 
-        self.test_json['parameters'] = PARAM_LIST
+        self.test_json["parameters"] = PARAM_LIST
 
         post_response = requests.Response()
         post_response._content = b'{"access_token": "<dummy_token>"}'
@@ -278,15 +294,19 @@ class TestUpdateIocsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], SUCCESS_MSG)
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             data=json.dumps(EXPECTED_DATA),
-            verify=False)
+            verify=False,
+        )
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-            timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA, headers=cofensevision_config.TOKEN_HEADER
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
+            timeout=consts.VISION_REQUEST_TIMEOUT,
+            verify=False,
+            data=cofensevision_config.TOKEN_DATA,
+            headers=cofensevision_config.TOKEN_HEADER,
         )
 
     @freeze_time("2012-01-01")
@@ -309,10 +329,12 @@ class TestUpdateIocsAction(unittest.TestCase):
                 "requested_expiration": "2023-04-17T14:05:44Z",
             }
         ]
-        self.test_json['parameters'] = [{
-            "source": "Vision-UI",
-            "iocs_json": json.dumps(iocs_json),
-        }]
+        self.test_json["parameters"] = [
+            {
+                "source": "Vision-UI",
+                "iocs_json": json.dumps(iocs_json),
+            }
+        ]
 
         mock_put.return_value.status_code = 200
         mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -338,24 +360,22 @@ class TestUpdateIocsAction(unittest.TestCase):
                             "updated_at": "2012-01-01T00:00:00.000000Z",
                             "requested_expiration": "2023-04-17T14:05:44.000000Z",
                         }
-                    }
+                    },
                 }
             ]
         }
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             data=json.dumps(expected_data),
-            verify=False)
+            verify=False,
+        )
 
     def test_update_iocs_invalid_json_fail(self):
         """Test the update iocs action with invalid 'iocs_json' parameter."""
-        self.test_json['parameters'] = [{
-            "source": "Vision-UI",
-            "iocs_json": '[{"Invalid": "json", format}]'
-        }]
+        self.test_json["parameters"] = [{"source": "Vision-UI", "iocs_json": '[{"Invalid": "json", format}]'}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -366,10 +386,7 @@ class TestUpdateIocsAction(unittest.TestCase):
 
     def test_update_iocs_missing_params_fail(self):
         """Test the update iocs action with missing parameters."""
-        self.test_json['parameters'] = [{
-            "source": "Vision-UI",
-            "iocs_json": '[{"Valid": "json", "Insufficient": "Keys"}]'
-        }]
+        self.test_json["parameters"] = [{"source": "Vision-UI", "iocs_json": '[{"Valid": "json", "Insufficient": "Keys"}]'}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -380,63 +397,69 @@ class TestUpdateIocsAction(unittest.TestCase):
 
     def test_update_iocs_invalid_created_at_fail(self):
         """Test the update iocs action with invalid 'created at' parameter."""
-        self.test_json['parameters'] = [{
-            "source": PLACEHOLDER,
-            "threat_type": PLACEHOLDER,
-            "threat_value": PLACEHOLDER,
-            "source_id": PLACEHOLDER,
-            "created_at": "01 Month 2022",
-            "updated_at": "01 Jan 2022 04:45:33",
-            "threat_level": PLACEHOLDER,
-            "requested_expiration": "2023-05-17T14:05:44Z",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "source": PLACEHOLDER,
+                "threat_type": PLACEHOLDER,
+                "threat_value": PLACEHOLDER,
+                "source_id": PLACEHOLDER,
+                "created_at": "01 Month 2022",
+                "updated_at": "01 Jan 2022 04:45:33",
+                "threat_level": PLACEHOLDER,
+                "requested_expiration": "2023-05-17T14:05:44Z",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('created at'))
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("created at"))
 
     def test_update_iocs_invalid_updated_at_fail(self):
         """Test the update iocs action with invalid 'updated at' parameter."""
-        self.test_json['parameters'] = [{
-            "source": PLACEHOLDER,
-            "threat_type": PLACEHOLDER,
-            "threat_value": PLACEHOLDER,
-            "source_id": PLACEHOLDER,
-            "created_at": "01 Jan 2022",
-            "updated_at": "01 Jan 2022 25:45:33",
-            "threat_level": PLACEHOLDER,
-            "requested_expiration": "2023-04-18T14:05:44Z",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "source": PLACEHOLDER,
+                "threat_type": PLACEHOLDER,
+                "threat_value": PLACEHOLDER,
+                "source_id": PLACEHOLDER,
+                "created_at": "01 Jan 2022",
+                "updated_at": "01 Jan 2022 25:45:33",
+                "threat_level": PLACEHOLDER,
+                "requested_expiration": "2023-04-18T14:05:44Z",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('updated at'))
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("updated at"))
 
     def test_update_iocs_invalid_requested_expiration_fail(self):
         """Test the update iocs action with invalid 'requested expiration' parameter."""
-        self.test_json['parameters'] = [{
-            "source": PLACEHOLDER,
-            "threat_type": PLACEHOLDER,
-            "threat_value": PLACEHOLDER,
-            "source_id": PLACEHOLDER,
-            "created_at": "01 Jan 2022",
-            "updated_at": "01 Jan 2022 10:45:33",
-            "threat_level": PLACEHOLDER,
-            "requested_expiration": "2023-14-17T14:05:44Z",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "source": PLACEHOLDER,
+                "threat_type": PLACEHOLDER,
+                "threat_value": PLACEHOLDER,
+                "source_id": PLACEHOLDER,
+                "created_at": "01 Jan 2022",
+                "updated_at": "01 Jan 2022 10:45:33",
+                "threat_level": PLACEHOLDER,
+                "requested_expiration": "2023-14-17T14:05:44Z",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('requested expiration'))
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("requested expiration"))
 
     @patch("cofensevision_utils.requests.put")
     def test_update_iocs_server_fail(self, mock_put):
@@ -446,7 +469,7 @@ class TestUpdateIocsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = PARAM_LIST
+        self.test_json["parameters"] = PARAM_LIST
 
         mock_put.return_value.status_code = 500
         mock_put.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -460,11 +483,12 @@ class TestUpdateIocsAction(unittest.TestCase):
         self.assertIn("Error from server. Status code: 500", ret_val["result_data"][0]["message"])
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             data=json.dumps(EXPECTED_DATA),
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.put")
     def test_update_iocs_empty_response_fail(self, mock_put):
@@ -474,11 +498,11 @@ class TestUpdateIocsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = PARAM_LIST
+        self.test_json["parameters"] = PARAM_LIST
 
         mock_put.return_value.status_code = 200
         mock_put.return_value.headers = {}
-        mock_put.return_value.text = ''
+        mock_put.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -488,21 +512,22 @@ class TestUpdateIocsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_data"][0]["message"], "The server returned an unexpected empty response")
 
         mock_put.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}",
             headers=EXPECTED_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             data=json.dumps(EXPECTED_DATA),
-            verify=False)
+            verify=False,
+        )
 
     def test_update_iocs_invalid_threat_type_fail(self):
         """Test the update iocs action with invalid 'threat_type' parameter."""
         params = dict(PARAM_LIST[0])
         params["threat_type"] = "Invalid"
-        self.test_json['parameters'] = [params]
+        self.test_json["parameters"] = [params]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('threat type'))
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("threat type"))

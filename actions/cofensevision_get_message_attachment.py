@@ -1,6 +1,6 @@
 # File: cofensevision_get_message_attachment.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -57,7 +57,8 @@ class GetMessageAttachmentAction(BaseAction):
 
         # Make rest call to fetch the file
         status, vault_info = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_ATTACHMENT, self._action_result, params=params, stream=True)
+            consts.VISION_ENDPOINT_ATTACHMENT, self._action_result, params=params, stream=True
+        )
 
         if phantom.is_fail(status):
             return self._action_result.get_status()

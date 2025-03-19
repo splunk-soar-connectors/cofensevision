@@ -1,6 +1,6 @@
 # File: test_cofensevision_list_searchable_headers.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -48,7 +48,7 @@ class TestListSearchableHeadersAction(unittest.TestCase):
         Patch the get() to return the valid response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [{}]
+        self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -61,10 +61,11 @@ class TestListSearchableHeadersAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_SEARCHABLE_HEADER}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_SEARCHABLE_HEADER}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.get")
     def test_list_searchable_headers_invalid(self, mock_get):
@@ -74,7 +75,7 @@ class TestListSearchableHeadersAction(unittest.TestCase):
         Patch the get() to return the unauthorized response.
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-        self.test_json['parameters'] = [{}]
+        self.test_json["parameters"] = [{}]
 
         mock_get.return_value.status_code = 401
         mock_get.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -88,7 +89,8 @@ class TestListSearchableHeadersAction(unittest.TestCase):
         self.assertIn("Status code: 401", ret_val["result_data"][0]["message"])
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_SEARCHABLE_HEADER}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_SEARCHABLE_HEADER}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )

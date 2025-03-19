@@ -1,6 +1,6 @@
 # File: test_cofensevision_delete_ioc.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -56,10 +56,7 @@ class TestDeleteIOCAction(unittest.TestCase):
 
         expected_data = {"data": {"id": ioc_id}}
 
-        self.test_json['parameters'] = [{
-            "id": ioc_id,
-            "source": source
-        }]
+        self.test_json["parameters"] = [{"id": ioc_id, "source": source}]
 
         mock_delete.return_value.status_code = 200
         mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -72,10 +69,11 @@ class TestDeleteIOCAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_delete.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}/{ioc_id}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{ioc_id}",
             headers=expected_header,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.delete")
     def test_delete_ioc_invalid_source_action_fail(self, mock_delete):
@@ -94,15 +92,10 @@ class TestDeleteIOCAction(unittest.TestCase):
         expected_data = {
             "status": "UNPROCESSABLE_ENTITY",
             "message": "Validation failed for request data",
-            "details": [
-                "X-Cofense-IOC-Source must only have alphanumeric characters and - . _ ~"
-            ]
+            "details": ["X-Cofense-IOC-Source must only have alphanumeric characters and - . _ ~"],
         }
 
-        self.test_json['parameters'] = [{
-            "id": ioc_id,
-            "source": source
-        }]
+        self.test_json["parameters"] = [{"id": ioc_id, "source": source}]
 
         mock_delete.return_value.status_code = 422
         mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -115,10 +108,11 @@ class TestDeleteIOCAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_delete.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}/{ioc_id}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{ioc_id}",
             headers=expected_header,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.delete")
     def test_delete_ioc_not_found_action_fail(self, mock_delete):
@@ -134,14 +128,11 @@ class TestDeleteIOCAction(unittest.TestCase):
         expected_header = dict(cofensevision_config.ACTION_HEADER)
         expected_header.update({"X-Cofense-IOC-Source": source})
 
-        self.test_json['parameters'] = [{
-            "id": ioc_id,
-            "source": source
-        }]
+        self.test_json["parameters"] = [{"id": ioc_id, "source": source}]
 
         mock_delete.return_value.status_code = 404
         mock_delete.return_value.headers = cofensevision_config.DEFAULT_HEADERS
-        mock_delete.return_value.text = ''
+        mock_delete.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -151,7 +142,8 @@ class TestDeleteIOCAction(unittest.TestCase):
         self.assertIn("Status code: 404", ret_val["result_data"][0]["message"])
 
         mock_delete.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_IOC}/{ioc_id}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{ioc_id}",
             headers=expected_header,
             timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False)
+            verify=False,
+        )

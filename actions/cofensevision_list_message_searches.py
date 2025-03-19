@@ -1,6 +1,6 @@
 # File: cofensevision_list_message_searches.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -48,12 +48,13 @@ class ListMessageSearchesAction(BaseAction):
         }
         ret_val, sort = self._connector.util.validate_sort_param(self._param.get("sort"))
         if phantom.is_fail(ret_val):
-            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('sort'))
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("sort"))
         if sort:
             params["sort"] = sort
 
         ret_val, response = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_MESSAGE_SEARCH, self._action_result, method="get", params=params)
+            consts.VISION_ENDPOINT_MESSAGE_SEARCH, self._action_result, method="get", params=params
+        )
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
@@ -65,6 +66,6 @@ class ListMessageSearchesAction(BaseAction):
             self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({'total_message_searches': self._action_result.get_data_size()})
+        self._action_result.update_summary({"total_message_searches": self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)

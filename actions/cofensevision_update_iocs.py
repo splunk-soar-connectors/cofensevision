@@ -1,6 +1,6 @@
 # File: cofensevision_update_iocs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -41,7 +41,8 @@ class UpdateIocsAction(BaseAction):
 
         data = json.dumps(body)
         ret_val, response = self._connector.util.make_rest_call_helper(
-            consts.VISION_ENDPOINT_IOC, self._action_result, method="put", headers=headers, data=data)
+            consts.VISION_ENDPOINT_IOC, self._action_result, method="put", headers=headers, data=data
+        )
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
@@ -53,7 +54,7 @@ class UpdateIocsAction(BaseAction):
             self._action_result.add_data(data)
 
         # Add summary
-        self._action_result.update_summary({'total_iocs_updated': self._action_result.get_data_size()})
+        self._action_result.update_summary({"total_iocs_updated": self._action_result.get_data_size()})
 
         return self._action_result.set_status(phantom.APP_SUCCESS)
 
@@ -91,26 +92,26 @@ class UpdateIocsAction(BaseAction):
         for param in consts.VISION_UPDATE_IOCS_REQUIRED_PARAMS:
             if param not in params:
                 return self._action_result.set_status(
-                    phantom.APP_ERROR,
-                    f"Please provide all the required parameters: {', '.join(consts.VISION_UPDATE_IOCS_REQUIRED_PARAMS)}"
+                    phantom.APP_ERROR, f"Please provide all the required parameters: {', '.join(consts.VISION_UPDATE_IOCS_REQUIRED_PARAMS)}"
                 ), None
 
         ret_val, created_at = self._connector.util.parse_date_string(params.get("created_at", ""))
         if phantom.is_fail(ret_val):
-            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('created at')), None
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("created at")), None
 
         ret_val, updated_at = self._connector.util.parse_date_string(params.get("updated_at", ""), default_value=True)
         if phantom.is_fail(ret_val):
-            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('updated at')), None
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("updated at")), None
 
         ret_val, requested_expiration = self._connector.util.parse_date_string(params.get("requested_expiration", ""))
         if phantom.is_fail(ret_val):
             return self._action_result.set_status(
-                phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('requested expiration')), None
+                phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("requested expiration")
+            ), None
 
         threat_type = params.get("threat_type", "")
         if threat_type.lower() not in consts.VISION_THREAT_TYPES:
-            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('threat type')), None
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("threat type")), None
 
         iocs_json = {
             "type": "ioc",
@@ -125,7 +126,7 @@ class UpdateIocsAction(BaseAction):
                     "created_at": created_at,
                     "updated_at": updated_at,
                 }
-            }
+            },
         }
         if requested_expiration:
             iocs_json["metadata"]["source"]["requested_expiration"] = requested_expiration

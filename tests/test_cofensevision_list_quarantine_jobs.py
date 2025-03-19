@@ -1,6 +1,6 @@
 # File: test_cofensevision_list_quarantine_jobs.py
 #
-# Copyright (c) 2023 Cofense
+# Copyright (c) 2023-2025 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
@@ -51,18 +51,20 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "auto_quarantine": True,
-            "exclude_quarantine_emails": True,
-            "exclude_status": "NEW,QUEUED",
-            "include_status": "COMPLETED,,FAILED",
-            "iocs": "b93cba4829a00dabef96036bb6765d20 , , 07fa1e91f99050521a87edc784e83fd5",
-            "modified_date_after": "2020-08-31",
-            "page": 0,
-            "size": 50,
-            "sort": "createdDate:desc  ,, ,id:asc",
-            "sources": "Vision-UI,Intelligence,Triage-1,Vision-UI,Triage-1"
-        }]
+        self.test_json["parameters"] = [
+            {
+                "auto_quarantine": True,
+                "exclude_quarantine_emails": True,
+                "exclude_status": "NEW,QUEUED",
+                "include_status": "COMPLETED,,FAILED",
+                "iocs": "b93cba4829a00dabef96036bb6765d20 , , 07fa1e91f99050521a87edc784e83fd5",
+                "modified_date_after": "2020-08-31",
+                "page": 0,
+                "size": 50,
+                "sort": "createdDate:desc  ,, ,id:asc",
+                "sources": "Vision-UI,Intelligence,Triage-1,Vision-UI,Triage-1",
+            }
+        ]
 
         mock_post.return_value.status_code = 200
         mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -80,12 +82,12 @@ class TestListQuarantineJobsAction(unittest.TestCase):
                 "autoQuarantine": True,
                 "iocs": [
                     "b93cba4829a00dabef96036bb6765d20",  # pragma: allowlist secret
-                    "07fa1e91f99050521a87edc784e83fd5"  # pragma: allowlist secret
+                    "07fa1e91f99050521a87edc784e83fd5",  # pragma: allowlist secret
                 ],
                 "sources": ["Vision-UI", "Intelligence", "Triage-1"],
                 "includeStatus": ["COMPLETED", "FAILED"],
                 "excludeStatus": ["NEW", "QUEUED"],
-                "modifiedDateAfter": "2020-08-31T00:00:00.000000Z"
+                "modifiedDateAfter": "2020-08-31T00:00:00.000000Z",
             }
         }
         expected_params = {
@@ -96,12 +98,13 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         }
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_FILTER_JOBS}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
             data=json.dumps(expected_data),
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.post")
     def test_list_quarantine_jobs_expired_token_pass(self, mock_post):
@@ -112,10 +115,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{
-            "auto_quarantine": True,
-            "exclude_quarantine_emails": True
-        }]
+        self.test_json["parameters"] = [{"auto_quarantine": True, "exclude_quarantine_emails": True}]
 
         post_response_1 = requests.Response()
         post_response_1._content = b'{"error": "invalid_token", "error_description": "<dummy_token>"}'
@@ -153,19 +153,28 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         }
         expected_calls = [
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=cofensevision_config.ACTION_HEADER,
-                params=expected_params, data=json.dumps(expected_data),
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_FILTER_JOBS}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                headers=cofensevision_config.ACTION_HEADER,
+                params=expected_params,
+                data=json.dumps(expected_data),
             ),
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA,
-                headers=cofensevision_config.TOKEN_HEADER),
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                data=cofensevision_config.TOKEN_DATA,
+                headers=cofensevision_config.TOKEN_HEADER,
+            ),
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=cofensevision_config.ACTION_HEADER,
-                params=expected_params, data=json.dumps(expected_data),
-            )
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_FILTER_JOBS}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                headers=cofensevision_config.ACTION_HEADER,
+                params=expected_params,
+                data=json.dumps(expected_data),
+            ),
         ]
         mock_post.assert_has_calls(expected_calls)
 
@@ -178,10 +187,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True)
 
-        self.test_json['parameters'] = [{
-            "auto_quarantine": True,
-            "exclude_quarantine_emails": True
-        }]
+        self.test_json["parameters"] = [{"auto_quarantine": True, "exclude_quarantine_emails": True}]
 
         post_response_1 = requests.Response()
         post_response_1._content = b'{"access_token": "<dummy_token>"}'
@@ -214,14 +220,20 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         }
         expected_calls = [
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_TOKEN}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, data=cofensevision_config.TOKEN_DATA,
-                headers=cofensevision_config.TOKEN_HEADER),
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_TOKEN}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                data=cofensevision_config.TOKEN_DATA,
+                headers=cofensevision_config.TOKEN_HEADER,
+            ),
             call(
-                f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
-                timeout=consts.VISION_REQUEST_TIMEOUT, verify=False, headers=cofensevision_config.ACTION_HEADER,
-                params=expected_params, data=json.dumps(expected_data),
-            )
+                f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_FILTER_JOBS}",
+                timeout=consts.VISION_REQUEST_TIMEOUT,
+                verify=False,
+                headers=cofensevision_config.ACTION_HEADER,
+                params=expected_params,
+                data=json.dumps(expected_data),
+            ),
         ]
         mock_post.assert_has_calls(expected_calls)
 
@@ -233,9 +245,11 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         # Save the state file with the invalid JSON string.
         cofensevision_config.set_state_file(raw="Invalid state file")
 
-        self.test_json['parameters'] = [{
-            "page": "non_numeric",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "page": "non_numeric",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -252,9 +266,11 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         # Save the state file with the different client id, token should be removed in the code.
         cofensevision_config.set_state_file(raw='{"client_id": "<other_id>", "token": "This should be popped!"}')
 
-        self.test_json['parameters'] = [{
-            "size": "non_numeric",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "size": "non_numeric",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -265,38 +281,44 @@ class TestListQuarantineJobsAction(unittest.TestCase):
 
     def test_list_quarantine_jobs_invalid_sort_fail(self):
         """Test the list quarantine jobs action with invalid 'sort' parameter."""
-        self.test_json['parameters'] = [{
-            "sort": "invalid,format",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "sort": "invalid,format",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('sort'))
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("sort"))
 
     def test_list_quarantine_jobs_invalid_date_fail(self):
         """Test the list quarantine jobs action with invalid 'modified date after' parameter."""
-        self.test_json['parameters'] = [{
-            "modified_date_after": "invalid_date",
-        }]
+        self.test_json["parameters"] = [
+            {
+                "modified_date_after": "invalid_date",
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
         self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
-        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format('modified date after'))
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_PARAMETER_VALUE.format("modified date after"))
 
     def test_list_quarantine_jobs_invalid_include_status_fail(self):
         """Test the list quarantine jobs action with invalid 'include status' parameter.
 
         Test the invalid state file format. Code should reset the state file.
         """
-        self.test_json['parameters'] = [{
-            "include_status": "NEw,QUEUED",  # API is case sensitive
-        }]
+        self.test_json["parameters"] = [
+            {
+                "include_status": "NEw,QUEUED",  # API is case sensitive
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -304,8 +326,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(
-            ret_val["result_data"][0]["message"],
-            consts.VISION_ERROR_VALUE_LIST.format("include status", ", ".join(consts.VISION_JOB_STATUS))
+            ret_val["result_data"][0]["message"], consts.VISION_ERROR_VALUE_LIST.format("include status", ", ".join(consts.VISION_JOB_STATUS))
         )
 
     def test_list_quarantine_jobs_invalid_exclude_status_fail(self):
@@ -313,9 +334,11 @@ class TestListQuarantineJobsAction(unittest.TestCase):
 
         Test the invalid state file format. Code should reset the state file.
         """
-        self.test_json['parameters'] = [{
-            "exclude_status": "NEw,QUEUED",  # API is case sensitive
-        }]
+        self.test_json["parameters"] = [
+            {
+                "exclude_status": "NEw,QUEUED",  # API is case sensitive
+            }
+        ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -323,8 +346,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(
-            ret_val["result_data"][0]["message"],
-            consts.VISION_ERROR_VALUE_LIST.format("exclude status", ", ".join(consts.VISION_JOB_STATUS))
+            ret_val["result_data"][0]["message"], consts.VISION_ERROR_VALUE_LIST.format("exclude status", ", ".join(consts.VISION_JOB_STATUS))
         )
 
     @patch("cofensevision_utils.requests.post")
@@ -335,7 +357,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{}]
+        self.test_json["parameters"] = [{}]
 
         mock_post.return_value.status_code = 500
         mock_post.return_value.headers = cofensevision_config.DEFAULT_HEADERS
@@ -360,12 +382,13 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         }
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_FILTER_JOBS}",
             headers=cofensevision_config.ACTION_HEADER,
             timeout=consts.VISION_REQUEST_TIMEOUT,
             params=expected_params,
             data=json.dumps(expected_data),
-            verify=False)
+            verify=False,
+        )
 
     @patch("cofensevision_utils.requests.post")
     def test_list_quarantine_jobs_empty_response_fail(self, mock_post):
@@ -375,11 +398,11 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         """
         cofensevision_config.set_state_file(client_id=True, access_token=True)
 
-        self.test_json['parameters'] = [{}]
+        self.test_json["parameters"] = [{}]
 
         mock_post.return_value.status_code = 200
         mock_post.return_value.headers = {}
-        mock_post.return_value.text = ''
+        mock_post.return_value.text = ""
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -400,10 +423,10 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         }
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{consts.VISION_ENDPOINT_FILTER_JOBS}',
+            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_FILTER_JOBS}",
             timeout=consts.VISION_REQUEST_TIMEOUT,
             verify=False,
             headers=cofensevision_config.ACTION_HEADER,
             params=expected_params,
-            data=json.dumps(expected_data)
+            data=json.dumps(expected_data),
         )
