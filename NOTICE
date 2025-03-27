@@ -1,0 +1,50 @@
+Splunk SOAR Cofense Vision
+Copyright (c) 2023-2025 Cofense
+
+Third Party Software Attributions:
+
+Name: beautifulsoup4
+Version: 4.11.1
+Author: Leonard Richardson
+License: MIT
+
+Name: certifi
+Version: 2025.1.31
+Author: Kenneth Reitz
+License: MPL-2.0
+
+Name: charset-normalizer
+Version: 2.1.1
+Author: Ahmed TAHRI @Ousret
+License: MIT
+
+Name: idna
+Version: 3.10
+Author: 
+License: 
+
+Name: python-dateutil
+Version: 2.8.2
+Author: Gustavo Niemeyer
+License: Dual License
+
+Name: requests
+Version: 2.28.1
+Author: Kenneth Reitz
+License: Apache 2.0
+
+Name: six
+Version: 1.17.0
+Author: Benjamin Peterson
+License: MIT
+
+Name: soupsieve
+Version: 2.6
+Author: 
+License: 
+
+Name: urllib3
+Version: 1.26.20
+Author: Andrey Petrov
+License: MIT
+
