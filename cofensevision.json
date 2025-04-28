@@ -16,8 +16,8 @@
         }
     ],
     "license": "Copyright (c) 2023-2025 Cofense",
-    "app_version": "1.0.1",
-    "utctime_updated": "2022-12-14T12:01:06.985053Z",
+    "app_version": "1.0.2",
+    "utctime_updated": "2025-04-28T19:03:07.159726Z",
     "package_name": "phantom_cofensevision",
     "main_module": "cofensevision_connector.py",
     "min_phantom_version": "5.5.0",
