@@ -1,9 +1,9 @@
 # Cofense Vision
 
-Publisher: Cofense \
-Connector Version: 1.0.2 \
-Product Vendor: Cofense \
-Product Name: Cofense Vision \
+Publisher: Cofense <br>
+Connector Version: 1.0.2 <br>
+Product Vendor: Cofense <br>
+Product Name: Cofense Vision <br>
 Minimum Product Version: 5.5.0
 
 This app implements investigative and generic actions to quarantine emails, manage IOCs, search messages, download messages and their attachments
@@ -21,35 +21,35 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[get message metadata](#action-get-message-metadata) - Retrieves the metadata of the message that matches the specified internet message ID and recipient email address \
-[get message](#action-get-message) - Fetches full content of an email and saves it as a zip file to the Vault \
-[get message attachment](#action-get-message-attachment) - Fetches an attachment by using its MD5 or SHA256 hash and saves it to the Vault \
-[list quarantine jobs](#action-list-quarantine-jobs) - Fetches a list of matching quarantine jobs \
-[create quarantine job](#action-create-quarantine-job) - Creates a new quarantine job \
-[restore quarantine job](#action-restore-quarantine-job) - Restores emails quarantined by the job identified by the ID \
-[list message searches](#action-list-message-searches) - Retrieves the list of searches \
-[get message search](#action-get-message-search) - Retrieves the search identified by an ID \
-[get quarantine job](#action-get-quarantine-job) - Retrieves quarantine job identified by the ID \
-[approve quarantine job](#action-approve-quarantine-job) - Approves the quarantine job identified by the ID. When the Auto Quarantine feature is configured to require manual approvals, this endpoint can approve the pending quarantine jobs \
-[delete quarantine job](#action-delete-quarantine-job) - Deletes the quarantine job identified by the ID \
-[get messagesearch results](#action-get-messagesearch-results) - Retrieves the results for the search identified by the search ID \
-[delete ioc](#action-delete-ioc) - Deletes a single active or expired IOC from the local IOC Repository \
-[stop quarantine job](#action-stop-quarantine-job) - Issues a request to stop the quarantine job identified by ID \
-[create message search](#action-create-message-search) - Creates a new search based on the user-specified filters \
-[get last ioc](#action-get-last-ioc) - Retrieves the last updated IOC from the local IOC Repository. It may return an active or an expired IOC \
-[update iocs](#action-update-iocs) - Updates one or more IOCs stored in the local IOC repository \
-[update ioc](#action-update-ioc) - Updates the IOC identified by its unique MD5 ID \
-[list iocs](#action-list-iocs) - Lists the IOCs stored in the local IOC Repository \
-[get ioc](#action-get-ioc) - Retrieves the IOC identified by its unique MD5 ID \
-[list searchable headers](#action-list-searchable-headers) - Retrieves a list of configured header keys that can be used to create a message search \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[get message metadata](#action-get-message-metadata) - Retrieves the metadata of the message that matches the specified internet message ID and recipient email address <br>
+[get message](#action-get-message) - Fetches full content of an email and saves it as a zip file to the Vault <br>
+[get message attachment](#action-get-message-attachment) - Fetches an attachment by using its MD5 or SHA256 hash and saves it to the Vault <br>
+[list quarantine jobs](#action-list-quarantine-jobs) - Fetches a list of matching quarantine jobs <br>
+[create quarantine job](#action-create-quarantine-job) - Creates a new quarantine job <br>
+[restore quarantine job](#action-restore-quarantine-job) - Restores emails quarantined by the job identified by the ID <br>
+[list message searches](#action-list-message-searches) - Retrieves the list of searches <br>
+[get message search](#action-get-message-search) - Retrieves the search identified by an ID <br>
+[get quarantine job](#action-get-quarantine-job) - Retrieves quarantine job identified by the ID <br>
+[approve quarantine job](#action-approve-quarantine-job) - Approves the quarantine job identified by the ID. When the Auto Quarantine feature is configured to require manual approvals, this endpoint can approve the pending quarantine jobs <br>
+[delete quarantine job](#action-delete-quarantine-job) - Deletes the quarantine job identified by the ID <br>
+[get messagesearch results](#action-get-messagesearch-results) - Retrieves the results for the search identified by the search ID <br>
+[delete ioc](#action-delete-ioc) - Deletes a single active or expired IOC from the local IOC Repository <br>
+[stop quarantine job](#action-stop-quarantine-job) - Issues a request to stop the quarantine job identified by ID <br>
+[create message search](#action-create-message-search) - Creates a new search based on the user-specified filters <br>
+[get last ioc](#action-get-last-ioc) - Retrieves the last updated IOC from the local IOC Repository. It may return an active or an expired IOC <br>
+[update iocs](#action-update-iocs) - Updates one or more IOCs stored in the local IOC repository <br>
+[update ioc](#action-update-ioc) - Updates the IOC identified by its unique MD5 ID <br>
+[list iocs](#action-list-iocs) - Lists the IOCs stored in the local IOC Repository <br>
+[get ioc](#action-get-ioc) - Retrieves the IOC identified by its unique MD5 ID <br>
+[list searchable headers](#action-list-searchable-headers) - Retrieves a list of configured header keys that can be used to create a message search <br>
 [download logs](#action-download-logs) - Downloads the log files for all Cofense Vision components
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 The test connectivity action will first check if the Cofense Vision server is up. If the server is up and running, it will use the credentials to generate the access token. Once the token is received, it will be stored in the state file.
@@ -66,7 +66,7 @@ No Output
 
 Retrieves the metadata of the message that matches the specified internet message ID and recipient email address
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -120,7 +120,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetches full content of an email and saves it as a zip file to the Vault
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -165,7 +165,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetches an attachment by using its MD5 or SHA256 hash and saves it to the Vault
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -210,7 +210,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Fetches a list of matching quarantine jobs
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -289,7 +289,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Creates a new quarantine job
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -338,7 +338,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Restores emails quarantined by the job identified by the ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -363,7 +363,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves the list of searches
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -407,7 +407,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves the search identified by an ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -444,7 +444,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves quarantine job identified by the ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -505,7 +505,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Approves the quarantine job identified by the ID. When the Auto Quarantine feature is configured to require manual approvals, this endpoint can approve the pending quarantine jobs
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -532,7 +532,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Deletes the quarantine job identified by the ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -557,7 +557,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves the results for the search identified by the search ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -615,7 +615,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Deletes a single active or expired IOC from the local IOC Repository
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -658,7 +658,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Issues a request to stop the quarantine job identified by ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -707,7 +707,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Creates a new search based on the user-specified filters
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -778,7 +778,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves the last updated IOC from the local IOC Repository. It may return an active or an expired IOC
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -820,7 +820,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Updates one or more IOCs stored in the local IOC repository
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -877,7 +877,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Updates the IOC identified by its unique MD5 ID
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -916,7 +916,7 @@ summary.total_objects_successful | numeric | | |
 
 Lists the IOCs stored in the local IOC Repository
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -967,7 +967,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves the IOC identified by its unique MD5 ID
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -1010,7 +1010,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieves a list of configured header keys that can be used to create a message search
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -1032,7 +1032,7 @@ summary.total_objects_successful | numeric | | |
 
 Downloads the log files for all Cofense Vision components
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
