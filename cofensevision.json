@@ -7,7 +7,7 @@
     "logo": "logo_cofensevision.svg",
     "logo_dark": "logo_cofensevision_dark.svg",
     "product_name": "Cofense Vision",
-    "python_version": "3",
+    "python_version": "3, 3.13",
     "product_version_regex": ".*",
     "publisher": "Cofense",
     "contributors": [
@@ -15,7 +15,7 @@
             "name": "Mike Saurbaugh"
         }
     ],
-    "license": "Copyright (c) 2023-2025 Cofense",
+    "license": "Copyright (c) 2023-2026 Cofense",
     "app_version": "1.0.2",
     "utctime_updated": "2025-04-28T19:03:07.159726Z",
     "package_name": "phantom_cofensevision",
@@ -4997,5 +4997,11 @@
             },
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }

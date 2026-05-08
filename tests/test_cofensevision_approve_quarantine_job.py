@@ -1,6 +1,6 @@
 # File: test_cofensevision_approve_quarantine_job.py
 #
-# Copyright (c) 2023-2025 Cofense
+# Copyright (c) 2023-2026 Cofense
 #
 # This unpublished material is proprietary to Cofense.
 # All rights reserved. The methods and
