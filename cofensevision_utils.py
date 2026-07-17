@@ -533,6 +533,7 @@ class CofenseVisionUtils:
             final_list.append(",".join(sort_property))
 
         return phantom.APP_SUCCESS, final_list
+
     @staticmethod
     def quote_path_segment(value):
         """Encode an untrusted value as one URL path segment."""
