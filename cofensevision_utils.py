@@ -351,7 +351,7 @@ class CofenseVisionUtils:
 
         try:
             response = request_func(
-                url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", False), **kwargs
+                url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", True), **kwargs
             )
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)

@@ -36,6 +36,7 @@
         "verify_server_cert": {
             "description": "Verify Server Certificate",
             "data_type": "boolean",
+            "default": true,
             "order": 1
         },
         "client_id": {
