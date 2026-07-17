@@ -74,6 +74,21 @@ class TestGetMessageAttachmentAction(unittest.TestCase):
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
 
+    def test_get_message_attachment_rejects_path_filename(self):
+        """Reject filenames that can escape the connector's temporary vault directory."""
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
+        self.test_json["parameters"] = [
+            {
+                "md5": "098f6bcd4621d373cade4e832627b4f6",  # pragma: allowlist secret
+                "filename": "../outside.txt",
+            }
+        ]
+
+        ret_val = json.loads(self.connector._handle_action(json.dumps(self.test_json), None))
+
+        self.assertEqual(ret_val["status"], "failed")
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_FILENAME)
+
     @requests_mock.Mocker(real_http=True)
     def test_get_message_attachment_pass(self, mock_get):
         """

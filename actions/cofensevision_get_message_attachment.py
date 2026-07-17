@@ -41,6 +41,8 @@ class GetMessageAttachmentAction(BaseAction):
 
         # Check the existence of extension in the filename
         filename = self._param["filename"]
+        if filename != os.path.basename(filename) or "\\" in filename or filename in {".", ".."}:
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_FILENAME)
         _, ext = os.path.splitext(filename)
         if not ext or ext == ".":
             return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_FILENAME)
