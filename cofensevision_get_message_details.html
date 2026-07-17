@@ -136,7 +136,7 @@
                   <td>
                     <a class="no-word-wrap"
                        href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['cofense vision internet message id'], 'value':'{{ message.internetMessageId }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['cofense vision internet message id'], 'value':'{{ message.internetMessageId|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ message.internetMessageId }}
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                       <br>
@@ -145,7 +145,7 @@
                   <td>
                     <a class="no-word-wrap"
                        href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['md5'], 'value':'{{ message.md5 }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['md5'], 'value':'{{ message.md5|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ message.md5 }}
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                       <br>
@@ -154,7 +154,7 @@
                   <td>
                     <a class="no-word-wrap"
                        href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['sha1'], 'value':'{{ message.sha1 }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['sha1'], 'value':'{{ message.sha1|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ message.sha1 }}
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                       <br>
@@ -163,7 +163,7 @@
                   <td>
                     <a class="no-word-wrap"
                        href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['sha256'], 'value':'{{ message.sha256 }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['sha256'], 'value':'{{ message.sha256|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ message.sha256 }}
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                       <br>
