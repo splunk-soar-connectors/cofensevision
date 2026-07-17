@@ -41,7 +41,7 @@ class UpdateIocAction(BaseAction):
         # Construct the body
         data = {"data": {"type": "ioc", "metadata": {"quarantine": {"expires_at": expires_at}}}}
 
-        endpoint = f"{consts.VISION_ENDPOINT_IOC}/{self._param['id']}"
+        endpoint = f"{consts.VISION_ENDPOINT_IOC}/{self._connector.util.quote_path_segment(self._param['id'])}"
         status, response = self._connector.util.make_rest_call_helper(endpoint, self._action_result, method="put", json=data)
         if phantom.is_fail(status):
             return self._action_result.get_status()
