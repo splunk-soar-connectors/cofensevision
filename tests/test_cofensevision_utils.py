@@ -428,6 +428,10 @@ class TestGeneralCases(unittest.TestCase):
         self.assertIsNone(response)
         self.assertEqual(self.action_result.get_message(), "Invalid method: invalid_method")
 
+    def test_quote_path_segment(self):
+        """Encode slashes and traversal characters inside an API identifier."""
+        self.assertEqual(self.util.quote_path_segment("../quarantineJobs"), "..%2FquarantineJobs")
+
     @patch("cofensevision_utils.requests.get")
     def test_make_rest_call_throw_exception(self, mock_get):
         """Test the _make_rest_call for error case."""

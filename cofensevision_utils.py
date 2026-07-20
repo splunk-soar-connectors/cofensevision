@@ -22,6 +22,7 @@
 
 
 import os
+import urllib.parse
 import uuid
 from collections import OrderedDict
 from datetime import datetime
@@ -351,7 +352,7 @@ class CofenseVisionUtils:
 
         try:
             response = request_func(
-                url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", False), **kwargs
+                url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", True), **kwargs
             )
         except Exception as e:
             error_message = self._get_error_message_from_exception(e)
@@ -532,3 +533,8 @@ class CofenseVisionUtils:
             final_list.append(",".join(sort_property))
 
         return phantom.APP_SUCCESS, final_list
+
+    @staticmethod
+    def quote_path_segment(value):
+        """Encode an untrusted value as one URL path segment."""
+        return urllib.parse.quote(str(value), safe="")

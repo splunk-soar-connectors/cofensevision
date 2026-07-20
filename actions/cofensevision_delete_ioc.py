@@ -34,7 +34,7 @@ class DeleteIocAction(BaseAction):
         md5_id = self._param[consts.VISION_PARAM_IOC_MD5_ID]
         ioc_source = self._param[consts.VISION_PARAM_IOC_SOURCE]
 
-        endpoint = f"{consts.VISION_ENDPOINT_IOC}/{md5_id}"
+        endpoint = f"{consts.VISION_ENDPOINT_IOC}/{self._connector.util.quote_path_segment(md5_id)}"
         headers = {}
         headers[consts.VISION_IOC_SOURCE_HEADER] = ioc_source
 
