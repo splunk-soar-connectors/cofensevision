@@ -1,6 +1,1 @@
 **Unreleased**
-
-* Enabled TLS certificate verification by default.
-* Rejected attachment filenames containing directory paths.
-* Encoded IOC identifiers before adding them to API paths.
-* Escaped Cofense Vision API values embedded in widget JavaScript contexts.

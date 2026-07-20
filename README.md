@@ -1,7 +1,7 @@
 # Cofense Vision
 
 Publisher: Cofense <br>
-Connector Version: 1.1.0 <br>
+Connector Version: 1.1.1 <br>
 Product Vendor: Cofense <br>
 Product Name: Cofense Vision <br>
 Minimum Product Version: 5.5.0
