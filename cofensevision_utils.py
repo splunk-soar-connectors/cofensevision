@@ -22,6 +22,7 @@
 
 
 import os
+import re
 import urllib.parse
 import uuid
 from collections import OrderedDict
@@ -93,6 +94,11 @@ class CofenseVisionUtils:
         return error_text
 
     # Validations
+    @staticmethod
+    def is_valid_ioc_id(value):
+        """Return whether a value is a 32-character hexadecimal IOC identifier."""
+        return isinstance(value, str) and re.fullmatch(r"[0-9a-fA-F]{32}", value) is not None
+
     def validate_integer(self, action_result, parameter, key, allow_zero=False, max_value=None):
         """Check if the provided input parameter value is valid.
 

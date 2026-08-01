@@ -49,6 +49,20 @@ class TestUpdateIocAction(unittest.TestCase):
         return super().setUp()
 
     @patch("cofensevision_utils.requests.put")
+    def test_update_ioc_rejects_dot_segments(self, mock_put):
+        """Reject exact dot segments before constructing the IOC endpoint."""
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
+        for ioc_id in (".", ".."):
+            with self.subTest(ioc_id=ioc_id):
+                connector = CofenseVisionConnector()
+                test_json = dict(self.test_json)
+                test_json["parameters"] = [{"id": ioc_id, "expires_at": "2080-05-15"}]
+                result = json.loads(connector._handle_action(json.dumps(test_json), None))
+                self.assertEqual(result["status"], "failed")
+                self.assertEqual(result["result_data"][0]["message"], consts.VISION_ERROR_INVALID_IOC_ID)
+        mock_put.assert_not_called()
+
+    @patch("cofensevision_utils.requests.put")
     def test_update_ioc_pass(self, mock_put):
         """Test the valid case for the update ioc action.
 
@@ -80,25 +94,11 @@ class TestUpdateIocAction(unittest.TestCase):
 
     @patch("cofensevision_utils.requests.put")
     def test_update_ioc_invalid_id_fail(self, mock_put):
-        """Test the update ioc action with invalid id parameter .
-
-        Token is available in the state file.
-        Patch the put() to return the valid response.
-        """
+        """Test that an invalid IOC ID fails before the request."""
         cofensevision_config.set_state_file(client_id=True, access_token=True)
-
-        EXPECTED_DATA = {
-            "status": "UNPROCESSABLE_ENTITY",
-            "message": "Validation failed for request data",
-            "details": ["id for IOCs should be a 32-character MD5"],
-        }
 
         PARAMS = {"id": "7a78", "expires_at": "2080-05-15"}
         self.test_json["parameters"] = [PARAMS]
-
-        mock_put.return_value.status_code = 422
-        mock_put.return_value.headers = cofensevision_config.ACTION_HEADER
-        mock_put.return_value.json.return_value = EXPECTED_DATA
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -106,13 +106,8 @@ class TestUpdateIocAction(unittest.TestCase):
         self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
         self.assertEqual(ret_val["status"], "failed")
 
-        mock_put.assert_called_with(
-            f"{self.test_json['config']['base_url']}{consts.VISION_ENDPOINT_IOC}/{PARAMS['id']}",
-            timeout=consts.VISION_REQUEST_TIMEOUT,
-            verify=False,
-            headers=cofensevision_config.ACTION_HEADER,
-            json=EXPECTED_BODY,
-        )
+        self.assertEqual(ret_val["result_data"][0]["message"], consts.VISION_ERROR_INVALID_IOC_ID)
+        mock_put.assert_not_called()
 
     @patch("cofensevision_utils.requests.put")
     def test_update_ioc_server_fail(self, mock_put):

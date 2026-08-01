@@ -70,6 +70,7 @@ VISION_ERROR_INVALID_MD5_VALUE = "Please provide a valid value for MD5 Hash in t
 VISION_ERROR_INVALID_SHA256_VALUE = "Please provide a valid value for SHA256 Hash in the attachment_hashes parameter"
 VISION_ERROR_INVALID_HASH_TYPE_VALUE = "Please provide a valid hashType in attachment_hashes parameter. Allowed values are : SHA256, MD5 "
 VISION_ERROR_INVALID_HASH_VALUE = "Please provide a valid value for attachment_hashes parameter. "
+VISION_ERROR_INVALID_IOC_ID = "Please provide a 32-character hexadecimal IOC ID"
 VISION_ERROR_INVALID_DATE_FORMAT = "Please provide a value of {} parameter in valid date format"
 VISION_ERROR_INVALID_HEADER = "Please provide a valid value of headers parameter"
 VISION_ERROR_VALUE_LIST = "Please provide a valid value for '{}' parameter. Valid values are: {}"

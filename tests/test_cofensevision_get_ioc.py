@@ -41,6 +41,20 @@ class TestGetIOCAction(unittest.TestCase):
         return super().setUp()
 
     @patch("cofensevision_utils.requests.get")
+    def test_get_ioc_rejects_dot_segments(self, mock_get):
+        """Reject exact dot segments before constructing the IOC endpoint."""
+        cofensevision_config.set_state_file(client_id=True, access_token=True)
+        for ioc_id in (".", ".."):
+            with self.subTest(ioc_id=ioc_id):
+                connector = CofenseVisionConnector()
+                test_json = dict(self.test_json)
+                test_json["parameters"] = [{"id": ioc_id, "source": "Triage-1"}]
+                result = json.loads(connector._handle_action(json.dumps(test_json), None))
+                self.assertEqual(result["status"], "failed")
+                self.assertEqual(result["result_data"][0]["message"], consts.VISION_ERROR_INVALID_IOC_ID)
+        mock_get.assert_not_called()
+
+    @patch("cofensevision_utils.requests.get")
     def test_get_ioc_pass(self, mock_get):
         """Test the valid case for the get ioc action.
 

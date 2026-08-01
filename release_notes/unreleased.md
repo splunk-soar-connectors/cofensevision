@@ -1,1 +1,3 @@
 **Unreleased**
+
+* Validated IOC identifiers as 32-character hexadecimal MD5 values before API requests.
