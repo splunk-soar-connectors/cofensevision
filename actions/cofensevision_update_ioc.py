@@ -32,6 +32,9 @@ class UpdateIocAction(BaseAction):
 
     def execute(self):
         """Execute the update ioc action."""
+        if not self._connector.util.is_valid_ioc_id(self._param["id"]):
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_IOC_ID)
+
         # Validate the date
         expires_at = self._param["expires_at"]
         status, expires_at = self._connector.util.parse_date_string(expires_at)

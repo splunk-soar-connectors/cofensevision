@@ -33,6 +33,8 @@ class GetIocAction(BaseAction):
         """Execute the get IOC action."""
         md5_id = self._param[consts.VISION_PARAM_IOC_MD5_ID]
         ioc_source = self._param[consts.VISION_PARAM_IOC_SOURCE]
+        if not self._connector.util.is_valid_ioc_id(md5_id):
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_IOC_ID)
 
         endpoint = f"{consts.VISION_ENDPOINT_IOC}/{self._connector.util.quote_path_segment(md5_id)}"
         headers = {}
