@@ -16,7 +16,7 @@
         }
     ],
     "license": "Copyright (c) 2023-2026 Cofense",
-    "app_version": "2.0.0",
+    "app_version": "3.0.0",
     "utctime_updated": "2026-08-04T00:09:55.826166Z",
     "package_name": "phantom_cofensevision",
     "main_module": "cofensevision_connector.py",
@@ -50,6 +50,30 @@
             "data_type": "password",
             "required": true,
             "order": 3
+        },
+        "start_time": {
+            "description": "Start Time (Default: 1d). The date from which the cluster emails must be fetched",
+            "data_type": "string",
+            "default": "1d",
+            "order": 4
+        },
+        "start_time_poll_now": {
+            "description": "Start Time for Poll Now (Default: 1d). The date from which the cluster emails must be fetched",
+            "data_type": "string",
+            "default": "1d",
+            "order": 5
+        },
+        "max_artifacts": {
+            "description": "Maximum number of artifacts in a single container (Default: 100)",
+            "data_type": "numeric",
+            "default": 100,
+            "order": 6
+        },
+        "ingestion_lag": {
+            "description": "Minutes the polling window stays behind the current time, so emails committed late are still ingested (Default: 5). An email committed later than this is not ingested",
+            "data_type": "numeric",
+            "default": 5,
+            "order": 7
         }
     },
     "actions": [
@@ -327,6 +351,27 @@
                     "data_type": "string"
                 },
                 {
+                    "data_path": "action_result.data.*.messageIdHeader",
+                    "data_type": "string",
+                    "example_values": [
+                        "<852266475.122.1788931518336@vision.cofenseselab.cofense-vision.com>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emailEnvironmentId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.networkMessageIdHeader",
+                    "data_type": "string",
+                    "example_values": [
+                        "face5fe2-79da-4d75-a9f0-08df0e32bcdc"
+                    ]
+                },
+                {
                     "data_path": "action_result.summary",
                     "data_type": "string"
                 },
@@ -563,6 +608,10 @@
                     ],
                     "column_name": "Vault ID",
                     "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.es_attachment_id",
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.summary.vault_id",
@@ -806,6 +855,10 @@
                     "column_order": 2
                 },
                 {
+                    "data_path": "action_result.data.*.es_attachment_id",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.summary.vault_id",
                     "data_type": "string",
                     "example_values": [
@@ -909,6 +962,16 @@
                     "description": "Whether to list only auto quarantine jobs (true) or both (false)",
                     "data_type": "boolean",
                     "order": 9
+                },
+                "cluster_id": {
+                    "description": "One or more IDs of the cluster to filter on. Comma-separated values are supported",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "order": 10
                 }
             },
             "output": [
@@ -1003,6 +1066,16 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.parameter.cluster_id",
+                    "data_type": "string",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        "45,78,99"
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.autoQuarantine",
                     "data_type": "boolean",
                     "example_values": [
@@ -1036,6 +1109,72 @@
                     ],
                     "contains": [
                         "cofense vision quarantine job id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aiClusterId",
+                    "data_type": "string",
+                    "example_values": [
+                        45
+                    ],
+                    "contains": [
+                        "cofense vision cluster id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.detection",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.isClusterInitiated",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIOCs",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.matchingSources",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.whoClickedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoDeletedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.willRetry",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
                     ]
                 },
                 {
@@ -1245,7 +1384,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.searchId",
-                    "data_type": "string"
+                    "data_type": "numeric"
                 },
                 {
                     "data_path": "action_result.data.*.stopRequested",
@@ -1253,6 +1392,169 @@
                     "example_values": [
                         true,
                         false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "QUARANTINE_ERROR"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isRead",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.already",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.ingestEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.clickDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedAny",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedIOC",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deleteDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deletedByUser",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundFolderType",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.hasCalendarEvent",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.createdBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "crestdatauser"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.read",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.unRead",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.deleted",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedAny",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedIoc",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.notAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.calendarEvents",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "DONE_NO_DELETER"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoClickedRetries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedRetries",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedNotAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIocInfo.*.metadata.quarantine.wildcard",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIocInfo.*.metadata.quarantine.false_positive",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIocInfo.*.metadata.quarantine.email_restore_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIocInfo.*.metadata.quarantine.recipient_restore_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIocInfo.*.metadata.quarantine.email_quarantine_success",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIocInfo.*.metadata.quarantine.recipient_quarantine_success",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
                     ]
                 },
                 {
@@ -1480,6 +1782,169 @@
                     "example_values": [
                         true,
                         false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.detection",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.willRetry",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aiClusterId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "NEW"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isRead",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.already",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.ingestEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.clickDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedAny",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedIOC",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deleteDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deletedByUser",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundFolderType",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.hasCalendarEvent",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.createdBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "crestdatauser"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoClickedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoDeletedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.isClusterInitiated",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.read",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.unRead",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.deleted",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedAny",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedIoc",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.notAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.calendarEvents",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedStatus",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoClickedRetries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedRetries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedNotAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
                     ]
                 },
                 {
@@ -1733,11 +2198,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.partialIngest",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.receivedAfterDate",
@@ -1894,11 +2355,7 @@
                 },
                 {
                     "data_path": "action_result.data.*.partialIngest",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
+                    "data_type": "string"
                 },
                 {
                     "data_path": "action_result.data.*.receivedAfterDate",
@@ -2239,6 +2696,169 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.detection",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.willRetry",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aiClusterId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "NEW"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isRead",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.already",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.ingestEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.clickDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedAny",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedIOC",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deleteDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deletedByUser",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundFolderType",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.hasCalendarEvent",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.createdBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "crestdatauser"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoClickedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoDeletedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.isClusterInitiated",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.read",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.unRead",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.deleted",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedAny",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedIoc",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.notAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.calendarEvents",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedStatus",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoClickedRetries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedRetries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedNotAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
                     "data_path": "action_result.summary",
                     "data_type": "string"
                 },
@@ -2503,7 +3123,10 @@
                 },
                 {
                     "data_path": "action_result.parameter.sort",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "createdBy:desc,id:asc"
+                    ]
                 },
                 {
                     "data_path": "action_result.data.*.attachments.*.contentType",
@@ -2700,6 +3323,27 @@
                 {
                     "data_path": "action_result.data.*.textBody",
                     "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.messageIdHeader",
+                    "data_type": "string",
+                    "example_values": [
+                        "<852266475.122.1788931518336@vision.cofenseselab.cofense-vision.com>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emailEnvironmentId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.networkMessageIdHeader",
+                    "data_type": "string",
+                    "example_values": [
+                        "face5fe2-79da-4d75-a9f0-08df0e32bcdc"
+                    ]
                 },
                 {
                     "data_path": "action_result.summary.total_results",
@@ -3163,6 +3807,175 @@
                     "example_values": [
                         true,
                         false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.detection",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.willRetry",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.aiClusterId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.count",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.statusCounts.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "QUARANTINE_ERROR"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isRead",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.already",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.ingestEnvId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.clickDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedAny",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.isClickedIOC",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deleteDetails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.deletedByUser",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.foundFolderType",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.hasCalendarEvent",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.createdBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "crestdatauser"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoClickedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoDeletedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.isClusterInitiated",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.read",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.unRead",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.deleted",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedAny",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedIoc",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.notAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.calendarEvents",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedStatus",
+                    "data_type": "string",
+                    "example_values": [
+                        "DONE_NO_DELETER"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoClickedRetries",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.whoDeletedRetries",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts.clickedNotAvailable",
+                    "data_type": "numeric",
+                    "example_values": [
+                        2
                     ]
                 },
                 {
@@ -3748,6 +4561,43 @@
                     "data_type": "string",
                     "example_values": [
                         "ioc"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.source.created_by",
+                    "data_type": "string",
+                    "example_values": [
+                        "Devon@GJBData.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.false_positive",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.email_restore_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.recipient_restore_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.email_quarantine_success",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3466
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.recipient_quarantine_success",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10674
                     ]
                 },
                 {
@@ -4516,6 +5366,43 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.metadata.source.created_by",
+                    "data_type": "string",
+                    "example_values": [
+                        "Devon@GJBData.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.false_positive",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.email_restore_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.recipient_restore_count",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.email_quarantine_success",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3466
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.metadata.quarantine.recipient_quarantine_success",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10674
+                    ]
+                },
+                {
                     "data_path": "action_result.summary.total_iocs",
                     "data_type": "numeric",
                     "example_values": [
@@ -4524,7 +5411,10 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Total iocs: 10"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
@@ -4793,15 +5683,24 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Total searchable headers: 25"
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {
@@ -4962,6 +5861,10 @@
                     "column_order": 2
                 },
                 {
+                    "data_path": "action_result.data.*.es_attachment_id",
+                    "data_type": "string"
+                },
+                {
                     "data_path": "action_result.summary.vault_id",
                     "data_type": "string",
                     "example_values": [
@@ -4996,6 +5899,1817 @@
             "render": {
                 "type": "table"
             },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "list clusters",
+            "identifier": "list_clusters",
+            "description": "Retrieves clusters that contain at least one email with an ingestion timestamp that falls in the requested date and time range",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "page": {
+                    "description": "Start page of the results. The value must be a positive integer or 0",
+                    "data_type": "numeric",
+                    "default": 0,
+                    "order": 0
+                },
+                "size": {
+                    "description": "Number of results per page. The value must be a positive integer up to 2000",
+                    "data_type": "numeric",
+                    "default": 50,
+                    "order": 1
+                },
+                "sort_field": {
+                    "description": "Sort results based on this field",
+                    "data_type": "string",
+                    "value_list": [
+                        "id",
+                        "fromDate",
+                        "toDate",
+                        "emailCount",
+                        "recipientCount",
+                        "similarityLevel",
+                        "title",
+                        "createdDate",
+                        "modifiedDate",
+                        "avgCharacterCount"
+                    ],
+                    "order": 2
+                },
+                "order": {
+                    "description": "Order for the sorted field",
+                    "data_type": "string",
+                    "value_list": [
+                        "asc",
+                        "desc"
+                    ],
+                    "order": 3
+                },
+                "from_date": {
+                    "description": "Emails ingested on or after this date and time. The date and time must be in UTC in ISO 8601 format, for example: 2024-05-31T00:00:00.000Z",
+                    "data_type": "string",
+                    "order": 4
+                },
+                "to_date": {
+                    "description": "Emails ingested before this date and time. The date and time must be in UTC in ISO 8601 format, for example: 2024-05-31T00:00:00.000Z",
+                    "data_type": "string",
+                    "order": 5
+                },
+                "exclude_emails": {
+                    "description": "Whether to remove the email details from the response",
+                    "data_type": "boolean",
+                    "default": false,
+                    "order": 6
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.page",
+                    "data_type": "numeric",
+                    "example_values": [
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.size",
+                    "data_type": "numeric",
+                    "example_values": [
+                        50
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.sort_field",
+                    "data_type": "string",
+                    "example_values": [
+                        "createdDate"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.order",
+                    "data_type": "string",
+                    "example_values": [
+                        "desc"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.from_date",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-05-31T00:00:00.000Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.to_date",
+                    "data_type": "string",
+                    "example_values": [
+                        "2024-06-07T00:00:00.000Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.exclude_emails",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        2
+                    ],
+                    "column_name": "Cluster ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.title",
+                    "data_type": "string",
+                    "example_values": [
+                        "Credential phishing campaign targeting finance"
+                    ],
+                    "column_name": "Title",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.fromDate",
+                    "data_type": "string",
+                    "column_name": "From Date",
+                    "column_order": 5,
+                    "example_values": [
+                        "2025-06-01T08:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.toDate",
+                    "data_type": "string",
+                    "column_name": "To Date",
+                    "column_order": 6,
+                    "example_values": [
+                        "2025-06-01T12:30:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevel",
+                    "data_type": "numeric",
+                    "column_name": "Similarity Level",
+                    "column_order": 4,
+                    "example_values": [
+                        5
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emailCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        47
+                    ],
+                    "column_name": "Email Count",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.recipientCount",
+                    "data_type": "numeric",
+                    "column_name": "Recipient Count",
+                    "column_order": 3,
+                    "example_values": [
+                        287
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.userNote",
+                    "data_type": "string",
+                    "example_values": [
+                        "Escalated to SOC for immediate review."
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.signals",
+                    "data_type": "string",
+                    "example_values": [
+                        "VARIED_URLS",
+                        "VARIED_SENDER"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.iocIds",
+                    "data_type": "string",
+                    "example_values": [
+                        "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.iocInfo",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.avgCharacterCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1145
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.centroids",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.disabledAQ",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.envIds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevelCalculated",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.uniqueSenderCount",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "Urgent: Verify your account"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDate",
+                    "data_type": "string",
+                    "column_name": "Created Date",
+                    "column_order": 7,
+                    "example_values": [
+                        "2025-06-01T07:55:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.modifiedDate",
+                    "data_type": "string",
+                    "column_name": "Modified Date",
+                    "column_order": 8,
+                    "example_values": [
+                        "2025-06-01T13:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobIds",
+                    "data_type": "string",
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ],
+                    "example_values": [
+                        42
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.centroids.centroid1",
+                    "data_type": "numeric",
+                    "example_values": [
+                        -3233901077497987035
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.centroids.centroid3",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.envId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.iocIds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.sender",
+                    "data_type": "string",
+                    "example_values": [
+                        "vision@vision.cofenseselab.cofense-vision.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.messageId",
+                    "data_type": "string",
+                    "example_values": [
+                        "<1234679914.1121.1791784062046@vision.cofenseselab.cofense-vision.com>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.hash1",
+                    "data_type": "numeric",
+                    "example_values": [
+                        -3234041814986375131
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.hash2",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.hash3",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.normalizedTokenCount",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.normalizedContentHash",
+                    "data_type": "string",
+                    "example_values": [
+                        "-6032669796344245314"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.normalizedCharacterCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        462
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.processedOn",
+                    "data_type": "string",
+                    "example_values": [
+                        "2026-10-12T05:48:07.182Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.recipientCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.quarantineJobId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.similarityLevel",
+                    "data_type": "numeric",
+                    "example_values": [
+                        10
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.combinedMessageId",
+                    "data_type": "string",
+                    "example_values": [
+                        "d67c9fec-1f6d-4937-68f3-08df2824558a / <1234679914.1121.1791784062046@vision.cofenseselab.cofense-vision.com>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_clusters",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Total clusters: 1"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get cluster",
+            "identifier": "get_cluster",
+            "description": "Retrieves a single cluster identified by the ID, including the emails in the cluster",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "id": {
+                    "description": "ID of the cluster to retrieve",
+                    "data_type": "numeric",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "order": 0
+                },
+                "exclude_emails": {
+                    "description": "Whether to remove the email details from the response",
+                    "data_type": "boolean",
+                    "default": false,
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        2
+                    ],
+                    "column_name": "Cluster ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.exclude_emails",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.title",
+                    "data_type": "string",
+                    "column_name": "Title",
+                    "column_order": 1,
+                    "example_values": [
+                        "Splunk SOAR Test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.userNote",
+                    "data_type": "string",
+                    "column_name": "User Note",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.signals",
+                    "data_type": "string",
+                    "example_values": [
+                        "VARIED_URLS",
+                        "VARIED_SENDER"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.iocIds",
+                    "data_type": "string",
+                    "example_values": [
+                        "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.iocInfo",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.avgCharacterCount",
+                    "data_type": "numeric",
+                    "column_name": "Avg Character Count",
+                    "column_order": 3,
+                    "example_values": [
+                        1145
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.centroids",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.disabledAQ",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.envIds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevel",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevelCalculated",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.uniqueSenderCount",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.emailCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        47
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipientCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        287
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fromDate",
+                    "data_type": "string",
+                    "example_values": [
+                        "2025-06-01T08:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.toDate",
+                    "data_type": "string",
+                    "example_values": [
+                        "2025-06-01T12:30:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.subject",
+                    "data_type": "string",
+                    "example_values": [
+                        "Urgent: Verify your account"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDate",
+                    "data_type": "string",
+                    "column_name": "Created Date",
+                    "column_order": 4,
+                    "example_values": [
+                        "2025-06-01T07:55:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.modifiedDate",
+                    "data_type": "string",
+                    "column_name": "Modified Date",
+                    "column_order": 5,
+                    "example_values": [
+                        "2025-06-01T13:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobIds",
+                    "data_type": "string",
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.centroids.centroid1",
+                    "data_type": "numeric",
+                    "example_values": [
+                        -3309326476157132231
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.centroids.centroid3",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.envId",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.iocIds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.sender",
+                    "data_type": "string",
+                    "example_values": [
+                        "vision@vision.cofenseselab.cofense-vision.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.messageId",
+                    "data_type": "string",
+                    "example_values": [
+                        "<1085709641.289.1789027601150@vision.cofenseselab.cofense-vision.com>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.hash1",
+                    "data_type": "numeric",
+                    "example_values": [
+                        -1003483466943248855
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.hash2",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.hash3",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.normalizedTokenCount",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.normalizedContentHash",
+                    "data_type": "string",
+                    "example_values": [
+                        "-6457353019152139510"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.signature.normalizedCharacterCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        446
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.processedOn",
+                    "data_type": "string",
+                    "example_values": [
+                        "2026-09-10T08:06:59.275Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.recipientCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.quarantineJobId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.similarityLevel",
+                    "data_type": "numeric",
+                    "example_values": [
+                        8
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails.*.combinedMessageId",
+                    "data_type": "string",
+                    "example_values": [
+                        "05bf32c4-3f14-4741-c0db-08df0f1272f4 / <1085709641.289.1789027601150@vision.cofenseselab.cofense-vision.com>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved the cluster information"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "update cluster",
+            "identifier": "update_cluster",
+            "description": "Updates the cluster identified by the ID",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "id": {
+                    "description": "ID of the cluster to update",
+                    "data_type": "numeric",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "order": 0
+                },
+                "title": {
+                    "description": "Title to be assigned to the cluster",
+                    "data_type": "string",
+                    "order": 1
+                },
+                "note": {
+                    "description": "Note to be added to the cluster",
+                    "data_type": "string",
+                    "order": 2
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        2
+                    ],
+                    "column_name": "Cluster ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.title",
+                    "data_type": "string",
+                    "example_values": [
+                        "Splunk SOAR Test"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.note",
+                    "data_type": "string",
+                    "example_values": [
+                        "Updating for testing"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        2
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.title",
+                    "data_type": "string",
+                    "column_name": "Title",
+                    "column_order": 1,
+                    "example_values": [
+                        "Credential phishing campaign targeting finance dept"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.userNote",
+                    "data_type": "string",
+                    "column_name": "User Note",
+                    "column_order": 2,
+                    "example_values": [
+                        "Escalated to SOC for immediate review."
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.signals",
+                    "data_type": "string",
+                    "example_values": [
+                        "VARIED_URLS",
+                        "VARIED_SENDER"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.iocIds",
+                    "data_type": "string",
+                    "example_values": [
+                        "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.avgCharacterCount",
+                    "data_type": "numeric",
+                    "column_name": "Avg Character Count",
+                    "column_order": 3,
+                    "example_values": [
+                        1145
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDate",
+                    "data_type": "string",
+                    "column_name": "Created Date",
+                    "column_order": 4,
+                    "example_values": [
+                        "2025-06-01T07:55:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.modifiedDate",
+                    "data_type": "string",
+                    "column_name": "Modified Date",
+                    "column_order": 5,
+                    "example_values": [
+                        "2025-06-05T16:42:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobIds",
+                    "data_type": "string",
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emails",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.toDate",
+                    "data_type": "string",
+                    "example_values": [
+                        "2026-09-10T08:06:59.275Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.fromDate",
+                    "data_type": "string",
+                    "example_values": [
+                        "2026-05-14T17:37:40.479Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.centroids.centroid1",
+                    "data_type": "numeric",
+                    "example_values": [
+                        -3309326476157132231
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.centroids.centroid3",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.disabledAQ",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.emailCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4949
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.recipientCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        4949
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevel",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.uniqueSenderCount",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevelCalculated",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.envIds",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully updated the cluster"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "quarantine cluster",
+            "identifier": "quarantine_cluster",
+            "description": "Manually creates a quarantine job for all emails in a cluster that are not already associated with an existing quarantine job for this cluster",
+            "type": "contain",
+            "read_only": false,
+            "parameters": {
+                "id": {
+                    "description": "ID of the cluster to quarantine",
+                    "data_type": "numeric",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "order": 0
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        2
+                    ],
+                    "column_name": "Cluster ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data.*.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ],
+                    "example_values": [
+                        1458
+                    ],
+                    "column_name": "Quarantine Job ID",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.data.*.aiClusterId",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision cluster id"
+                    ],
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.autoQuarantine",
+                    "data_type": "boolean",
+                    "column_name": "Auto Quarantine",
+                    "column_order": 3,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "COMPLETED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.stopRequested",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "system"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.createdDate",
+                    "data_type": "string",
+                    "column_name": "Created Date",
+                    "column_order": 4,
+                    "example_values": [
+                        "2026-03-25T14:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.modifiedDate",
+                    "data_type": "string",
+                    "column_name": "Modified Date",
+                    "column_order": 5,
+                    "example_values": [
+                        "2026-03-25T14:00:00Z"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.emailCount",
+                    "data_type": "string",
+                    "column_name": "Email Count",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.data.*.matchingIOCs",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.internetMessageId",
+                    "data_type": "string",
+                    "example_values": [
+                        "<1270149500.1722827.1657392753324@af226d4cfbab>"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.recipientAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "testuser@test.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmails.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "EXPUNGED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.context",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.searchId",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.detection",
+                    "data_type": "string",
+                    "example_values": [
+                        "cluster"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.willRetry",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.modifiedBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "crestdatauser"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.id",
+                    "data_type": "numeric",
+                    "example_values": [
+                        17161
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.error",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.total",
+                    "data_type": "numeric",
+                    "example_values": [
+                        708
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "NEW"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.createdBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "crestdatauser"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.jobRunType",
+                    "data_type": "string",
+                    "example_values": [
+                        "QUARANTINE"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.startedDate",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineJobRuns.*.completedDate",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.whoClickedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.whoDeletedPending",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.isClusterInitiated",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.quarantineEmailReadStatusCounts",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully created a quarantine job for the cluster"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "reject quarantine job",
+            "identifier": "reject_quarantine_job",
+            "description": "Rejects the quarantine job identified by the ID. When the Auto Quarantine feature is configured to require manual approvals, this endpoint can reject pending quarantine jobs",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "id": {
+                    "description": "ID of the quarantine job in cofense vision to be rejected",
+                    "data_type": "numeric",
+                    "required": true,
+                    "order": 0,
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ],
+                    "primary": true
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 1,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ],
+                    "example_values": [
+                        1234
+                    ],
+                    "column_name": "Quarantine Job ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully rejected the quarantine job"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "retry quarantine job",
+            "identifier": "retry_quarantine_job",
+            "description": "Issues a request to retry the quarantine job identified by the ID",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "id": {
+                    "description": "ID of the quarantine job in cofense vision to be retried",
+                    "data_type": "numeric",
+                    "required": true,
+                    "order": 0,
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ],
+                    "primary": true
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "Status",
+                    "column_order": 1,
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.id",
+                    "data_type": "numeric",
+                    "contains": [
+                        "cofense vision quarantine job id"
+                    ],
+                    "example_values": [
+                        1234
+                    ],
+                    "column_name": "Quarantine Job ID",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.data",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retried the quarantine job"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get vision ai config",
+            "identifier": "get_vision_ai_config",
+            "description": "Retrieves the current Vision AI configuration settings, including whether the feature is enabled, whether the Terms of Service have been accepted, and all tunable cluster parameters",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {},
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.enabled",
+                    "data_type": "boolean",
+                    "column_name": "Enabled",
+                    "column_order": 0,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tosAccepted",
+                    "data_type": "boolean",
+                    "column_name": "TOS Accepted",
+                    "column_order": 1,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tosAcceptedBy",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.tosAcceptedFromIp",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.autoQuarantine",
+                    "data_type": "boolean",
+                    "column_name": "Auto Quarantine",
+                    "column_order": 2,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.operatorApproval",
+                    "data_type": "boolean",
+                    "column_name": "Operator Approval",
+                    "column_order": 3,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.minClusterSize",
+                    "data_type": "numeric",
+                    "column_name": "Min Cluster Size",
+                    "column_order": 4,
+                    "example_values": [
+                        100
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.clusterTimeToMatchMs",
+                    "data_type": "numeric",
+                    "column_name": "Cluster Time To Match (ms)",
+                    "column_order": 5,
+                    "example_values": [
+                        259200000
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevel",
+                    "data_type": "numeric",
+                    "column_name": "Similarity Level",
+                    "column_order": 6,
+                    "example_values": [
+                        5
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rapidlyTimeMs",
+                    "data_type": "numeric",
+                    "column_name": "Rapidly Time (ms)",
+                    "column_order": 7,
+                    "example_values": [
+                        28800000
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully retrieved the Vision AI configuration"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "update vision ai config",
+            "identifier": "update_vision_ai_config",
+            "description": "Performs a partial update of the Vision AI configuration, updating only those parameters included in the request",
+            "type": "generic",
+            "read_only": false,
+            "parameters": {
+                "enable": {
+                    "description": "Whether the Vision AI feature is turned on",
+                    "data_type": "string",
+                    "value_list": [
+                        "True",
+                        "False"
+                    ],
+                    "order": 0
+                },
+                "auto_quarantine": {
+                    "description": "Vision auto quarantines clusters",
+                    "data_type": "string",
+                    "value_list": [
+                        "True",
+                        "False"
+                    ],
+                    "order": 1
+                },
+                "operator_approval": {
+                    "description": "Whether Vision requires operator approval to auto quarantine clusters",
+                    "data_type": "string",
+                    "value_list": [
+                        "True",
+                        "False"
+                    ],
+                    "order": 2
+                },
+                "cluster_match_time": {
+                    "description": "Time window in milliseconds when emails are eligible for clustering. The value must be from 86400000 (24 hours) to 604800000 (7 days)",
+                    "data_type": "numeric",
+                    "order": 3
+                },
+                "min_cluster_size": {
+                    "description": "Minimum number of emails required to form a cluster. The minimum value is 10",
+                    "data_type": "numeric",
+                    "order": 4
+                },
+                "cluster_rapid_growth_time": {
+                    "description": "Time window in milliseconds used to determine if a cluster is growing rapidly. The value must be from 900000 (15 minutes) to 86400000 (24 hours)",
+                    "data_type": "numeric",
+                    "order": 5
+                },
+                "similarity_level": {
+                    "description": "How strictly emails must match to be clustered, an integer from -10 to 10, with 10 indicating the closest matching",
+                    "data_type": "numeric",
+                    "order": 6
+                },
+                "tos_accepted": {
+                    "description": "Whether the Terms of Service have been accepted",
+                    "data_type": "string",
+                    "value_list": [
+                        "True",
+                        "False"
+                    ],
+                    "order": 7
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.enable",
+                    "data_type": "string",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.auto_quarantine",
+                    "data_type": "string",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.operator_approval",
+                    "data_type": "string",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.cluster_match_time",
+                    "data_type": "numeric",
+                    "example_values": [
+                        86400000
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.min_cluster_size",
+                    "data_type": "numeric",
+                    "example_values": [
+                        100
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.cluster_rapid_growth_time",
+                    "data_type": "numeric",
+                    "example_values": [
+                        14400000
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.similarity_level",
+                    "data_type": "numeric",
+                    "example_values": [
+                        5
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.tos_accepted",
+                    "data_type": "string",
+                    "example_values": [
+                        "True",
+                        "False"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.enabled",
+                    "data_type": "boolean",
+                    "column_name": "Enabled",
+                    "column_order": 0,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tosAccepted",
+                    "data_type": "boolean",
+                    "column_name": "TOS Accepted",
+                    "column_order": 1,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.autoQuarantine",
+                    "data_type": "boolean",
+                    "column_name": "Auto Quarantine",
+                    "column_order": 2,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.operatorApproval",
+                    "data_type": "boolean",
+                    "column_name": "Operator Approval",
+                    "column_order": 3,
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.minClusterSize",
+                    "data_type": "numeric",
+                    "column_name": "Min Cluster Size",
+                    "column_order": 4,
+                    "example_values": [
+                        100
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.clusterTimeToMatchMs",
+                    "data_type": "numeric",
+                    "column_name": "Cluster Time To Match (ms)",
+                    "column_order": 5,
+                    "example_values": [
+                        259200000
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.similarityLevel",
+                    "data_type": "numeric",
+                    "column_name": "Similarity Level",
+                    "column_order": 6,
+                    "example_values": [
+                        5
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.rapidlyTimeMs",
+                    "data_type": "numeric",
+                    "column_name": "Rapidly Time (ms)",
+                    "column_order": 7,
+                    "example_values": [
+                        14400000
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tosAcceptedBy",
+                    "data_type": "string",
+                    "example_values": [
+                        "Devon.Sullivan@cofense.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.tosAcceptedFromIp",
+                    "data_type": "string",
+                    "example_values": [
+                        "40.121.106.7, 172.31.3.26"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully updated the Vision AI configuration"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table"
+            },
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "on poll",
+            "identifier": "on_poll",
+            "description": "Callback action for the on poll ingest functionality",
+            "verbose": "Retrieves the emails of the Cofense Vision AI clusters ingested in the polling window and creates a container for every cluster along with an artifact for every email of that cluster. A cluster keeps growing as new emails join it, so it is returned again by every polling window that ingests one of its emails. Only the emails of the window are ingested, into containers identified by the ingestion timestamp of the newest email they hold. Scheduled polling windows never overlap, so every email is ingested once and a scheduled poll never adds artifacts to a container created by an earlier scheduled poll. POLL NOW is meant for sampling: it neither reads nor updates the polling checkpoint, so its window can overlap the windows of other polls. A poll whose window overlaps an earlier POLL NOW, whether another POLL NOW or a scheduled poll, can add older emails to a container that POLL NOW created, and repeating POLL NOW over a cluster that is still receiving emails ingests those emails again into new containers. No email is lost in either case. To avoid both, delete the containers created by POLL NOW before scheduled polling covers the same period. Every container is named after its cluster ID, the cluster title and the ingestion timestamp of the oldest email it holds, so every email of the container was ingested at or after that time, for example '291 : Invoice campaign - 2024-05-31T10:00:00Z'; the polling window is stated in the container description. The emails of a cluster are split across containers of at most 'Maximum number of artifacts in a single container' artifacts each, so a cluster of 200 emails with the default limit of 100 produces 2 containers. Those containers are named with their part, for example '... - Part 1 of 2'. The polling window ends 'Ingestion lag' minutes (5 by default) before the current time, so that an email whose row is committed after its ingestion timestamp is still picked up by the next cycle; an email committed later than the lag is never ingested. The polling window starts at the 'Start Time' asset configuration parameter for the first scheduled or interval poll and at the end of the previous polling window for the subsequent ones. The 'Start Time for Poll Now' asset configuration parameter is used for the manual POLL NOW runs; the start_time and end_time that Splunk SOAR passes to the action are ignored. POLL NOW stops exactly at its container_count and artifact_count, even within a cluster. Both parameters accept a relative time, for example 1d, 6h, 30m, or an absolute UTC date, for example 2024-05-31T00:00:00Z. A scheduled poll ingests every email of every cluster returned for its window; there is no limit on the number of emails in a cycle.",
+            "type": "ingest",
+            "read_only": true,
+            "parameters": {
+                "container_count": {
+                    "description": "Maximum number of containers to create during POLL NOW",
+                    "data_type": "numeric",
+                    "order": 0
+                },
+                "artifact_count": {
+                    "description": "Maximum number of artifacts to create during POLL NOW",
+                    "data_type": "numeric",
+                    "order": 1
+                },
+                "start_time": {
+                    "description": "Parameter ignored in this app",
+                    "data_type": "numeric",
+                    "order": 2
+                },
+                "end_time": {
+                    "description": "Parameter ignored in this app",
+                    "data_type": "numeric",
+                    "order": 3
+                },
+                "container_id": {
+                    "description": "Parameter ignored in this app",
+                    "data_type": "numeric",
+                    "order": 4
+                }
+            },
+            "output": [],
             "versions": "EQ(*)"
         }
     ],

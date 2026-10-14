@@ -20,7 +20,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import phantom.app as phantom
 
@@ -33,7 +33,7 @@ class DownloadLogsAction(BaseAction):
 
     def execute(self):
         """Execute the download logs action."""
-        self._connector.util.filename = f"logfile_{datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S.%f')}.zip"
+        self._connector.util.filename = f"logfile_{datetime.now(timezone.utc).strftime('%Y-%m-%d_%H-%M-%S.%f')}.zip"
         # Make rest call to fetch the file
         status, vault_info = self._connector.util.make_rest_call_helper(consts.VISION_ENDPOINT_DOWNLOAD_LOGS, self._action_result, stream=True)
 
