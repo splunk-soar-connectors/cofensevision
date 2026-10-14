@@ -118,6 +118,7 @@
             <thead>
               <tr>
                 <th>Quarantine Job ID</th>
+                <th>Cluster ID</th>
                 <th>Created By</th>
                 <th>Created Date</th>
                 <th>Modified By</th>
@@ -136,6 +137,17 @@
                       <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                       <br>
                     </a>
+                  </td>
+                  <td>
+                    {% if job.aiClusterId %}
+                      <a class="no-word-wrap"
+                         href="javascript:;"
+                         onclick="context_menu(this, [{'contains': ['cofense vision cluster id'], 'value':'{{ job.aiClusterId|escapejs }}' }], 0, {{ container.id }}, null, false);">
+                        {{ job.aiClusterId }}
+                        <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                        <br>
+                      </a>
+                    {% endif %}
                   </td>
                   <td>{{ job.createdBy }}</td>
                   <td>{{ job.createdDate }}</td>

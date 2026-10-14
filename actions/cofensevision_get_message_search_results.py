@@ -66,7 +66,11 @@ class GetMessageSearchResultsAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_ACTION_EMPTY_RESPONSE)
 
         # Add data into action result object
-        for data in response.get("messages", []):
+        status, data_list = self._connector.util.extract_list_field(self._action_result, response, "messages")
+        if phantom.is_fail(status):
+            return self._action_result.get_status()
+
+        for data in data_list:
             self._action_result.add_data(data)
 
         # Add summary

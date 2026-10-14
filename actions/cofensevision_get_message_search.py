@@ -42,6 +42,9 @@ class GetMessageSearchAction(BaseAction):
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
+        if not response:
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_ACTION_EMPTY_RESPONSE)
+
         self._action_result.add_data(response)
 
         return self._action_result.set_status(phantom.APP_SUCCESS, consts.VISION_SUCCESS_GET_MESSAGE_SEARCH_ACTION)
