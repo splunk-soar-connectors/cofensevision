@@ -411,7 +411,8 @@ class CofenseVisionUtils:
                 error_message = self._get_error_message_from_exception(e)
                 return RetVal(action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_REST_CALL.format(error_message)))
 
-            retryable = response.status_code in consts.VISION_RETRYABLE_STATUS_CODES
+            is_retryable_status = response.status_code in consts.VISION_RETRYABLE_STATUS_CODES
+            retryable = is_retryable_status and (response.status_code == 429 or method.lower() != "post")
             if not retryable or attempt == max_retries:
                 break
 

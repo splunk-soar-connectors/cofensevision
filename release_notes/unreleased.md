@@ -9,7 +9,7 @@
     * get message search results 
     * list searchable headers
     * create quarantine job
-    * llist quarantine jobs
+    * list quarantine jobs
     * get quarantine job
     * approve quarantine job
     * restore quarantine job
