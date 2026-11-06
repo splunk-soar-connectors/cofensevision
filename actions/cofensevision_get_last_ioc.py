@@ -46,6 +46,6 @@ class GetLastIocAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_ACTION_EMPTY_RESPONSE)
 
         self._action_result.add_data(response["data"])
-        self._action_result.update_summary({"ioc_id ": response["data"]["id"]})
+        self._action_result.update_summary({"ioc_id": response["data"]["id"]})
 
         return self._action_result.set_status(phantom.APP_SUCCESS, consts.VISION_SUCCESS_GET_LAST_IOC_ACTION.format(response["data"]["id"]))
