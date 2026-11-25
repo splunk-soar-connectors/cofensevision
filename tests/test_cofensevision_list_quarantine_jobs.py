@@ -54,6 +54,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         self.test_json["parameters"] = [
             {
                 "auto_quarantine": True,
+                "cluster_id": "45, 78 ,, 99",
                 "exclude_quarantine_emails": True,
                 "exclude_status": "NEW,QUEUED",
                 "include_status": "COMPLETED,,FAILED",
@@ -88,6 +89,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
                 "includeStatus": ["COMPLETED", "FAILED"],
                 "excludeStatus": ["NEW", "QUEUED"],
                 "modifiedDateAfter": "2020-08-31T00:00:00.000000Z",
+                "aiClusterIds": [45, 78, 99],
             }
         }
         expected_params = {
@@ -349,6 +351,21 @@ class TestListQuarantineJobsAction(unittest.TestCase):
             ret_val["result_data"][0]["message"], consts.VISION_ERROR_VALUE_LIST.format("exclude status", ", ".join(consts.VISION_JOB_STATUS))
         )
 
+    def test_list_quarantine_jobs_invalid_cluster_id_fail(self):
+        """Test the list quarantine jobs action with invalid 'cluster_id' parameter."""
+        self.test_json["parameters"] = [
+            {
+                "cluster_id": "45,non_numeric",
+            }
+        ]
+
+        ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
+        ret_val = json.loads(ret_val)
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
+        self.assertEqual(ret_val["result_data"][0]["message"], "Please provide a valid integer value in the 'cluster_id' parameter")
+
     @patch("cofensevision_utils.requests.post")
     def test_list_quarantine_jobs_server_fail(self, mock_post):
         """Test the invalid case for the list quarantine jobs action.
@@ -370,11 +387,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
         self.assertIn("Error from server. Status code: 500", ret_val["result_data"][0]["message"])
 
-        expected_data = {
-            "filterOptions": {
-                "autoQuarantine": False,
-            }
-        }
+        expected_data = {"filterOptions": {}}
         expected_params = {
             "excludeQuarantineEmails": False,
             "page": 0,
@@ -411,11 +424,7 @@ class TestListQuarantineJobsAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
         self.assertEqual(ret_val["result_data"][0]["message"], "The server returned an unexpected empty response")
 
-        expected_data = {
-            "filterOptions": {
-                "autoQuarantine": False,
-            }
-        }
+        expected_data = {"filterOptions": {}}
         expected_params = {
             "excludeQuarantineEmails": False,
             "page": 0,

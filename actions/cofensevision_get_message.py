@@ -21,7 +21,7 @@
 # and limitations under the License.
 
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 import phantom.app as phantom
 
@@ -52,7 +52,7 @@ class GetMessageAction(BaseAction):
             return self._action_result.get_status()
 
         self._connector.util._get_token = False
-        self._connector.util.filename = f"message_{datetime.utcnow().strftime('%Y-%m-%d_%H:%M:%S.%f')}.zip"
+        self._connector.util.filename = f"message_{datetime.now(timezone.utc).strftime('%Y-%m-%d_%H-%M-%S.%f')}.zip"
         # Make rest call to fetch the file
         status, vault_info = self._connector.util.make_rest_call_helper(
             consts.VISION_ENDPOINT_MESSAGE, self._action_result, params=token_info, stream=True

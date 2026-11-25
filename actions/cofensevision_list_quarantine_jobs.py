@@ -80,9 +80,9 @@ class ListQuarantineJobsAction(BaseAction):
         :return: phantom.APP_ERROR/phantom.APP_SUCCESS and Request body dictionary
         """
         # Prepare request body
-        filter_options = {
-            "autoQuarantine": self._param.get("auto_quarantine", False),
-        }
+        filter_options = {}
+        if self._param.get("auto_quarantine") is not None:
+            filter_options["autoQuarantine"] = self._param["auto_quarantine"]
         body = {"filterOptions": filter_options}
 
         iocs = self._connector.util.split_value_list(self._param.get("iocs", ""))
@@ -119,6 +119,17 @@ class ListQuarantineJobsAction(BaseAction):
         if date_str:
             filter_options["modifiedDateAfter"] = date_str
 
+        cluster_ids = self._connector.util.split_value_list(str(self._param.get("cluster_id", "")))
+        if cluster_ids:
+            validated_cluster_ids = []
+            for cluster_id in cluster_ids:
+                ret_val, cluster_id = self._connector.util.validate_integer(self._action_result, cluster_id, "cluster_id", True)
+                if phantom.is_fail(ret_val):
+                    return self._action_result.get_status(), None
+                validated_cluster_ids.append(cluster_id)
+
+            filter_options["aiClusterIds"] = validated_cluster_ids
+
         return phantom.APP_SUCCESS, body
 
     def execute(self):
@@ -141,7 +152,11 @@ class ListQuarantineJobsAction(BaseAction):
             return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_ACTION_EMPTY_RESPONSE)
 
         # Add data into action result object
-        for data in response.get("quarantineJobs", []):
+        ret_val, data_list = self._connector.util.extract_list_field(self._action_result, response, "quarantineJobs")
+        if phantom.is_fail(ret_val):
+            return self._action_result.get_status()
+
+        for data in data_list:
             self._action_result.add_data(data)
 
         # Add summary

@@ -23,10 +23,11 @@
 
 import os
 import re
+import time
 import urllib.parse
 import uuid
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import encryption_helper
 import phantom.app as phantom
@@ -125,6 +126,49 @@ class CofenseVisionUtils:
             return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_MAX_ALLOWED_INT_PARAM.format(max=max_value, key=key)), None
 
         return phantom.APP_SUCCESS, parameter
+
+    def validate_ranged_integer(self, action_result, parameter, key, min_value=None, max_value=None):
+        """Check if the provided input parameter value is a valid integer within an inclusive range.
+
+        :param action_result: Action result or BaseConnector object
+        :param parameter: Input parameter value
+        :param key: Input parameter key
+        :param min_value: Minimum allowed value (inclusive), may be negative
+        :param max_value: Maximum allowed value (inclusive)
+        :returns: phantom.APP_SUCCESS/phantom.APP_ERROR and parameter value itself.
+        """
+        try:
+            if not float(parameter).is_integer():
+                return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_INT_PARAM.format(key=key)), None
+
+            parameter = int(parameter)
+        except Exception:
+            return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_INT_PARAM.format(key=key)), None
+
+        if max_value is not None and (parameter < (min_value if min_value is not None else parameter) or parameter > max_value):
+            return action_result.set_status(
+                phantom.APP_ERROR, consts.VISION_ERROR_INVALID_RANGE_PARAM.format(key=key, min=min_value, max=max_value)
+            ), None
+
+        if max_value is None and min_value is not None and parameter < min_value:
+            return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_MIN_VALUE_PARAM.format(key=key, min=min_value)), None
+
+        return phantom.APP_SUCCESS, parameter
+
+    def validate_boolean(self, action_result, parameter, key):
+        """Check if the provided input parameter is a valid 'True'/'False' value list selection.
+
+        :param action_result: Action result or BaseConnector object
+        :param parameter: Input parameter value
+        :param key: Input parameter key
+        :returns: phantom.APP_SUCCESS/phantom.APP_ERROR and the parameter converted to a boolean.
+        """
+        if parameter not in consts.VISION_VALID_BOOLEAN_VALUES:
+            return action_result.set_status(
+                phantom.APP_ERROR, consts.VISION_ERROR_VALUE_LIST.format(key, ", ".join(consts.VISION_VALID_BOOLEAN_VALUES))
+            ), None
+
+        return phantom.APP_SUCCESS, parameter == "True"
 
     # Parsing
     def _process_empty_response(self, response, action_result):
@@ -354,15 +398,39 @@ class CofenseVisionUtils:
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"))
 
         # Create a URL to connect to
-        url = f"{self._connector.config['base_url'].strip('/')}{endpoint}"
+        url = f"{self._connector.config['base_url'].rstrip('/')}{endpoint}"
 
-        try:
-            response = request_func(
-                url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", True), **kwargs
+        response = None
+        max_retries = consts.VISION_DEFAULT_MAX_RETRIES
+        for attempt in range(max_retries + 1):
+            try:
+                response = request_func(
+                    url, timeout=consts.VISION_REQUEST_TIMEOUT, verify=self._connector.config.get("verify_server_cert", True), **kwargs
+                )
+            except Exception as e:
+                error_message = self._get_error_message_from_exception(e)
+                return RetVal(action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_REST_CALL.format(error_message)))
+
+            is_retryable_status = response.status_code in consts.VISION_RETRYABLE_STATUS_CODES
+            retryable = is_retryable_status and (response.status_code == 429 or method.lower() != "post")
+            if not retryable or attempt == max_retries:
+                break
+
+            wait_time = consts.VISION_DEFAULT_RETRY_WAIT_TIME * (2**attempt)
+            if response.status_code == 429:
+                retry_after = response.headers.get("Retry-After")
+                if retry_after:
+                    try:
+                        wait_time = float(retry_after)
+                    except (TypeError, ValueError):
+                        pass
+                wait_time = min(wait_time, consts.VISION_MAX_RETRY_WAIT_TIME)
+
+            self._connector.debug_print(
+                f"Received status code {response.status_code} from the server. "
+                f"Retrying in {wait_time} seconds (attempt {attempt + 1} of {max_retries})"
             )
-        except Exception as e:
-            error_message = self._get_error_message_from_exception(e)
-            return RetVal(action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_REST_CALL.format(error_message)))
+            time.sleep(wait_time)
 
         return self._process_response(response, action_result)
 
@@ -407,9 +475,49 @@ class CofenseVisionUtils:
             return action_result.set_status(phantom.APP_ERROR, "Token generation failed")
 
         self._connector.state[consts.VISION_STATE_TOKEN] = resp_json
+        self._connector.state[consts.VISION_STATE_TOKEN][consts.VISION_STATE_TOKEN_GENERATED_AT] = time.time()
 
         self._connector.debug_print("Token generated successfully")
         return action_result.set_status(phantom.APP_SUCCESS)
+
+    def _is_token_expired(self):
+        """Check whether the stored access token has expired (or is about to), using the state file's expiry metadata.
+
+        This is used as a proactive, independent check in addition to `_is_token_error_message`, so that a token
+        can be refreshed ahead of time even if a future error format isn't recognized as a token error.
+
+        :return: True if the token is expired or near expiry, False if it is still valid or the metadata is missing
+        """
+        token_state = self._connector.state.get(consts.VISION_STATE_TOKEN, {})
+        generated_at = token_state.get(consts.VISION_STATE_TOKEN_GENERATED_AT)
+        expires_in = token_state.get(consts.VISION_STATE_EXPIRES_IN)
+
+        if generated_at is None or expires_in is None:
+            return False
+
+        try:
+            expires_in = float(expires_in)
+        except (TypeError, ValueError):
+            return False
+
+        return time.time() >= (generated_at + expires_in - consts.VISION_TOKEN_EXPIRY_BUFFER_SECONDS)
+
+    @staticmethod
+    def _is_token_error_message(message):
+        """Check whether an error message indicates an authentication/token problem.
+
+        Cofense Vision has been observed to report an expired/invalid token using different error formats
+        (e.g. 'invalid_token', or {"error": "invalid_client", "error_description": "Bad credentials"}), so this
+        checks for any of several known keywords instead of a single exact string.
+
+        :param message: error message string to check
+        :return: True if the message indicates a token/auth error, False otherwise
+        """
+        if not message:
+            return False
+
+        message = message.lower()
+        return any(keyword in message for keyword in consts.VISION_TOKEN_ERROR_KEYWORDS)
 
     def make_rest_call_helper(self, endpoint, action_result, method="get", headers=None, **kwargs):
         """Make the REST API call and generates new token if required.
@@ -427,12 +535,16 @@ class CofenseVisionUtils:
         if kwargs.get("stream"):
             headers.pop("Accept", None)
 
+        if self._access_token and self._is_token_expired():
+            self._connector.debug_print("Token has expired based on the state file's expiry information. Hence, generating a new token.")
+            self._access_token = None
+
         if self._access_token:
             headers.update({"Authorization": f"Bearer {self._access_token}"})
             ret_val, resp_json = self.make_rest_call(endpoint, action_result, method, headers=headers, **kwargs)
             if phantom.is_success(ret_val):
                 return RetVal(phantom.APP_SUCCESS, resp_json)
-            if consts.VISION_MESSAGE_EXPIRED_TOKEN not in action_result.get_message():
+            if not self._is_token_error_message(action_result.get_message()):
                 return RetVal(action_result.get_status())
             self._connector.debug_print("Token is invalid/expired. Hence, generating a new token.")
         else:
@@ -463,7 +575,7 @@ class CofenseVisionUtils:
                 )
         except Exception as e:
             self._connector.debug_print("Error occurred while encrypting the state file.", e)
-            state = {"app_version": self._connector.get_app_json().get("app_version")}
+            state.pop(consts.VISION_STATE_TOKEN, None)
         return state
 
     def _decrypt_state(self, state):
@@ -479,7 +591,7 @@ class CofenseVisionUtils:
                 )
         except Exception as e:
             self._connector.debug_print("Error occurred while decrypting the state file.", e)
-            state = {"app_version": self._connector.get_app_json().get("app_version")}
+            state.pop(consts.VISION_STATE_TOKEN, None)
         return state
 
     def split_value_list(self, values, delimiter=","):
@@ -504,13 +616,57 @@ class CofenseVisionUtils:
         """
         if not value:
             if default_value:
-                return phantom.APP_SUCCESS, datetime.utcnow().strftime(consts.VISION_DATE_FORMAT)
+                return phantom.APP_SUCCESS, datetime.now(timezone.utc).strftime(consts.VISION_DATE_FORMAT)
             return phantom.APP_SUCCESS, None
         try:
             date = parse(value)
             return phantom.APP_SUCCESS, date.strftime(consts.VISION_DATE_FORMAT)
         except Exception:
             return phantom.APP_ERROR, None
+
+    def validate_iso8601_utc_date(self, action_result, value, key):
+        """Validate that the value is a UTC date/time string in ISO 8601 format (YYYY-MM-DDTHH:MM:SS.sssZ).
+
+        :param action_result: Action result or BaseConnector object
+        :param value: date string to validate
+        :param key: input parameter key, used in the error message
+        :return: phantom.APP_SUCCESS/phantom.APP_ERROR and the parsed datetime object (None if value is empty)
+        """
+        if not value:
+            return phantom.APP_SUCCESS, None
+
+        if not re.fullmatch(consts.VISION_ISO8601_UTC_DATE_REGEX, value):
+            return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_ISO8601_UTC_DATE.format(key)), None
+
+        try:
+            parsed_date = datetime.strptime(value, consts.VISION_ISO8601_UTC_DATE_FORMAT)
+        except ValueError:
+            return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_ISO8601_UTC_DATE.format(key)), None
+
+        return phantom.APP_SUCCESS, parsed_date
+
+    def validate_date_range(self, action_result, from_date, from_key, to_date, to_key):
+        """Validate the from/to date parameters are valid UTC ISO 8601 dates and that from_date is not after to_date.
+
+        :param action_result: Action result or BaseConnector object
+        :param from_date: from date string (may be empty)
+        :param from_key: input parameter key for from_date, used in error messages
+        :param to_date: to date string (may be empty)
+        :param to_key: input parameter key for to_date, used in error messages
+        :return: phantom.APP_SUCCESS/phantom.APP_ERROR and a (from_date, to_date) tuple of the original values
+        """
+        ret_val, parsed_from_date = self.validate_iso8601_utc_date(action_result, from_date, from_key)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
+
+        ret_val, parsed_to_date = self.validate_iso8601_utc_date(action_result, to_date, to_key)
+        if phantom.is_fail(ret_val):
+            return action_result.get_status(), None
+
+        if parsed_from_date and parsed_to_date and parsed_from_date > parsed_to_date:
+            return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_FROM_DATE_AFTER_TO_DATE.format(from_key, to_key)), None
+
+        return phantom.APP_SUCCESS, (from_date or None, to_date or None)
 
     def validate_sort_param(self, values):
         """Parse the sort parameter and converts it to the required format.
@@ -540,7 +696,75 @@ class CofenseVisionUtils:
 
         return phantom.APP_SUCCESS, final_list
 
+    def extract_list_field(self, action_result, response, key):
+        """Extract a list field from a response dictionary.
+
+        A missing or non-list field indicates the response is not in the expected shape, and is
+        treated as an error instead of being silently reported as a successful, empty result.
+
+        :param action_result: Action result or BaseConnector object
+        :param response: response dictionary
+        :param key: key expected to hold a list of items
+        :return: phantom.APP_SUCCESS/phantom.APP_ERROR and the list value
+        """
+        if not isinstance(response, dict) or not isinstance(response.get(key), list):
+            return action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_UNEXPECTED_RESPONSE_FORMAT), None
+
+        return phantom.APP_SUCCESS, response[key]
+
     @staticmethod
     def quote_path_segment(value):
         """Encode an untrusted value as one URL path segment."""
         return urllib.parse.quote(str(value), safe="")
+
+    @staticmethod
+    def format_datetime(value):
+        """Convert a datetime object into the millisecond precision UTC string expected by the Vision APIs.
+
+        :param value: naive UTC datetime object
+        :return: formatted date string
+        """
+        return f"{value.strftime(consts.VISION_ON_POLL_DATE_FORMAT)[:-3]}Z"
+
+    def parse_start_time(self, value):
+        """Parse a relative (1d, 6h) or an absolute date value into the Vision API date string.
+
+        :param value: relative or absolute date value
+        :return: phantom.APP_SUCCESS/phantom.APP_ERROR and the formatted date
+        """
+        value = str(value).strip()
+        relative_time = re.fullmatch(consts.VISION_RELATIVE_TIME_REGEX, value, re.IGNORECASE)
+        if relative_time:
+            count = int(relative_time.group(1))
+            if not count:
+                return phantom.APP_ERROR, None
+            unit = consts.VISION_RELATIVE_TIME_UNITS[relative_time.group(2).lower()]
+            now = datetime.now(timezone.utc).replace(tzinfo=None)
+            try:
+                return phantom.APP_SUCCESS, self.format_datetime(now - timedelta(**{unit: count}))
+            except OverflowError:
+                # A count beyond what a timedelta holds, or a start before year 1
+                return phantom.APP_ERROR, None
+
+        date = self.parse_utc_datetime(value)
+        if not date:
+            return phantom.APP_ERROR, None
+
+        return phantom.APP_SUCCESS, self.format_datetime(date)
+
+    @staticmethod
+    def parse_utc_datetime(value):
+        """Parse an API date string into a naive UTC datetime object.
+
+        :param value: date string, with or without a timezone offset
+        :return: naive UTC datetime object, or None if the value cannot be parsed
+        """
+        try:
+            date = parse(str(value))
+        except Exception:
+            return None
+
+        if date.tzinfo:
+            date = date.astimezone(timezone.utc).replace(tzinfo=None)
+
+        return date

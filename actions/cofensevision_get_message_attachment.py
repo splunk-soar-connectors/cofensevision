@@ -23,6 +23,7 @@
 import os
 
 import phantom.app as phantom
+import phantom.utils as ph_utils
 
 import cofensevision_consts as consts
 from actions import BaseAction
@@ -38,6 +39,15 @@ class GetMessageAttachmentAction(BaseAction):
 
         if not (md5 or sha256):
             return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_NO_HASH_PARAMETER)
+
+        if md5 and sha256:
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_BOTH_HASH_PARAMETERS)
+
+        if md5 and not ph_utils.is_md5(md5):
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_MD5_PARAMETER)
+
+        if sha256 and not ph_utils.is_sha256(sha256):
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_INVALID_SHA256_PARAMETER)
 
         # Check the existence of extension in the filename
         filename = self._param["filename"]
@@ -64,6 +74,9 @@ class GetMessageAttachmentAction(BaseAction):
 
         if phantom.is_fail(status):
             return self._action_result.get_status()
+
+        if not vault_info or not vault_info.get("vault_id"):
+            return self._action_result.set_status(phantom.APP_ERROR, consts.VISION_ERROR_ACTION_EMPTY_RESPONSE)
 
         self._action_result.add_data(vault_info)
         self._action_result.update_summary({"vault_id": vault_info["vault_id"]})

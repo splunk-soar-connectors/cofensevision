@@ -23,11 +23,13 @@
 import unittest
 from unittest.mock import Mock, patch
 
+import encryption_helper
 import requests
 from freezegun import freeze_time
 from parameterized import parameterized
 from phantom.action_result import ActionResult
 
+import cofensevision_consts as consts
 from cofensevision_utils import CofenseVisionUtils, RetVal
 from tests import cofensevision_config
 
@@ -103,15 +105,22 @@ class TestEncryptionMethod(unittest.TestCase):
 
     @parameterized.expand(
         [
-            ["token1", {"token": {"access_token": cofensevision_config.TOKEN_DUMMY_TEXT_1}}, cofensevision_config.TOKEN_DUMMY_CIPHER_1],
-            ["token2", {"token": {"access_token": cofensevision_config.TOKEN_DUMMY_TEXT_2}}, cofensevision_config.TOKEN_DUMMY_CIPHER_2],
+            ["token1", {"token": {"access_token": cofensevision_config.TOKEN_DUMMY_TEXT_1}}, cofensevision_config.TOKEN_DUMMY_TEXT_1],
+            ["token2", {"token": {"access_token": cofensevision_config.TOKEN_DUMMY_TEXT_2}}, cofensevision_config.TOKEN_DUMMY_TEXT_2],
             ["no_token", {"app_version": "1.0.0"}, ""],
         ]
     )
     def test_encrypt_state_pass(self, _, input_value, expected_value):
-        """Test the pass cases for the encrypt state method."""
+        """Test the pass cases for the encrypt state method.
+
+        Since encryption uses a random IV, assert an encrypt -> decrypt round trip instead of pinning ciphertext.
+        """
         output = self.util.encrypt_state(input_value)
-        self.assertEqual(output.get("token", {}).get("access_token", ""), expected_value)
+        encrypted_token = output.get("token", {}).get("access_token", "")
+        if not expected_value:
+            self.assertEqual(encrypted_token, "")
+        else:
+            self.assertEqual(encryption_helper.decrypt(encrypted_token, self.util._connector.get_asset_id()), expected_value)
 
     @parameterized.expand(
         [
@@ -127,19 +136,25 @@ class TestEncryptionMethod(unittest.TestCase):
 
     @patch("cofensevision_utils.encryption_helper.encrypt")
     def test_encrypt_state_fail(self, mock_encrypt):
-        """Test the fail cases for the encrypt state method."""
+        """Test the fail cases for the encrypt state method.
+
+        Only the token should be dropped on a failure, so any other state (e.g. on-poll's cursor) is preserved.
+        """
         mock_encrypt.side_effect = Exception("Couldn't encrypt")
 
-        output = self.util.encrypt_state({"token": {"access_token": cofensevision_config.TOKEN_DUMMY_CIPHER_1}})
-        self.assertEqual(output, {"app_version": "1.0.0"})
+        output = self.util.encrypt_state({"token": {"access_token": cofensevision_config.TOKEN_DUMMY_CIPHER_1}, "other_key": "kept"})
+        self.assertEqual(output, {"other_key": "kept"})
 
     @patch("cofensevision_utils.encryption_helper.decrypt")
     def test_decrypt_state_fail(self, mock_decrypt):
-        """Test the fail cases for the decrypt state method."""
+        """Test the fail cases for the decrypt state method.
+
+        Only the token should be dropped on a failure, so any other state (e.g. on-poll's cursor) is preserved.
+        """
         mock_decrypt.side_effect = Exception("Couldn't decrypt")
 
-        output = self.util._decrypt_state({"token": {"access_token": cofensevision_config.TOKEN_DUMMY_CIPHER_1}})
-        self.assertEqual(output, {"app_version": "1.0.0"})
+        output = self.util._decrypt_state({"token": {"access_token": cofensevision_config.TOKEN_DUMMY_CIPHER_1}, "other_key": "kept"})
+        self.assertEqual(output, {"other_key": "kept"})
 
 
 class TestSplitSeparatedValuesMethod(unittest.TestCase):
@@ -198,6 +213,105 @@ class TestParseDateMethod(unittest.TestCase):
         ret_val, output = self.util.parse_date_string("", default_value=True)
         self.assertTrue(ret_val)
         self.assertEqual(output, "2012-01-01T00:00:00.000000Z")
+
+
+class TestValidateIso8601UtcDateMethod(unittest.TestCase):
+    """Class to test the validate_iso8601_utc_date method."""
+
+    def setUp(self):
+        """Set up method for the tests."""
+        self.util = CofenseVisionUtils(None)
+        self.action_result = ActionResult(dict())
+        return super().setUp()
+
+    @parameterized.expand(
+        [
+            ["empty_value", ""],
+            ["milliseconds", "2024-05-31T00:00:00.000Z"],
+            ["microseconds", "2024-05-31T00:00:00.123456Z"],
+            ["single_digit_fraction", "2024-05-31T00:00:00.1Z"],
+        ]
+    )
+    def test_validate_iso8601_utc_date_pass(self, _, input_val):
+        """Test the pass cases for the validate_iso8601_utc_date method."""
+        ret_val, output = self.util.validate_iso8601_utc_date(self.action_result, input_val, "from_date")
+        self.assertTrue(ret_val)
+        if not input_val:
+            self.assertIsNone(output)
+        else:
+            self.assertEqual(output.strftime(consts.VISION_ISO8601_UTC_DATE_FORMAT)[:19], input_val[:19])
+
+    @parameterized.expand(
+        [
+            ["date_only", "2024-05-31"],
+            ["missing_z_suffix", "2024-05-31T00:00:00.000"],
+            ["non_utc_offset", "2024-05-31T00:00:00.000+05:30"],
+            ["non_iso_format", "31 May 2024"],
+            ["invalid_calendar_date", "2024-02-30T00:00:00.000Z"],
+            ["not_a_date", "invalid_date"],
+        ]
+    )
+    def test_validate_iso8601_utc_date_fail(self, _, input_val):
+        """Test the fail cases for the validate_iso8601_utc_date method."""
+        ret_val, output = self.util.validate_iso8601_utc_date(self.action_result, input_val, "from_date")
+        self.assertFalse(ret_val)
+        self.assertIsNone(output)
+        self.assertEqual(self.action_result.get_message(), consts.VISION_ERROR_INVALID_ISO8601_UTC_DATE.format("from_date"))
+
+
+class TestValidateDateRangeMethod(unittest.TestCase):
+    """Class to test the validate_date_range method."""
+
+    def setUp(self):
+        """Set up method for the tests."""
+        self.util = CofenseVisionUtils(None)
+        self.action_result = ActionResult(dict())
+        return super().setUp()
+
+    def test_validate_date_range_pass(self):
+        """Test the valid case for the validate_date_range method."""
+        ret_val, output = self.util.validate_date_range(
+            self.action_result, "2024-05-31T00:00:00.000Z", "from_date", "2024-06-07T00:00:00.000Z", "to_date"
+        )
+        self.assertTrue(ret_val)
+        self.assertEqual(output, ("2024-05-31T00:00:00.000Z", "2024-06-07T00:00:00.000Z"))
+
+    def test_validate_date_range_both_empty_pass(self):
+        """Test the validate_date_range method when both dates are empty."""
+        ret_val, output = self.util.validate_date_range(self.action_result, "", "from_date", "", "to_date")
+        self.assertTrue(ret_val)
+        self.assertEqual(output, (None, None))
+
+    def test_validate_date_range_invalid_from_date_fail(self):
+        """Test the validate_date_range method with an invalid 'from_date'."""
+        ret_val, output = self.util.validate_date_range(self.action_result, "invalid_date", "from_date", "", "to_date")
+        self.assertFalse(ret_val)
+        self.assertIsNone(output)
+        self.assertEqual(self.action_result.get_message(), consts.VISION_ERROR_INVALID_ISO8601_UTC_DATE.format("from_date"))
+
+    def test_validate_date_range_invalid_to_date_fail(self):
+        """Test the validate_date_range method with an invalid 'to_date'."""
+        ret_val, output = self.util.validate_date_range(self.action_result, "", "from_date", "invalid_date", "to_date")
+        self.assertFalse(ret_val)
+        self.assertIsNone(output)
+        self.assertEqual(self.action_result.get_message(), consts.VISION_ERROR_INVALID_ISO8601_UTC_DATE.format("to_date"))
+
+    def test_validate_date_range_from_date_after_to_date_fail(self):
+        """Test the validate_date_range method when 'from_date' is later than 'to_date'."""
+        ret_val, output = self.util.validate_date_range(
+            self.action_result, "2024-06-07T00:00:00.000Z", "from_date", "2024-05-31T00:00:00.000Z", "to_date"
+        )
+        self.assertFalse(ret_val)
+        self.assertIsNone(output)
+        self.assertEqual(self.action_result.get_message(), consts.VISION_ERROR_FROM_DATE_AFTER_TO_DATE.format("from_date", "to_date"))
+
+    def test_validate_date_range_equal_dates_pass(self):
+        """Test the validate_date_range method when 'from_date' equals 'to_date'."""
+        ret_val, output = self.util.validate_date_range(
+            self.action_result, "2024-05-31T00:00:00.000Z", "from_date", "2024-05-31T00:00:00.000Z", "to_date"
+        )
+        self.assertTrue(ret_val)
+        self.assertEqual(output, ("2024-05-31T00:00:00.000Z", "2024-05-31T00:00:00.000Z"))
 
 
 class TestValidateSortParam(unittest.TestCase):

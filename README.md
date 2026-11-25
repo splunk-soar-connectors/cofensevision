@@ -1,12 +1,50 @@
 # Cofense Vision
 
 Publisher: Cofense <br>
-Connector Version: 2.0.0 <br>
+Connector Version: 3.0.0 <br>
 Product Vendor: Cofense <br>
 Product Name: Cofense Vision <br>
 Minimum Product Version: 5.5.0
 
 This app implements investigative and generic actions to quarantine emails, manage IOCs, search messages, download messages and their attachments
+
+<!--  File: manual_readme_content.md
+
+ Copyright (c) 2023-2026 Cofense
+
+ This unpublished material is proprietary to Cofense.
+ All rights reserved. The methods and
+ techniques described herein are considered trade secrets
+ and/or confidential. Reproduction or distribution, in whole
+ or in part, is forbidden except by express written permission
+ of Cofense.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software distributed under
+ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ either express or implied. See the License for the specific language governing permissions
+ and limitations under the License. -->
+
+## Asset Configuration
+
+| Parameter | Description |
+|-----------------------|------------------------------------------------------------------------------|
+| Cofense Vision URL | The base URL of the Cofense Vision instance, for example `https://vision.example.com` |
+| Verify Server Certificate | Whether to verify the SSL certificate of the Cofense Vision server (enabled by default) |
+| Client ID | The client ID of an OAuth 2.0 client credentials application registered in Cofense Vision |
+| Client Secret | The client secret associated with the Client ID |
+
+## Authentication
+
+This app authenticates using the OAuth 2.0 client credentials grant. On **test connectivity**, and automatically before
+any action if no token is cached or the cached token has expired, the app exchanges the configured Client ID and Client
+Secret for an access token and stores it in the encrypted state file. Actions reuse this cached token until it expires
+or the server rejects it, at which point a new token is generated automatically.
 
 ### Configuration variables
 
@@ -18,6 +56,10 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 **verify_server_cert** | optional | boolean | Verify Server Certificate |
 **client_id** | required | string | Client ID |
 **client_secret** | required | password | Client Secret |
+**start_time** | optional | string | Start Time (Default: 1d). The date from which the cluster emails must be fetched |
+**start_time_poll_now** | optional | string | Start Time for Poll Now (Default: 1d). The date from which the cluster emails must be fetched |
+**max_artifacts** | optional | numeric | Maximum number of artifacts in a single container (Default: 100) |
+**ingestion_lag** | optional | numeric | Minutes the polling window stays behind the current time, so emails committed late are still ingested (Default: 5). An email committed later than this is not ingested |
 
 ### Supported Actions
 
@@ -43,7 +85,16 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 [list iocs](#action-list-iocs) - Lists the IOCs stored in the local IOC Repository <br>
 [get ioc](#action-get-ioc) - Retrieves the IOC identified by its unique MD5 ID <br>
 [list searchable headers](#action-list-searchable-headers) - Retrieves a list of configured header keys that can be used to create a message search <br>
-[download logs](#action-download-logs) - Downloads the log files for all Cofense Vision components
+[download logs](#action-download-logs) - Downloads the log files for all Cofense Vision components <br>
+[list clusters](#action-list-clusters) - Retrieves clusters that contain at least one email with an ingestion timestamp that falls in the requested date and time range <br>
+[get cluster](#action-get-cluster) - Retrieves a single cluster identified by the ID, including the emails in the cluster <br>
+[update cluster](#action-update-cluster) - Updates the cluster identified by the ID <br>
+[quarantine cluster](#action-quarantine-cluster) - Manually creates a quarantine job for all emails in a cluster that are not already associated with an existing quarantine job for this cluster <br>
+[reject quarantine job](#action-reject-quarantine-job) - Rejects the quarantine job identified by the ID. When the Auto Quarantine feature is configured to require manual approvals, this endpoint can reject pending quarantine jobs <br>
+[retry quarantine job](#action-retry-quarantine-job) - Issues a request to retry the quarantine job identified by the ID <br>
+[get vision ai config](#action-get-vision-ai-config) - Retrieves the current Vision AI configuration settings, including whether the feature is enabled, whether the Terms of Service have been accepted, and all tunable cluster parameters <br>
+[update vision ai config](#action-update-vision-ai-config) - Performs a partial update of the Vision AI configuration, updating only those parameters included in the request <br>
+[on poll](#action-on-poll) - Callback action for the on poll ingest functionality
 
 ## action: 'test connectivity'
 
@@ -111,6 +162,9 @@ action_result.data.\*.sha1 | string | `sha1` | f792cae1723c381e55d4786232c71304e
 action_result.data.\*.sha256 | string | `sha256` | c82f3b550efcce43996b85b86ef1c0a48a4953f7d317996644111d2b8afdaaed |
 action_result.data.\*.subject | string | | Just a test |
 action_result.data.\*.textBody | string | | |
+action_result.data.\*.messageIdHeader | string | | <852266475.122.1788931518336@vision.cofenseselab.cofense-vision.com> |
+action_result.data.\*.emailEnvironmentId | numeric | | 1 |
+action_result.data.\*.networkMessageIdHeader | string | | face5fe2-79da-4d75-a9f0-08df0e32bcdc |
 action_result.summary | string | | |
 action_result.message | string | | Retrieved message metadata successfully |
 summary.total_objects | numeric | | 1 |
@@ -156,6 +210,7 @@ action_result.data.\*.task | string | | |
 action_result.data.\*.user | string | | admin |
 action_result.data.\*.vault_document | numeric | | 1 |
 action_result.data.\*.vault_id | string | `sha1` `vault id` | daf4cd5ede7cda3398434bbb22cfb791c2b43310 |
+action_result.data.\*.es_attachment_id | string | | |
 action_result.summary.vault_id | string | `vault id` | daf4cd5ede7cda3398434bbb22cfb791c2b43310 |
 action_result.message | string | | Vault id: daf4cd5ede7cda3398434bbb22cfb791c2b43310 |
 summary.total_objects | numeric | | 1 |
@@ -201,6 +256,7 @@ action_result.data.\*.task | string | | |
 action_result.data.\*.user | string | | admin |
 action_result.data.\*.vault_document | numeric | | 29 |
 action_result.data.\*.vault_id | string | `vault id` | 31c194010afedb76694517e6250b5339d72ed518 |
+action_result.data.\*.es_attachment_id | string | | |
 action_result.summary.vault_id | string | `vault id` | 31c194010afedb76694517e6250b5339d72ed518 |
 action_result.message | string | | Vault id: 31c194010afedb76694517e6250b5339d72ed518 |
 summary.total_objects | numeric | | 1 |
@@ -227,6 +283,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **sources** | optional | One or more configured IOC sources. Comma separated values are supported | string | `cofense vision source` |
 **modified_date_after** | optional | Emails modified after this date and time. The date and time must be in UTC | string | |
 **auto_quarantine** | optional | Whether to list only auto quarantine jobs (true) or both (false) | boolean | |
+**cluster_id** | optional | One or more IDs of the cluster to filter on. Comma-separated values are supported | string | `cofense vision cluster id` |
 
 #### Action Output
 
@@ -243,11 +300,23 @@ action_result.parameter.page | numeric | | 1 |
 action_result.parameter.size | numeric | | 50 |
 action_result.parameter.sort | string | | createdBy:desc,id:asc |
 action_result.parameter.sources | string | `cofense vision source` | Vision-UI |
+action_result.parameter.cluster_id | string | `cofense vision cluster id` | 45,78,99 |
 action_result.data.\*.autoQuarantine | boolean | | True False |
 action_result.data.\*.createdBy | string | | system |
 action_result.data.\*.createdDate | string | | 2022-07-15T05:43:39.136018 |
 action_result.data.\*.emailCount | numeric | | |
 action_result.data.\*.id | numeric | `cofense vision quarantine job id` | 239 |
+action_result.data.\*.aiClusterId | string | `cofense vision cluster id` | 45 |
+action_result.data.\*.context | string | | |
+action_result.data.\*.detection | string | | |
+action_result.data.\*.isClusterInitiated | boolean | | True False |
+action_result.data.\*.matchingIOCs | string | | |
+action_result.data.\*.matchingSources | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts | string | | |
+action_result.data.\*.statusCounts | string | | |
+action_result.data.\*.whoClickedPending | boolean | | True False |
+action_result.data.\*.whoDeletedPending | boolean | | True False |
+action_result.data.\*.willRetry | boolean | | True False |
 action_result.data.\*.matchingIocInfo.\*.attributes.threat_type | string | | SUBJECT |
 action_result.data.\*.matchingIocInfo.\*.attributes.threat_value | string | | essentially wolfish3 time 1657392753323 |
 action_result.data.\*.matchingIocInfo.\*.id | string | | b93cba4829a00dabef96036bb6765d20 |
@@ -278,8 +347,39 @@ action_result.data.\*.quarantineJobRuns.\*.jobRunType | string | | QUARANTINE |
 action_result.data.\*.quarantineJobRuns.\*.startedDate | string | | 2022-07-19T05:51:33.950313 |
 action_result.data.\*.quarantineJobRuns.\*.status | string | | COMPLETED |
 action_result.data.\*.quarantineJobRuns.\*.total | numeric | | 1 |
-action_result.data.\*.searchId | string | | |
+action_result.data.\*.searchId | numeric | | |
 action_result.data.\*.stopRequested | boolean | | True False |
+action_result.data.\*.statusCounts.\*.count | numeric | | 1 |
+action_result.data.\*.statusCounts.\*.status | string | | QUARANTINE_ERROR |
+action_result.data.\*.quarantineEmails.\*.isRead | string | | |
+action_result.data.\*.quarantineEmails.\*.already | string | | |
+action_result.data.\*.quarantineEmails.\*.foundEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.ingestEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.clickDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedAny | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedIOC | string | | |
+action_result.data.\*.quarantineEmails.\*.deleteDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.deletedByUser | string | | |
+action_result.data.\*.quarantineEmails.\*.foundFolderType | string | | |
+action_result.data.\*.quarantineEmails.\*.hasCalendarEvent | boolean | | True False |
+action_result.data.\*.quarantineJobRuns.\*.createdBy | string | | crestdatauser |
+action_result.data.\*.quarantineEmailReadStatusCounts.read | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.unRead | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.deleted | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedAny | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedIoc | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.notAvailable | numeric | | 1 |
+action_result.data.\*.quarantineEmailReadStatusCounts.calendarEvents | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedStatus | string | | DONE_NO_DELETER |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoClickedRetries | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedRetries | numeric | | 1 |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedNotAvailable | numeric | | 1 |
+action_result.data.\*.matchingIocInfo.\*.metadata.quarantine.wildcard | boolean | | True False |
+action_result.data.\*.matchingIocInfo.\*.metadata.quarantine.false_positive | boolean | | True False |
+action_result.data.\*.matchingIocInfo.\*.metadata.quarantine.email_restore_count | numeric | | |
+action_result.data.\*.matchingIocInfo.\*.metadata.quarantine.recipient_restore_count | numeric | | |
+action_result.data.\*.matchingIocInfo.\*.metadata.quarantine.email_quarantine_success | numeric | | 2 |
+action_result.data.\*.matchingIocInfo.\*.metadata.quarantine.recipient_quarantine_success | numeric | | 2 |
 action_result.summary.total_quarantine_jobs | numeric | | 28 |
 action_result.message | string | | Total quarantine jobs: 28 |
 summary.total_objects | numeric | | 1 |
@@ -329,6 +429,38 @@ action_result.data.\*.quarantineJobRuns.\*.status | string | | NEW |
 action_result.data.\*.quarantineJobRuns.\*.total | numeric | | 1 |
 action_result.data.\*.searchId | string | | |
 action_result.data.\*.stopRequested | boolean | | True False |
+action_result.data.\*.context | string | | |
+action_result.data.\*.detection | string | | |
+action_result.data.\*.willRetry | boolean | | True False |
+action_result.data.\*.aiClusterId | string | | |
+action_result.data.\*.statusCounts.\*.count | numeric | | 1 |
+action_result.data.\*.statusCounts.\*.status | string | | NEW |
+action_result.data.\*.quarantineEmails.\*.isRead | string | | |
+action_result.data.\*.quarantineEmails.\*.already | string | | |
+action_result.data.\*.quarantineEmails.\*.foundEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.ingestEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.clickDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedAny | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedIOC | string | | |
+action_result.data.\*.quarantineEmails.\*.deleteDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.deletedByUser | string | | |
+action_result.data.\*.quarantineEmails.\*.foundFolderType | string | | |
+action_result.data.\*.quarantineEmails.\*.hasCalendarEvent | boolean | | True False |
+action_result.data.\*.quarantineJobRuns.\*.createdBy | string | | crestdatauser |
+action_result.data.\*.whoClickedPending | boolean | | True False |
+action_result.data.\*.whoDeletedPending | boolean | | True False |
+action_result.data.\*.isClusterInitiated | boolean | | True False |
+action_result.data.\*.quarantineEmailReadStatusCounts.read | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.unRead | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.deleted | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedAny | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedIoc | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.notAvailable | numeric | | 1 |
+action_result.data.\*.quarantineEmailReadStatusCounts.calendarEvents | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedStatus | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoClickedRetries | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedRetries | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedNotAvailable | numeric | | 1 |
 action_result.summary | string | | |
 action_result.message | string | | Created a quarantine job successfully |
 summary.total_objects | numeric | | 1 |
@@ -393,7 +525,7 @@ action_result.data.\*.id | numeric | `cofense vision search id` | 2146 |
 action_result.data.\*.internetMessageId | string | | |
 action_result.data.\*.modifiedBy | string | | visionAdmin |
 action_result.data.\*.modifiedDate | string | | 2022-12-09T20:16:42.868693 |
-action_result.data.\*.partialIngest | boolean | | True False |
+action_result.data.\*.partialIngest | string | | |
 action_result.data.\*.receivedAfterDate | string | | |
 action_result.data.\*.receivedBeforeDate | string | | |
 action_result.data.\*.recipient | string | | |
@@ -430,7 +562,7 @@ action_result.data.\*.id | numeric | `cofense vision search id` | 2147 |
 action_result.data.\*.internetMessageId | string | | |
 action_result.data.\*.modifiedBy | string | | CofenseTAP |
 action_result.data.\*.modifiedDate | string | | 2022-12-09T20:31:12.605426 |
-action_result.data.\*.partialIngest | boolean | | True False |
+action_result.data.\*.partialIngest | string | | |
 action_result.data.\*.receivedAfterDate | string | | |
 action_result.data.\*.receivedBeforeDate | string | | |
 action_result.data.\*.recipient | string | | |
@@ -496,6 +628,38 @@ action_result.data.\*.quarantineJobRuns.\*.status | string | | COMPLETED |
 action_result.data.\*.quarantineJobRuns.\*.total | numeric | | 2 |
 action_result.data.\*.searchId | string | | |
 action_result.data.\*.stopRequested | boolean | | True False |
+action_result.data.\*.context | string | | |
+action_result.data.\*.detection | string | | |
+action_result.data.\*.willRetry | boolean | | True False |
+action_result.data.\*.aiClusterId | string | | |
+action_result.data.\*.statusCounts.\*.count | numeric | | 2 |
+action_result.data.\*.statusCounts.\*.status | string | | NEW |
+action_result.data.\*.quarantineEmails.\*.isRead | string | | |
+action_result.data.\*.quarantineEmails.\*.already | string | | |
+action_result.data.\*.quarantineEmails.\*.foundEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.ingestEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.clickDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedAny | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedIOC | string | | |
+action_result.data.\*.quarantineEmails.\*.deleteDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.deletedByUser | string | | |
+action_result.data.\*.quarantineEmails.\*.foundFolderType | string | | |
+action_result.data.\*.quarantineEmails.\*.hasCalendarEvent | boolean | | True False |
+action_result.data.\*.quarantineJobRuns.\*.createdBy | string | | crestdatauser |
+action_result.data.\*.whoClickedPending | boolean | | True False |
+action_result.data.\*.whoDeletedPending | boolean | | True False |
+action_result.data.\*.isClusterInitiated | boolean | | True False |
+action_result.data.\*.quarantineEmailReadStatusCounts.read | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.unRead | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.deleted | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedAny | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedIoc | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.notAvailable | numeric | | 2 |
+action_result.data.\*.quarantineEmailReadStatusCounts.calendarEvents | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedStatus | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoClickedRetries | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedRetries | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedNotAvailable | numeric | | 2 |
 action_result.summary | string | | |
 action_result.message | string | | Successfully retrieved the quarantine job information |
 summary.total_objects | numeric | | 1 |
@@ -577,7 +741,7 @@ action_result.status | string | | success failed |
 action_result.parameter.id | numeric | `cofense vision search id` | 4825 |
 action_result.parameter.page | numeric | | 0 |
 action_result.parameter.size | numeric | | 50 |
-action_result.parameter.sort | string | | |
+action_result.parameter.sort | string | | createdBy:desc,id:asc |
 action_result.data.\*.attachments.\*.contentType | string | | text/plain |
 action_result.data.\*.attachments.\*.detectedContentType | string | | text/plain |
 action_result.data.\*.attachments.\*.filename | string | | test_file.txt |
@@ -606,6 +770,9 @@ action_result.data.\*.sha1 | string | `sha1` | 31bc336427b2426c1480221b1ff1f1648
 action_result.data.\*.sha256 | string | `sha256` | 48c13b22e3d6ffb9ad5f85b6c2a32b5c80bffcd563d8c04bb7befd01b803fc20 |
 action_result.data.\*.subject | string | | A test mail |
 action_result.data.\*.textBody | string | | |
+action_result.data.\*.messageIdHeader | string | | <852266475.122.1788931518336@vision.cofenseselab.cofense-vision.com> |
+action_result.data.\*.emailEnvironmentId | numeric | | 1 |
+action_result.data.\*.networkMessageIdHeader | string | | face5fe2-79da-4d75-a9f0-08df0e32bcdc |
 action_result.summary.total_results | numeric | | 4 |
 action_result.message | string | | Total results: 4 |
 summary.total_objects | numeric | | 1 |
@@ -698,6 +865,38 @@ action_result.data.\*.quarantineJobRuns.\*.status | string | | COMPLETED |
 action_result.data.\*.quarantineJobRuns.\*.total | numeric | | 2 |
 action_result.data.\*.searchId | string | | |
 action_result.data.\*.stopRequested | boolean | | True False |
+action_result.data.\*.context | string | | |
+action_result.data.\*.detection | string | | |
+action_result.data.\*.willRetry | boolean | | True False |
+action_result.data.\*.aiClusterId | string | | |
+action_result.data.\*.statusCounts.\*.count | numeric | | 2 |
+action_result.data.\*.statusCounts.\*.status | string | | QUARANTINE_ERROR |
+action_result.data.\*.quarantineEmails.\*.isRead | string | | |
+action_result.data.\*.quarantineEmails.\*.already | string | | |
+action_result.data.\*.quarantineEmails.\*.foundEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.ingestEnvId | string | | |
+action_result.data.\*.quarantineEmails.\*.clickDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedAny | string | | |
+action_result.data.\*.quarantineEmails.\*.isClickedIOC | string | | |
+action_result.data.\*.quarantineEmails.\*.deleteDetails | string | | |
+action_result.data.\*.quarantineEmails.\*.deletedByUser | string | | |
+action_result.data.\*.quarantineEmails.\*.foundFolderType | string | | |
+action_result.data.\*.quarantineEmails.\*.hasCalendarEvent | boolean | | True False |
+action_result.data.\*.quarantineJobRuns.\*.createdBy | string | | crestdatauser |
+action_result.data.\*.whoClickedPending | boolean | | True False |
+action_result.data.\*.whoDeletedPending | boolean | | True False |
+action_result.data.\*.isClusterInitiated | boolean | | True False |
+action_result.data.\*.quarantineEmailReadStatusCounts.read | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.unRead | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.deleted | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedAny | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedIoc | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.notAvailable | numeric | | 2 |
+action_result.data.\*.quarantineEmailReadStatusCounts.calendarEvents | numeric | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedStatus | string | | DONE_NO_DELETER |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoClickedRetries | string | | |
+action_result.data.\*.quarantineEmailReadStatusCounts.whoDeletedRetries | numeric | | 1 |
+action_result.data.\*.quarantineEmailReadStatusCounts.clickedNotAvailable | numeric | | 2 |
 action_result.summary | string | | |
 action_result.message | string | | Successfully stopped the quarantine job |
 summary.total_objects | numeric | | 1 |
@@ -810,6 +1009,12 @@ action_result.data.\*.metadata.source.requested_expiration | string | | 2030-10-
 action_result.data.\*.metadata.source.threat_level | string | | Malicious |
 action_result.data.\*.metadata.source.updated_at | string | | 2020-03-30T00:00:00.000+00:00 |
 action_result.data.\*.type | string | | ioc |
+action_result.data.\*.metadata.source.created_by | string | | Devon@GJBData.com |
+action_result.data.\*.metadata.quarantine.false_positive | boolean | | True False |
+action_result.data.\*.metadata.quarantine.email_restore_count | numeric | | |
+action_result.data.\*.metadata.quarantine.recipient_restore_count | numeric | | |
+action_result.data.\*.metadata.quarantine.email_quarantine_success | numeric | | 3466 |
+action_result.data.\*.metadata.quarantine.recipient_quarantine_success | numeric | | 10674 |
 action_result.summary | string | | |
 action_result.summary.ioc_id | string | | d1c54c37fd53d37094ef1dc7530ca949 |
 action_result.message | string | | Get Last IOC Action succeeded |
@@ -958,8 +1163,14 @@ action_result.data.\*.metadata.source.requested_expiration | string | | 2030-10-
 action_result.data.\*.metadata.source.threat_level | string | | Malicious |
 action_result.data.\*.metadata.source.updated_at | string | | 2020-03-28T00:00:00.000+00:00 |
 action_result.data.\*.type | string | | ioc |
+action_result.data.\*.metadata.source.created_by | string | | Devon@GJBData.com |
+action_result.data.\*.metadata.quarantine.false_positive | boolean | | True False |
+action_result.data.\*.metadata.quarantine.email_restore_count | numeric | | |
+action_result.data.\*.metadata.quarantine.recipient_restore_count | numeric | | |
+action_result.data.\*.metadata.quarantine.email_quarantine_success | numeric | | 3466 |
+action_result.data.\*.metadata.quarantine.recipient_quarantine_success | numeric | | 10674 |
 action_result.summary.total_iocs | numeric | | 5 |
-action_result.message | string | | |
+action_result.message | string | | Total iocs: 10 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
 
@@ -1024,9 +1235,9 @@ DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 action_result.status | string | | success failed |
 action_result.data.\*.header | string | | |
 action_result.summary | string | | |
-action_result.message | string | | |
-summary.total_objects | numeric | | |
-summary.total_objects_successful | numeric | | |
+action_result.message | string | | Total searchable headers: 25 |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
 
 ## action: 'download logs'
 
@@ -1061,10 +1272,399 @@ action_result.data.\*.task | string | | |
 action_result.data.\*.user | string | | admin |
 action_result.data.\*.vault_document | numeric | | 29 |
 action_result.data.\*.vault_id | string | `vault id` | 31c194010afedb76694517e6250b5339d72ed518 |
+action_result.data.\*.es_attachment_id | string | | |
 action_result.summary.vault_id | string | `vault id` | 31c194010afedb76694517e6250b5339d72ed518 |
 action_result.message | string | | Vault id: 31c194010afedb76694517e6250b5339d72ed518 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
+
+## action: 'list clusters'
+
+Retrieves clusters that contain at least one email with an ingestion timestamp that falls in the requested date and time range
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**page** | optional | Start page of the results. The value must be a positive integer or 0 | numeric | |
+**size** | optional | Number of results per page. The value must be a positive integer up to 2000 | numeric | |
+**sort_field** | optional | Sort results based on this field | string | |
+**order** | optional | Order for the sorted field | string | |
+**from_date** | optional | Emails ingested on or after this date and time. The date and time must be in UTC in ISO 8601 format, for example: 2024-05-31T00:00:00.000Z | string | |
+**to_date** | optional | Emails ingested before this date and time. The date and time must be in UTC in ISO 8601 format, for example: 2024-05-31T00:00:00.000Z | string | |
+**exclude_emails** | optional | Whether to remove the email details from the response | boolean | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.page | numeric | | 0 |
+action_result.parameter.size | numeric | | 50 |
+action_result.parameter.sort_field | string | | createdDate |
+action_result.parameter.order | string | | desc |
+action_result.parameter.from_date | string | | 2024-05-31T00:00:00.000Z |
+action_result.parameter.to_date | string | | 2024-06-07T00:00:00.000Z |
+action_result.parameter.exclude_emails | boolean | | True False |
+action_result.data.\*.id | numeric | `cofense vision cluster id` | 2 |
+action_result.data.\*.title | string | | Credential phishing campaign targeting finance |
+action_result.data.\*.fromDate | string | | 2025-06-01T08:00:00Z |
+action_result.data.\*.toDate | string | | 2025-06-01T12:30:00Z |
+action_result.data.\*.similarityLevel | numeric | | 5 |
+action_result.data.\*.emailCount | numeric | | 47 |
+action_result.data.\*.recipientCount | numeric | | 287 |
+action_result.data.\*.userNote | string | | Escalated to SOC for immediate review. |
+action_result.data.\*.signals | string | | VARIED_URLS VARIED_SENDER |
+action_result.data.\*.iocIds | string | | a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 |
+action_result.data.\*.iocInfo | string | | |
+action_result.data.\*.avgCharacterCount | numeric | | 1145 |
+action_result.data.\*.centroids | string | | |
+action_result.data.\*.disabledAQ | boolean | | True False |
+action_result.data.\*.envIds | string | | |
+action_result.data.\*.similarityLevelCalculated | numeric | | |
+action_result.data.\*.uniqueSenderCount | numeric | | |
+action_result.data.\*.emails.\*.subject | string | | Urgent: Verify your account |
+action_result.data.\*.createdDate | string | | 2025-06-01T07:55:00Z |
+action_result.data.\*.modifiedDate | string | | 2025-06-01T13:00:00Z |
+action_result.data.\*.quarantineJobIds | string | `cofense vision quarantine job id` | 42 |
+action_result.data.\*.emails | string | | |
+action_result.data.\*.centroids.centroid1 | numeric | | -3233901077497987035 |
+action_result.data.\*.centroids.centroid3 | string | | |
+action_result.data.\*.emails.\*.envId | numeric | | 1 |
+action_result.data.\*.emails.\*.iocIds | string | | |
+action_result.data.\*.emails.\*.sender | string | | vision@vision.cofenseselab.cofense-vision.com |
+action_result.data.\*.emails.\*.messageId | string | | <1234679914.1121.1791784062046@vision.cofenseselab.cofense-vision.com> |
+action_result.data.\*.emails.\*.signature.hash1 | numeric | | -3234041814986375131 |
+action_result.data.\*.emails.\*.signature.hash2 | string | | |
+action_result.data.\*.emails.\*.signature.hash3 | string | | |
+action_result.data.\*.emails.\*.signature.normalizedTokenCount | string | | |
+action_result.data.\*.emails.\*.signature.normalizedContentHash | string | | -6032669796344245314 |
+action_result.data.\*.emails.\*.signature.normalizedCharacterCount | numeric | | 462 |
+action_result.data.\*.emails.\*.processedOn | string | | 2026-10-12T05:48:07.182Z |
+action_result.data.\*.emails.\*.recipientCount | numeric | | 1 |
+action_result.data.\*.emails.\*.quarantineJobId | string | | |
+action_result.data.\*.emails.\*.similarityLevel | numeric | | 10 |
+action_result.data.\*.emails.\*.combinedMessageId | string | | d67c9fec-1f6d-4937-68f3-08df2824558a / <1234679914.1121.1791784062046@vision.cofenseselab.cofense-vision.com> |
+action_result.summary.total_clusters | numeric | | 1 |
+action_result.message | string | | Total clusters: 1 |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'get cluster'
+
+Retrieves a single cluster identified by the ID, including the emails in the cluster
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** | required | ID of the cluster to retrieve | numeric | `cofense vision cluster id` |
+**exclude_emails** | optional | Whether to remove the email details from the response | boolean | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.id | numeric | `cofense vision cluster id` | 2 |
+action_result.parameter.exclude_emails | boolean | | True False |
+action_result.data.\*.id | numeric | `cofense vision cluster id` | 2 |
+action_result.data.\*.title | string | | Splunk SOAR Test |
+action_result.data.\*.userNote | string | | |
+action_result.data.\*.signals | string | | VARIED_URLS VARIED_SENDER |
+action_result.data.\*.iocIds | string | | a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 |
+action_result.data.\*.iocInfo | string | | |
+action_result.data.\*.avgCharacterCount | numeric | | 1145 |
+action_result.data.\*.centroids | string | | |
+action_result.data.\*.disabledAQ | string | | |
+action_result.data.\*.envIds | string | | |
+action_result.data.\*.similarityLevel | numeric | | 5 |
+action_result.data.\*.similarityLevelCalculated | string | | |
+action_result.data.\*.uniqueSenderCount | numeric | | |
+action_result.data.\*.emailCount | numeric | | 47 |
+action_result.data.\*.recipientCount | numeric | | 287 |
+action_result.data.\*.fromDate | string | | 2025-06-01T08:00:00Z |
+action_result.data.\*.toDate | string | | 2025-06-01T12:30:00Z |
+action_result.data.\*.emails.\*.subject | string | | Urgent: Verify your account |
+action_result.data.\*.createdDate | string | | 2025-06-01T07:55:00Z |
+action_result.data.\*.modifiedDate | string | | 2025-06-01T13:00:00Z |
+action_result.data.\*.quarantineJobIds | string | `cofense vision quarantine job id` | |
+action_result.data.\*.emails | string | | |
+action_result.data.\*.centroids.centroid1 | numeric | | -3309326476157132231 |
+action_result.data.\*.centroids.centroid3 | string | | |
+action_result.data.\*.emails.\*.envId | numeric | | 1 |
+action_result.data.\*.emails.\*.iocIds | string | | |
+action_result.data.\*.emails.\*.sender | string | | vision@vision.cofenseselab.cofense-vision.com |
+action_result.data.\*.emails.\*.messageId | string | | <1085709641.289.1789027601150@vision.cofenseselab.cofense-vision.com> |
+action_result.data.\*.emails.\*.signature.hash1 | numeric | | -1003483466943248855 |
+action_result.data.\*.emails.\*.signature.hash2 | string | | |
+action_result.data.\*.emails.\*.signature.hash3 | string | | |
+action_result.data.\*.emails.\*.signature.normalizedTokenCount | string | | |
+action_result.data.\*.emails.\*.signature.normalizedContentHash | string | | -6457353019152139510 |
+action_result.data.\*.emails.\*.signature.normalizedCharacterCount | numeric | | 446 |
+action_result.data.\*.emails.\*.processedOn | string | | 2026-09-10T08:06:59.275Z |
+action_result.data.\*.emails.\*.recipientCount | numeric | | 1 |
+action_result.data.\*.emails.\*.quarantineJobId | string | | |
+action_result.data.\*.emails.\*.similarityLevel | numeric | | 8 |
+action_result.data.\*.emails.\*.combinedMessageId | string | | 05bf32c4-3f14-4741-c0db-08df0f1272f4 / <1085709641.289.1789027601150@vision.cofenseselab.cofense-vision.com> |
+action_result.message | string | | Successfully retrieved the cluster information |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'update cluster'
+
+Updates the cluster identified by the ID
+
+Type: **generic** <br>
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** | required | ID of the cluster to update | numeric | `cofense vision cluster id` |
+**title** | optional | Title to be assigned to the cluster | string | |
+**note** | optional | Note to be added to the cluster | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.id | numeric | `cofense vision cluster id` | 2 |
+action_result.parameter.title | string | | Splunk SOAR Test |
+action_result.parameter.note | string | | Updating for testing |
+action_result.data.\*.id | numeric | `cofense vision cluster id` | 2 |
+action_result.data.\*.title | string | | Credential phishing campaign targeting finance dept |
+action_result.data.\*.userNote | string | | Escalated to SOC for immediate review. |
+action_result.data.\*.signals | string | | VARIED_URLS VARIED_SENDER |
+action_result.data.\*.iocIds | string | | a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 |
+action_result.data.\*.avgCharacterCount | numeric | | 1145 |
+action_result.data.\*.createdDate | string | | 2025-06-01T07:55:00Z |
+action_result.data.\*.modifiedDate | string | | 2025-06-05T16:42:00Z |
+action_result.data.\*.quarantineJobIds | string | `cofense vision quarantine job id` | |
+action_result.data.\*.emails | string | | |
+action_result.data.\*.toDate | string | | 2026-09-10T08:06:59.275Z |
+action_result.data.\*.fromDate | string | | 2026-05-14T17:37:40.479Z |
+action_result.data.\*.centroids.centroid1 | numeric | | -3309326476157132231 |
+action_result.data.\*.centroids.centroid3 | string | | |
+action_result.data.\*.disabledAQ | string | | |
+action_result.data.\*.emailCount | numeric | | 4949 |
+action_result.data.\*.recipientCount | numeric | | 4949 |
+action_result.data.\*.similarityLevel | numeric | | 3 |
+action_result.data.\*.uniqueSenderCount | numeric | | 1 |
+action_result.data.\*.similarityLevelCalculated | string | | |
+action_result.data.\*.envIds | string | | |
+action_result.message | string | | Successfully updated the cluster |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'quarantine cluster'
+
+Manually creates a quarantine job for all emails in a cluster that are not already associated with an existing quarantine job for this cluster
+
+Type: **contain** <br>
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** | required | ID of the cluster to quarantine | numeric | `cofense vision cluster id` |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.id | numeric | `cofense vision cluster id` | 2 |
+action_result.data.\*.id | numeric | `cofense vision quarantine job id` | 1458 |
+action_result.data.\*.aiClusterId | numeric | `cofense vision cluster id` | 1 |
+action_result.data.\*.autoQuarantine | boolean | | True False |
+action_result.data.\*.status | string | | COMPLETED |
+action_result.data.\*.stopRequested | boolean | | True False |
+action_result.data.\*.createdBy | string | | system |
+action_result.data.\*.createdDate | string | | 2026-03-25T14:00:00Z |
+action_result.data.\*.modifiedDate | string | | 2026-03-25T14:00:00Z |
+action_result.data.\*.emailCount | string | | |
+action_result.data.\*.matchingIOCs | string | | |
+action_result.data.\*.quarantineEmails.\*.internetMessageId | string | | <1270149500.1722827.1657392753324@af226d4cfbab> |
+action_result.data.\*.quarantineEmails.\*.recipientAddress | string | | testuser@test.com |
+action_result.data.\*.quarantineEmails.\*.status | string | | EXPUNGED |
+action_result.data.\*.context | string | | |
+action_result.data.\*.searchId | string | | |
+action_result.data.\*.detection | string | | cluster |
+action_result.data.\*.willRetry | boolean | | True False |
+action_result.data.\*.modifiedBy | string | | crestdatauser |
+action_result.data.\*.quarantineJobRuns.\*.id | numeric | | 17161 |
+action_result.data.\*.quarantineJobRuns.\*.error | numeric | | |
+action_result.data.\*.quarantineJobRuns.\*.total | numeric | | 708 |
+action_result.data.\*.quarantineJobRuns.\*.status | string | | NEW |
+action_result.data.\*.quarantineJobRuns.\*.createdBy | string | | crestdatauser |
+action_result.data.\*.quarantineJobRuns.\*.jobRunType | string | | QUARANTINE |
+action_result.data.\*.quarantineJobRuns.\*.startedDate | string | | |
+action_result.data.\*.quarantineJobRuns.\*.completedDate | string | | |
+action_result.data.\*.whoClickedPending | boolean | | True False |
+action_result.data.\*.whoDeletedPending | boolean | | True False |
+action_result.data.\*.isClusterInitiated | boolean | | True False |
+action_result.data.\*.quarantineEmailReadStatusCounts | string | | |
+action_result.message | string | | Successfully created a quarantine job for the cluster |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'reject quarantine job'
+
+Rejects the quarantine job identified by the ID. When the Auto Quarantine feature is configured to require manual approvals, this endpoint can reject pending quarantine jobs
+
+Type: **generic** <br>
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** | required | ID of the quarantine job in cofense vision to be rejected | numeric | `cofense vision quarantine job id` |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.id | numeric | `cofense vision quarantine job id` | 1234 |
+action_result.data | string | | |
+action_result.message | string | | Successfully rejected the quarantine job |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'retry quarantine job'
+
+Issues a request to retry the quarantine job identified by the ID
+
+Type: **generic** <br>
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**id** | required | ID of the quarantine job in cofense vision to be retried | numeric | `cofense vision quarantine job id` |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.id | numeric | `cofense vision quarantine job id` | 1234 |
+action_result.data | string | | |
+action_result.message | string | | Successfully retried the quarantine job |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'get vision ai config'
+
+Retrieves the current Vision AI configuration settings, including whether the feature is enabled, whether the Terms of Service have been accepted, and all tunable cluster parameters
+
+Type: **investigate** <br>
+Read only: **True**
+
+#### Action Parameters
+
+No parameters are required for this action
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.data.\*.enabled | boolean | | True False |
+action_result.data.\*.tosAccepted | boolean | | True False |
+action_result.data.\*.tosAcceptedBy | string | | |
+action_result.data.\*.tosAcceptedFromIp | string | | |
+action_result.data.\*.autoQuarantine | boolean | | True False |
+action_result.data.\*.operatorApproval | boolean | | True False |
+action_result.data.\*.minClusterSize | numeric | | 100 |
+action_result.data.\*.clusterTimeToMatchMs | numeric | | 259200000 |
+action_result.data.\*.similarityLevel | numeric | | 5 |
+action_result.data.\*.rapidlyTimeMs | numeric | | 28800000 |
+action_result.message | string | | Successfully retrieved the Vision AI configuration |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'update vision ai config'
+
+Performs a partial update of the Vision AI configuration, updating only those parameters included in the request
+
+Type: **generic** <br>
+Read only: **False**
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**enable** | optional | Whether the Vision AI feature is turned on | string | |
+**auto_quarantine** | optional | Vision auto quarantines clusters | string | |
+**operator_approval** | optional | Whether Vision requires operator approval to auto quarantine clusters | string | |
+**cluster_match_time** | optional | Time window in milliseconds when emails are eligible for clustering. The value must be from 86400000 (24 hours) to 604800000 (7 days) | numeric | |
+**min_cluster_size** | optional | Minimum number of emails required to form a cluster. The minimum value is 10 | numeric | |
+**cluster_rapid_growth_time** | optional | Time window in milliseconds used to determine if a cluster is growing rapidly. The value must be from 900000 (15 minutes) to 86400000 (24 hours) | numeric | |
+**similarity_level** | optional | How strictly emails must match to be clustered, an integer from -10 to 10, with 10 indicating the closest matching | numeric | |
+**tos_accepted** | optional | Whether the Terms of Service have been accepted | string | |
+
+#### Action Output
+
+DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
+--------- | ---- | -------- | --------------
+action_result.status | string | | success failed |
+action_result.parameter.enable | string | | True False |
+action_result.parameter.auto_quarantine | string | | True False |
+action_result.parameter.operator_approval | string | | True False |
+action_result.parameter.cluster_match_time | numeric | | 86400000 |
+action_result.parameter.min_cluster_size | numeric | | 100 |
+action_result.parameter.cluster_rapid_growth_time | numeric | | 14400000 |
+action_result.parameter.similarity_level | numeric | | 5 |
+action_result.parameter.tos_accepted | string | | True False |
+action_result.data.\*.enabled | boolean | | True False |
+action_result.data.\*.tosAccepted | boolean | | True False |
+action_result.data.\*.autoQuarantine | boolean | | True False |
+action_result.data.\*.operatorApproval | boolean | | True False |
+action_result.data.\*.minClusterSize | numeric | | 100 |
+action_result.data.\*.clusterTimeToMatchMs | numeric | | 259200000 |
+action_result.data.\*.similarityLevel | numeric | | 5 |
+action_result.data.\*.rapidlyTimeMs | numeric | | 14400000 |
+action_result.data.\*.tosAcceptedBy | string | | Devon.Sullivan@cofense.com |
+action_result.data.\*.tosAcceptedFromIp | string | | 40.121.106.7, 172.31.3.26 |
+action_result.message | string | | Successfully updated the Vision AI configuration |
+summary.total_objects | numeric | | 1 |
+summary.total_objects_successful | numeric | | 1 |
+
+## action: 'on poll'
+
+Callback action for the on poll ingest functionality
+
+Type: **ingest** <br>
+Read only: **True**
+
+Retrieves the emails of the Cofense Vision AI clusters ingested in the polling window and creates a container for every cluster along with an artifact for every email of that cluster. A cluster keeps growing as new emails join it, so it is returned again by every polling window that ingests one of its emails. Only the emails of the window are ingested, into containers identified by the ingestion timestamp of the newest email they hold. Scheduled polling windows never overlap, so every email is ingested once and a scheduled poll never adds artifacts to a container created by an earlier scheduled poll. POLL NOW is meant for sampling: it neither reads nor updates the polling checkpoint, so its window can overlap the windows of other polls. A poll whose window overlaps an earlier POLL NOW, whether another POLL NOW or a scheduled poll, can add older emails to a container that POLL NOW created, and repeating POLL NOW over a cluster that is still receiving emails ingests those emails again into new containers. No email is lost in either case. To avoid both, delete the containers created by POLL NOW before scheduled polling covers the same period. Every container is named after its cluster ID, the cluster title and the ingestion timestamp of the oldest email it holds, so every email of the container was ingested at or after that time, for example '291 : Invoice campaign - 2024-05-31T10:00:00Z'; the polling window is stated in the container description. The emails of a cluster are split across containers of at most 'Maximum number of artifacts in a single container' artifacts each, so a cluster of 200 emails with the default limit of 100 produces 2 containers. Those containers are named with their part, for example '... - Part 1 of 2'. The polling window ends 'Ingestion lag' minutes (5 by default) before the current time, so that an email whose row is committed after its ingestion timestamp is still picked up by the next cycle; an email committed later than the lag is never ingested. The polling window starts at the 'Start Time' asset configuration parameter for the first scheduled or interval poll and at the end of the previous polling window for the subsequent ones. The 'Start Time for Poll Now' asset configuration parameter is used for the manual POLL NOW runs; the start_time and end_time that Splunk SOAR passes to the action are ignored. POLL NOW stops exactly at its container_count and artifact_count, even within a cluster. Both parameters accept a relative time, for example 1d, 6h, 30m, or an absolute UTC date, for example 2024-05-31T00:00:00Z. A scheduled poll ingests every email of every cluster returned for its window; there is no limit on the number of emails in a cycle.
+
+#### Action Parameters
+
+PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
+--------- | -------- | ----------- | ---- | --------
+**container_count** | optional | Maximum number of containers to create during POLL NOW | numeric | |
+**artifact_count** | optional | Maximum number of artifacts to create during POLL NOW | numeric | |
+**start_time** | optional | Parameter ignored in this app | numeric | |
+**end_time** | optional | Parameter ignored in this app | numeric | |
+**container_id** | optional | Parameter ignored in this app | numeric | |
+
+#### Action Output
+
+No Output
 
 ______________________________________________________________________
 

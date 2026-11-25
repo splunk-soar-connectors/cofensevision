@@ -56,6 +56,7 @@ TEST_JSON = {
         "client_id": CLIENT_ID,
         "client_secret": cipher_text,
         "main_module": "cofensevision_connector.py",
+        "verify_server_cert": False,
     },
     "debug_level": 0,
     "dec_key": DEFAULT_ASSET_ID,
